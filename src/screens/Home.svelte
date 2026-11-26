@@ -6,9 +6,20 @@
     date,
     firstTime,
     started = false,
+    closed = false,
+    saving = true,
     opensOn,
     onplay,
-  }: { card: number | null; date: string; firstTime: boolean; started?: boolean; opensOn: string; onplay: () => void } = $props();
+  }: {
+    card: number | null;
+    date: string;
+    firstTime: boolean;
+    started?: boolean;
+    closed?: boolean;
+    saving?: boolean;
+    opensOn: string;
+    onplay: () => void;
+  } = $props();
 </script>
 
 <section class="screen">
@@ -28,21 +39,22 @@
     </div>
   {/if}
 
-  {#if card !== null}
+  {#if card !== null && !saving}
+    <p class="note">This browser is not saving anything, so a reload starts the card again and your streak is not kept.</p>
+  {/if}
+
+  {#if card !== null && closed}
+    <p class="note">Card #{card} is done for today. The next card opens at midnight.</p>
+  {:else if card !== null}
     <div class="foot"><button class="pill" onclick={onplay}>{started ? `Carry on with card #${card}` : `Play card #${card}`}</button></div>
   {/if}
 </section>
 
 <style>
-  .screen {
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-  }
   .lawn {
     height: var(--ev-lawn-h);
     position: relative;
-    background: repeating-linear-gradient(90deg, var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
+    background: repeating-linear-gradient(var(--angle-stripes), var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
     border-bottom: var(--line) solid var(--ink);
   }
   .board {
@@ -81,8 +93,8 @@
   .how b {
     color: var(--ink);
   }
-  .foot {
-    margin-top: auto;
-    padding: var(--space-6) var(--space-5) var(--space-8);
+  .note {
+    margin: var(--space-6) var(--space-5) 0;
+    color: var(--ink-soft);
   }
 </style>

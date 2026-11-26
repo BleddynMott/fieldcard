@@ -36,19 +36,20 @@ export function generateCount(card: number, p: CountParams = countParams()): Cou
   const share = p.targetShareFrom + (p.targetShareTo - p.targetShareFrom) * rng();
   const target = clamp(Math.round(total * share), p.targetMin, Math.min(p.targetMax, total));
   const crossMs = p.crossMsMonday + p.crossMsStepPerDay * step;
+  // one speed per lane, so a figure never catches the one ahead of it in its lane (review 40)
+  const laneMs = Array.from({ length: p.lanes }, () => Math.round(crossMs * (1 - p.laneSpeedJitter + 2 * p.laneSpeedJitter * rng())));
   const others = Array.from({ length: kits - 1 }, (_, i) => (i >= todayKit ? i + 1 : i));
   const kitsInOrder = shuffle(rng, [
     ...Array.from({ length: target }, () => todayKit),
     ...Array.from({ length: total - target }, () => others[pickIndex(rng, others.length)]),
   ]);
-  const window = Math.max(0, p.showMs - crossMs);
-  const figures = kitsInOrder.map((kit, i) => ({
-    kit,
-    lane: i % p.lanes,
-    // spread entries evenly over the window, jittered, so figures rarely overlap
-    startMs: Math.round(((i + rng()) / kitsInOrder.length) * window),
-    crossMs: Math.round(crossMs * (0.9 + 0.2 * rng())),
-  }));
+  // every figure has entered and left within showMs (review 15): each lane's window ends showMs
+  // minus that lane's crossing time; entries are spread evenly over it, jittered within their slot
+  const figures = kitsInOrder.map((kit, i) => {
+    const lane = i % p.lanes;
+    const window = Math.max(0, p.showMs - laneMs[lane]);
+    return { kit, lane, startMs: Math.floor(((i + rng()) / kitsInOrder.length) * window), crossMs: laneMs[lane] };
+  });
   return { step, todayKit, target, figures };
 }
 

@@ -33,7 +33,7 @@
     <h1 class="ask">Which door did the crowd go through?</h1>
     <p class="sub">{spec.ask}</p>
   {:else}
-    <h1 class="ask">{top.length > 1 ? 'The crowd split between two doors.' : `The biggest share ${spec.facts[top[0]]}.`}</h1>
+    <h1 class="ask">{top.length === 1 ? `The biggest share ${spec.facts[top[0]]}.` : top.length === 2 ? 'The crowd split between two doors.' : 'The crowd split three ways.'}</h1>
   {/if}
 
   <div class="doors">
@@ -43,13 +43,22 @@
           <span class="pct">{pct[i]}%</span>
           <span class="crowdin">
             {#each Array(Math.max(picked === i ? 1 : 0, Math.round(pct[i] / config.scoring.beadsPer))) as _, k (k)}
-              <span class="mini-fig"><Figure colour={picked === i && k === 0 ? 'var(--you)' : 'var(--crowd)'} /></span>
+              <span class="mini-fig drop" style:--k={k}><Figure colour={picked === i && k === 0 ? 'var(--you)' : 'var(--crowd)'} /></span>
             {/each}
           </span>
         {:else}
           <span class="panel-in"></span>
           <span class="knob"></span>
-          <span class="mark"><Mark id={ev} /></span>
+          {#if ev === 'stop'}
+            <!-- as in reference 2: a small track with the notch, the marker early, on it or late -->
+            <svg class="mini" viewBox="0 0 70 26" aria-hidden="true">
+              <rect class="mini-track" x="1" y="14" width="68" height="10" rx="3" />
+              <rect class="mini-notch" x="33" y="8" width="4" height="18" />
+              <circle class="mini-runner" cx={35 + [-26, 0, 26][i]} cy="8" r="5" />
+            </svg>
+          {:else}
+            <span class="mark"><Mark id={ev} /></span>
+          {/if}
         {/if}
         <span class="sign">{label}</span>
       </button>
@@ -125,6 +134,28 @@
     left: 50%;
     top: var(--space-8);
     transform: translateX(-50%);
+  }
+  .mini {
+    position: absolute;
+    left: 50%;
+    top: var(--space-8);
+    width: 70%;
+    transform: translateX(-50%);
+  }
+  .mini-track {
+    fill: var(--track);
+    stroke: var(--ink);
+    stroke-width: var(--line-thin);
+  }
+  .mini-notch {
+    fill: var(--stop);
+    stroke: var(--ink);
+    stroke-width: var(--fig-stroke);
+  }
+  .mini-runner {
+    fill: var(--white);
+    stroke: var(--ink);
+    stroke-width: var(--line-thin);
   }
   .sign {
     position: absolute;

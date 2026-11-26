@@ -2,6 +2,8 @@ import raw from '../../config/games.json';
 
 export interface StopParams {
   goes: number;
+  notchWidthMonday: number;
+  notchWidthStepPerDay: number;
   notchFrom: number;
   notchTo: number;
   notchApartMin: number;
@@ -29,7 +31,7 @@ export interface CountParams {
   targetMax: number;
   lanes: number;
   guessMax: number;
-  colourIntroMs: number;
+  laneSpeedJitter: number;
   holdRepeatMs: number;
   holdDelayMs: number;
 }
@@ -53,6 +55,9 @@ export interface PairParams {
   nearShareStepPerDay: number;
   wrongPenaltyMs: number;
   columns: number;
+  label: string;
+  formNames: string[];
+  styleNames: string[];
 }
 
 export interface SortParams {
@@ -65,6 +70,7 @@ export interface SortParams {
   lobesFrom: number;
   lobesTo: number;
   areaLargest: number;
+  label: string;
 }
 
 export interface GameEntry {

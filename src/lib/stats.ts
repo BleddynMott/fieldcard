@@ -5,12 +5,6 @@ export function clamp(x: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, x));
 }
 
-/** Standard normal draw (Box-Muller). */
-export function gauss(rng: Rng): number {
-  const u = 1 - rng();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rng());
-}
-
 export function pickIndex(rng: Rng, n: number): number {
   return Math.min(n - 1, Math.floor(rng() * n));
 }
@@ -43,6 +37,23 @@ export function shareBeaten(mine: number[], others: number[][]): number {
     else if (c === 0) score += 0.5;
   }
   return (score / others.length) * 100;
+}
+
+/** For every member of a group, the share of the others they beat (ties count half), in one sort
+ *  instead of comparing every pair (review 39). keys: lower is better. */
+export function sharesWithin(keys: number[][]): number[] {
+  const n = keys.length;
+  const idx = keys.map((_, i) => i).sort((a, b) => compareKeys(keys[b], keys[a])); // worst first
+  const out = new Array<number>(n);
+  let i = 0;
+  while (i < n) {
+    let j = i;
+    while (j + 1 < n && compareKeys(keys[idx[j + 1]], keys[idx[i]]) === 0) j++;
+    const ties = j - i; // others tied with each member of this group
+    for (let k = i; k <= j; k++) out[idx[k]] = n > 1 ? ((i + 0.5 * ties) / (n - 1)) * 100 : 50;
+    i = j + 1;
+  }
+  return out;
 }
 
 /** Same as shareBeaten for plain numbers where higher is better. */

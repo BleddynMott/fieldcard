@@ -4,15 +4,16 @@
 // player saw, so the doors, the boxes and the percentiles move with the card. All numbers are in
 // config/games.json under "crowd".
 import { config, countParams, pairParams, repeatParams } from './config';
+import { dexp, dgauss as gauss } from './dmath';
 import { countResult, generateCount } from './events/count';
 import { generatePair, pairResult } from './events/pair';
-import { generateRepeat } from './events/repeat';
+import { generateRepeat, roundLengths } from './events/repeat';
 import { generateSort, sortResult } from './events/sort';
 import { generateStop, stopResult } from './events/stop';
 import { boxOf, doorOf, shares } from './reads';
 import { rankKey, type EventResults } from './results';
 import { stream } from './rng';
-import { clamp, gauss, shareBeaten, shareBelow } from './stats';
+import { clamp, sharesWithin } from './stats';
 import { doorsEvent, EVENTS, readOfDay, type EventId } from './week';
 
 export interface SimPlayer {
@@ -40,6 +41,9 @@ export interface Crowd {
 const C = config.crowd;
 const cache = new Map<number, Crowd>();
 
+/** Builds the crowd afresh, without the cache; for the harness. */
+export const simulateCrowd = (card: number): Crowd => simulate(card);
+
 export function crowdFor(card: number): Crowd {
   let c = cache.get(card);
   if (!c) {
@@ -64,34 +68,33 @@ function simulate(card: number): Crowd {
   const countBias = C.count.biasMean + gauss(rng) * C.count.biasSd;
   const nearShare = Math.min(1, pp.nearShareMonday + pp.nearShareStepPerDay * pair.step);
 
-  const skillOf = (s: number) => C.skillShare * s + Math.sqrt(1 - C.skillShare ** 2) * gauss(rng);
+  const skillOf = (s: number) => C.skillShare * s + Math.sqrt(1 - C.skillShare * C.skillShare) * gauss(rng);
+  const lengths = roundLengths(rp);
   const raw = Array.from({ length: C.size }, () => {
     const s = gauss(rng);
     const e: Record<EventId, number> = { stop: skillOf(s), count: skillOf(s), repeat: skillOf(s), pair: skillOf(s), sort: skillOf(s) };
     const offs = stop.goes.map((g) => {
-      const sd = C.stop.sdBase * Math.exp(-C.stop.skillEffect * e.stop) * (C.stop.refSweepMs / g.sweepMs);
-      return clamp(stopBias + sd * gauss(rng), -100, 100);
+      const sd = C.stop.sdBase * dexp(-C.stop.skillEffect * e.stop) * (C.stop.refSweepMs / g.sweepMs);
+      return clamp(stopBias + sd * gauss(rng), -C.stop.offClamp, C.stop.offClamp);
     });
     const guess = clamp(
-      Math.round(count.target * (1 + countBias + C.count.sd * Math.exp(-C.count.skillEffect * e.count) * gauss(rng))),
+      Math.round(count.target * (1 + countBias + C.count.sd * dexp(-C.count.skillEffect * e.count) * gauss(rng))),
       0,
       cp.guessMax,
     );
-    const longest = clamp(
-      Math.round(C.repeat.mean + C.repeat.skillEffect * e.repeat - C.repeat.stepPenalty * repeat.step + C.repeat.noise * gauss(rng)),
-      0,
-      rp.maxLength,
-    );
-    const repeatMs = Math.max(1, longest) * C.repeat.msPerItem * Math.exp(C.repeat.timeNoise * gauss(rng));
-    const pairMs = Math.exp(
-      Math.log(C.pair.medianMs * (1 + C.pair.nearEffect * nearShare)) - C.pair.skillEffect * e.pair + C.pair.noise * gauss(rng),
-    );
+    // a run is 0 (the first missed) or one of the lengths played, 3 to 9 (review 24)
+    const wanted = Math.round(C.repeat.mean + C.repeat.skillEffect * e.repeat - C.repeat.stepPenalty * repeat.step + C.repeat.noise * gauss(rng));
+    const longest = wanted < lengths[0] ? (wanted < lengths[0] / 2 ? 0 : lengths[0]) : Math.min(rp.maxLength, wanted);
+    // time as the player's is counted: every tap of every round completed, plus the tap that missed
+    const taps = lengths.filter((l) => l <= longest).reduce((a, b) => a + b, 0) + (longest < rp.maxLength ? 1 : 0);
+    const repeatMs = taps * C.repeat.msPerTap * dexp(C.repeat.timeNoise * gauss(rng));
+    const pairMs = C.pair.medianMs * (1 + C.pair.nearEffect * nearShare) * dexp(-C.pair.skillEffect * e.pair + C.pair.noise * gauss(rng));
     let wrong = 0;
-    while (wrong < 5 && rng() < C.pair.wrongChance) wrong++;
-    const sd = C.sort.perceptionSd * Math.exp(-C.sort.skillEffect * e.sort);
+    while (wrong < C.pair.wrongCap && rng() < C.pair.wrongChance) wrong++;
+    const sd = C.sort.perceptionSd * dexp(-C.sort.skillEffect * e.sort);
     const seen = sort.blobs.map((b, i) => ({ i, a: b.area * (1 + sd * gauss(rng)) }));
     const order = seen.sort((a, b) => a.a - b.a).map((x) => x.i);
-    const sortMs = C.sort.medianMs * Math.exp(C.sort.timeNoise * gauss(rng));
+    const sortMs = C.sort.medianMs * dexp(C.sort.timeNoise * gauss(rng));
     const results: EventResults = {
       stop: stopResult(offs),
       count: countResult(guess, count.target),
@@ -108,18 +111,15 @@ function simulate(card: number): Crowd {
   const boxShares = shares(readEvent, raw.map((r) => r.results[readEvent]), boxOf, 5);
 
   const keys = Object.fromEntries(EVENTS.map((ev) => [ev, raw.map((r) => rankKey(ev, r.results[ev]))])) as Record<EventId, number[][]>;
+  const within = Object.fromEntries(EVENTS.map((ev) => [ev, sharesWithin(keys[ev])])) as Record<EventId, number[]>;
   const players: SimPlayer[] = raw.map((r, idx) => {
-    const beat = Object.fromEntries(
-      EVENTS.map((ev) => {
-        const others = keys[ev].filter((_, j) => j !== idx);
-        return [ev, shareBeaten(keys[ev][idx], others)];
-      }),
-    ) as Record<EventId, number>;
+    const beat = Object.fromEntries(EVENTS.map((ev) => [ev, within[ev][idx]])) as Record<EventId, number>;
     const hands = Math.round(EVENTS.reduce((t, ev) => t + beat[ev], 0) / EVENTS.length);
     const skill = r.s;
-    const spotRight = rng() < clamp(C.spot.rightBase + C.spot.skillEffect * skill, 0.05, 0.95);
+    const spotRight = rng() < clamp(C.spot.rightBase + C.spot.skillEffect * skill, C.spot.rightMin, C.spot.rightMax);
     const w = clamp(C.read.weightBase + C.read.weightSkill * skill, 0, 1);
-    const blend = boxShares.map((x) => Math.max(0, w * x + (1 - w) * 20 + C.read.noise * 100 * gauss(rng)));
+    const even = 100 / boxShares.length;
+    const blend = boxShares.map((x) => Math.max(0, w * x + (1 - w) * even + C.read.noise * 100 * gauss(rng)));
     const total = blend.reduce((a, b) => a + b, 0) || 1;
     const read = blend.map((x) => (x / total) * 100);
     const ov = read.reduce((t, x, i) => t + Math.min(x, boxShares[i]), 0);
@@ -127,9 +127,9 @@ function simulate(card: number): Crowd {
     const avail = config.scoring.spotPoints + config.scoring.readPoints;
     return { results: r.results, beat, hands, place: 0, spotRight, read, overlap: ov, hunchRaw: (pts / avail) * 100, flag: 0 };
   });
-  const hands = players.map((p) => p.hands);
+  const places = sharesWithin(players.map((p) => [-p.hands]));
   players.forEach((p, idx) => {
-    p.place = Math.round(shareBelow(p.hands, hands.filter((_, j) => j !== idx)));
+    p.place = Math.round(places[idx]);
     p.flag = clamp(Math.round(p.place + C.flag.bias + C.flag.sd * gauss(rng)), 0, 100);
   });
   return { card, simulated: true, players, doorEvent, doorShares, readEvent, boxShares };

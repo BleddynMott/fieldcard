@@ -8,13 +8,15 @@
   import Mark from '../components/Mark.svelte';
   import { game, stopParams } from '../lib/config';
   import { generateStop, markerAt, signedOff, stopResult, type StopResult } from '../lib/events/stop';
+  import { tokenMs } from '../lib/tokens';
 
   let {
     card,
     date,
+    onstart,
     onresult,
     onnext,
-  }: { card: number; date: string; onresult: (r: StopResult) => void; onnext: () => void } = $props();
+  }: { card: number; date: string; onstart: () => void; onresult: (r: StopResult) => void; onnext: () => void } = $props();
 
   const info = game('stop');
   const p = stopParams();
@@ -29,6 +31,7 @@
   let started = 0;
   let frame = 0;
   let pause: ReturnType<typeof setTimeout> | undefined;
+  let nextReady = $state(false); // Next waits a moment, so the press that stopped go 3 cannot also hit it
 
   const goNow = $derived(stop.goes[Math.min(go, stop.goes.length - 1)]);
 
@@ -48,15 +51,21 @@
 
   function press(e?: Event) {
     e?.preventDefault();
-    if (phase === 'ready') return begin();
+    if (phase === 'ready') {
+      onstart();
+      return begin();
+    }
     if (phase !== 'running') return;
     cancelAnimationFrame(frame);
-    const m = markerAt(performance.now() - started, goNow);
+    // judge the press at the moment the finger landed, not when the handler ran (review 27)
+    const at = e && e.timeStamp > started ? e.timeStamp : performance.now();
+    const m = markerAt(at - started, goNow);
     pos = m.pos;
     offs = [...offs, signedOff(m.pos, m.dir, goNow.notch)];
     if (offs.length >= stop.goes.length) {
       phase = 'done';
       onresult(stopResult(offs));
+      pause = setTimeout(() => (nextReady = true), tokenMs('--dur-step'));
     } else {
       phase = 'between';
       pause = setTimeout(() => {
@@ -86,7 +95,7 @@
     </div>
     <p class="how">{info.how}</p>
 
-    <div class="lane" style:--n={goNow.notch} style:--p={pos} aria-hidden="true">
+    <div class="lane" style:--n={goNow.notch} style:--w={stop.notchWidth} style:--p={pos} aria-hidden="true">
       <div class="tape"></div>
       <div class="runner" class:back={dir === -1}></div>
     </div>
@@ -105,7 +114,7 @@
       </button>
     {:else if result}
       <p class="raw">{result.mean.toFixed(p.resultDecimals)}% off the notch, on average</p>
-      <button class="pill next" onclick={onnext}>Next</button>
+      <button class="pill" disabled={!nextReady} onclick={onnext}>Next</button>
     {/if}
   </div>
 </section>
@@ -186,18 +195,20 @@
     background: var(--white);
   }
   .lane::before {
-    top: 27%;
+    top: var(--lane-line-1);
   }
   .lane::after {
-    top: 70%;
+    top: var(--lane-line-2);
   }
   .tape {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: var(--tape-w);
-    left: calc((100% - var(--runner)) * var(--n) + (var(--runner) - var(--tape-w)) / 2);
-    background: repeating-linear-gradient(0deg, var(--white) 0 var(--tape-stripe), var(--stop) var(--tape-stripe) calc(2 * var(--tape-stripe)));
+    /* narrower through the week: a share of the track (config), never below the token */
+    width: max(var(--tape-w-min), calc((100% - var(--runner)) * var(--w)));
+    left: calc((100% - var(--runner)) * var(--n) + var(--runner) / 2);
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(var(--angle-tape), var(--white) 0 var(--tape-stripe), var(--stop) var(--tape-stripe) calc(2 * var(--tape-stripe)));
     border-left: var(--line) solid var(--ink);
     border-right: var(--line) solid var(--ink);
   }
@@ -235,8 +246,6 @@
     color: var(--ink);
   }
   .foot {
-    margin-top: auto;
-    padding: var(--space-6) var(--space-5) var(--space-8);
     text-align: center;
   }
   .pill.wait {

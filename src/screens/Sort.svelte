@@ -3,38 +3,41 @@
   // largest, then Done. Raw result: pairs out of order, in plain ink.
   import EventCard from '../components/EventCard.svelte';
   import EventHeader from '../components/EventHeader.svelte';
+  import { sortParams } from '../lib/config';
   import { blobPath, generateSort, sortResult, type SortResult } from '../lib/events/sort';
 
-  let { card, date, onresult, onnext }: { card: number; date: string; onresult: (r: SortResult) => void; onnext: () => void } = $props();
+  let { card, date, onstart, onresult, onnext }: { card: number; date: string; onstart: () => void; onresult: (r: SortResult) => void; onnext: () => void } = $props();
 
+  const p = sortParams();
   const c = $derived(generateSort(card));
   const paths = $derived(c.blobs.map((b) => blobPath(b)));
 
   type Phase = 'ready' | 'play' | 'done';
   let phase: Phase = $state('ready');
   let order: number[] = $state([]);
-  let drag: { id: number; startX: number; startIdx: number; dx: number } | null = $state(null);
+  let drag: { id: number; pointer: number; startX: number; startIdx: number; dx: number } | null = $state(null);
   let row: HTMLDivElement | undefined = $state();
   let started = 0;
   let result: SortResult | null = $state(null);
 
   function ready() {
+    onstart();
     order = c.start.slice();
     phase = 'play';
     started = performance.now();
   }
 
   function down(id: number, e: PointerEvent) {
-    if (phase !== 'play') return;
+    if (phase !== 'play' || drag) return; // one finger at a time (review 33)
     e.preventDefault();
-    drag = { id, startX: e.clientX, startIdx: order.indexOf(id), dx: 0 };
+    drag = { id, pointer: e.pointerId, startX: e.clientX, startIdx: order.indexOf(id), dx: 0 };
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', up);
   }
 
   function move(e: PointerEvent) {
-    if (!drag || !row) return;
+    if (!drag || !row || e.pointerId !== drag.pointer) return;
     const cellW = row.clientWidth / order.length;
     const moved = e.clientX - drag.startX;
     const target = Math.max(0, Math.min(order.length - 1, drag.startIdx + Math.round(moved / cellW)));
@@ -47,11 +50,24 @@
     drag.dx = moved - (order.indexOf(drag.id) - drag.startIdx) * cellW;
   }
 
-  function up() {
+  function up(e?: PointerEvent) {
+    if (e && drag && e.pointerId !== drag.pointer) return;
     drag = null;
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', up);
     window.removeEventListener('pointercancel', up);
+  }
+
+  /** Keyboard: the arrow keys move the focused blob one place (review 29). */
+  function key(id: number, e: KeyboardEvent) {
+    if (phase !== 'play') return;
+    const at = order.indexOf(id);
+    const to = e.key === 'ArrowLeft' ? at - 1 : e.key === 'ArrowRight' ? at + 1 : at;
+    if (to === at || to < 0 || to >= order.length) return;
+    e.preventDefault();
+    const next = order.filter((x) => x !== id);
+    next.splice(to, 0, id);
+    order = next;
   }
 
   function done() {
@@ -66,8 +82,8 @@
 <section class="screen">
   <EventHeader {card} {date} current="sort" />
 
-  <EventCard id="sort" status="5 blobs">
-    <div class="row" bind:this={row}>
+  <EventCard id="sort" status={p.label}>
+    <div class="row" bind:this={row} style:--n={p.blobs}>
       {#if phase === 'ready'}
         {#each c.start as id (id)}<div class="cell empty"></div>{/each}
       {:else}
@@ -77,9 +93,10 @@
             class:dragging={drag?.id === id}
             style:transform={drag?.id === id ? `translateX(${drag.dx}px)` : undefined}
             onpointerdown={(e) => down(id, e)}
+            onkeydown={(e) => key(id, e)}
             role="button"
-            tabindex="-1"
-            aria-label="blob"
+            tabindex="0"
+            aria-label={`blob ${String.fromCharCode(65 + c.start.indexOf(id))}, place ${order.indexOf(id) + 1} of ${order.length}; arrow keys move it`}
           >
             <svg viewBox="0 0 100 100" aria-hidden="true"><path d={paths[id]} /></svg>
           </div>
@@ -105,7 +122,7 @@
   .row {
     margin-top: var(--space-6);
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, var(--blob-cell)));
+    grid-template-columns: repeat(var(--n), minmax(0, var(--blob-cell)));
     gap: var(--space-1);
     justify-content: center;
     touch-action: none;

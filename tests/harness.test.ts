@@ -28,6 +28,27 @@ describe('same card for a date', () => {
     for (const n of cards) expect(canonical(generateStop(n))).toBe(canonical(generateStop(n)));
   });
 
+  it('the card changes exactly at local midnight, on summer-time change days too (review 60)', () => {
+    const before = process.env.TZ;
+    try {
+      process.env.TZ = 'Europe/London';
+      const card = (y: number, mo: number, d: number, h: number, mi: number, s: number) => cardNumber(localDay(new Date(y, mo - 1, d, h, mi, s)));
+      for (const [y, mo, d] of [
+        [2027, 3, 27], // the night the clocks go forward
+        [2027, 3, 28],
+        [2027, 10, 30], // and back
+        [2027, 10, 31],
+        [2026, 12, 31],
+      ]) {
+        const a = card(y, mo, d, 23, 59, 59)!;
+        expect(card(y, mo, d, 0, 0, 1)).toBe(a);
+        expect(card(y, mo, d + 1, 0, 0, 1)).toBe(a + 1);
+      }
+    } finally {
+      process.env.TZ = before;
+    }
+  });
+
   it('the card follows the local date, whatever the time zone', () => {
     const before = process.env.TZ;
     const instant = new Date(Date.UTC(launch.y, launch.m - 1, launch.d + 10, 11, 30)); // 11:30 UTC
@@ -55,6 +76,26 @@ describe('no repeat', () => {
       expect(seen.get(key), `card ${n} repeats card ${seen.get(key)}`).toBeUndefined();
       seen.set(key, n);
     }
+  });
+
+  it('a record kept under another launch date is not this card (review 6)', () => {
+    const kv = new MemoryKV();
+    const old = new AttemptStore(kv, true, 3660, '2026-01-01');
+    old.record(3, 'stop', { mean: 1 });
+    old.finish(3);
+    expect(new AttemptStore(kv).load(3).finished).toBe(false);
+  });
+
+  it('a failed write is kept for the session and the store says it is not saving (review 34)', () => {
+    const kv = new MemoryKV();
+    kv.setItem = () => {
+      throw new Error('full');
+    };
+    const s = new AttemptStore(kv);
+    expect(s.record(4, 'stop', { mean: 2 })).toBe(true);
+    expect(s.persistent).toBe(false);
+    expect(s.played(4, 'stop')).toBe(true);
+    expect(s.record(4, 'stop', { mean: 0 })).toBe(false);
   });
 
   it('difficulty spreads over at least three values and steps up Monday to Sunday', () => {
@@ -169,7 +210,7 @@ describe('one attempt a day', () => {
 
   it('an unreadable record counts as played, never as a fresh attempt', () => {
     const kv = new MemoryKV();
-    kv.setItem('fieldcard:card:3', '{not json');
+    kv.setItem(`fieldcard:${config.launch}:card:3`, '{not json');
     const s = new AttemptStore(kv);
     expect(s.played(3, 'stop')).toBe(true);
     expect(s.record(3, 'stop', {})).toBe(false);

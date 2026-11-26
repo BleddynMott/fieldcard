@@ -81,5 +81,13 @@ d=$(fresh); mkdir -p "$d/src"; printf 'button { font: inherit; }\n' > "$d/src/re
 expect pass "a CSS-wide keyword (font: inherit) names no typeface" "$d"
 plant "a keyword followed by a typeface"  "src/a.css"        ".x { font-family: inherit, Arial; }"
 
+# G-02 review 19: raw sizes and durations in styles
+plant "a raw px size in a Svelte style block" "src/A.svelte" $'<div class="x"></div>\n<style>\n  .x { width: 56px; }\n</style>'
+plant "a raw duration in a stylesheet"       "src/a.css"    ".x { transition: opacity 200ms; }"
+plant "a raw rem margin"                     "src/a.css"    ".x { margin: 1.5rem 0; }"
+plant "a raw deg rotation"                   "src/a.css"    ".x { transform: rotate(-2deg); }"
+d=$(fresh); mkdir -p "$d/src"; printf '<svg viewBox="0 0 100 100"><circle r="6" cx="50" cy="50"/></svg>\n<p style="width: 12px">x</p>\n<style>\n  .x { width: var(--chip); margin: 0 var(--space-2); left: 50%%; height: 100dvh; z-index: 1; }\n</style>\n' > "$d/src/B.svelte"
+expect pass "tokens, percentages, unitless numbers and markup outside <style> pass" "$d"
+
 printf '\n  passed: %d   failed: %d\n' "$pass" "$fail"
 [ "$fail" -eq 0 ]

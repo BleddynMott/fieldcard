@@ -6,6 +6,7 @@
 // through the middle of the track, where the notches are.
 import { dayOfCard, weekdayStep } from '../card';
 import { config, stopParams, type StopParams } from '../config';
+import { powInt } from '../dmath';
 import { between, stream } from '../rng';
 
 export interface StopGo {
@@ -16,6 +17,7 @@ export interface StopGo {
 
 export interface StopCard {
   step: number;
+  notchWidth: number; // share of the track; narrower through the week
   goes: StopGo[];
 }
 
@@ -32,20 +34,19 @@ export function generateStop(card: number, p: StopParams = stopParams()): StopCa
   const goes: StopGo[] = [];
   for (let i = 0; i < p.goes; i++) {
     let notch = between(rng, p.notchFrom, p.notchTo);
-    // each go its own notch: keep it clear of the one before
-    for (let tries = 0; i > 0 && Math.abs(notch - goes[i - 1].notch) < p.notchApartMin && tries < 20; tries++) {
-      notch = between(rng, p.notchFrom, p.notchTo);
-    }
-    const sweepMs = Math.round(base * p.goSpeedUp ** i * between(rng, 1 - p.sweepMsJitter, 1 + p.sweepMsJitter));
+    // each go its own notch: keep it clear of the one before (always possible: the range is wider
+    // than twice the gap, so this ends)
+    while (i > 0 && Math.abs(notch - goes[i - 1].notch) < p.notchApartMin) notch = between(rng, p.notchFrom, p.notchTo);
+    const sweepMs = Math.round(base * powInt(p.goSpeedUp, i) * between(rng, 1 - p.sweepMsJitter, 1 + p.sweepMsJitter));
     const ease = round(between(rng, p.easeFrom, p.easeTo), 3);
     goes.push({ notch: round(notch, 4), sweepMs, ease });
   }
-  return { step, goes };
+  return { step, notchWidth: round(p.notchWidthMonday + p.notchWidthStepPerDay * step, 4), goes };
 }
 
 /** How long crossing number k (0 = the first) takes: each turn is faster, down to the floor. */
 export function crossingMs(go: StopGo, k: number, p: StopParams = stopParams()): number {
-  return Math.max(p.sweepMsFloor, go.sweepMs * p.turnSpeedUp ** k);
+  return Math.max(p.sweepMsFloor, go.sweepMs * powInt(p.turnSpeedUp, k));
 }
 
 /** Where the marker is at time t (ms since the go started). It starts at 0 and sweeps there and

@@ -4,10 +4,11 @@
   import EventCard from '../components/EventCard.svelte';
   import EventHeader from '../components/EventHeader.svelte';
   import PairShape from '../components/PairShape.svelte';
-  import { pairParams } from '../lib/config';
+  import { config, pairParams } from '../lib/config';
+  import { tokenMs } from '../lib/tokens';
   import { generatePair, pairResult, type PairResult } from '../lib/events/pair';
 
-  let { card, date, onresult, onnext }: { card: number; date: string; onresult: (r: PairResult) => void; onnext: () => void } = $props();
+  let { card, date, onstart, onresult, onnext }: { card: number; date: string; onstart: () => void; onresult: (r: PairResult) => void; onnext: () => void } = $props();
 
   const p = pairParams();
   const c = $derived(generatePair(card));
@@ -24,6 +25,7 @@
   let result: PairResult | null = $state(null);
 
   function ready() {
+    onstart();
     phase = 'play';
     started = performance.now();
     const tick = () => {
@@ -33,8 +35,8 @@
     tick();
   }
 
-  function tap(i: number, e: PointerEvent) {
-    e.preventDefault();
+  function tap(i: number, e?: Event) {
+    e?.preventDefault();
     if (phase !== 'play') return;
     if (picked === -1) return void (picked = i);
     if (picked === i) return void (picked = -1);
@@ -51,7 +53,7 @@
     picked = -1;
     flash = true;
     clearTimeout(flashTimer);
-    flashTimer = setTimeout(() => (flash = false), p.wrongPenaltyMs / 3);
+    flashTimer = setTimeout(() => (flash = false), tokenMs('--dur-note'));
   }
 
   $effect(() => () => {
@@ -61,27 +63,34 @@
 
   const clock = $derived(((now + wrong * p.wrongPenaltyMs) / 1000).toFixed(1));
   const isPair = (i: number) => phase === 'done' && (i === c.pair[0] || i === c.pair[1]);
+  const label = (i: number) => {
+    const s = c.shapes[i];
+    return `${config.kitNames[s.kit]} ${p.formNames[s.form]}, ${p.styleNames[s.style]}`;
+  };
+  const penalty = `+${p.wrongPenaltyMs / 1000} s`;
 </script>
 
 <section class="screen">
   <EventHeader {card} {date} current="pair" />
 
-  <EventCard id="pair" status={phase === 'ready' ? '12 shapes' : `${clock} s`}>
+  <EventCard id="pair" status={phase === 'ready' ? p.label : `${clock} s`}>
     <div class="grid" style:--cols={p.columns}>
       {#each c.shapes as s, i (i)}
         <button
           class="tile"
           class:picked={picked === i}
           class:found={isPair(i)}
-          aria-label={`shape ${i + 1}`}
+          aria-label={phase === 'ready' ? `shape ${i + 1}` : label(i)}
+          aria-pressed={picked === i}
           disabled={phase !== 'play'}
           onpointerdown={(e) => tap(i, e)}
+          onclick={(e) => e.detail === 0 && tap(i)}
         >
           {#if phase !== 'ready'}<PairShape shape={s} />{/if}
         </button>
       {/each}
     </div>
-    <p class="penalty" class:show={flash}>Not a pair · +3 s</p>
+    <p class="penalty" class:show={flash} role="status">Not a pair · {penalty}</p>
   </EventCard>
 
   <div class="foot">

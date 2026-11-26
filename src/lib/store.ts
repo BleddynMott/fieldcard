@@ -1,6 +1,9 @@
 // One attempt a day, held on the device (G-02 R6). A step's result is written once and never
 // replaced, so a reload resumes at the next unplayed step and a played step cannot be replayed.
+// Records are keyed by the launch date as well as the card number, so moving the launch date (R8)
+// starts afresh (review 6). A failed write is kept in memory for the session (review 34).
 // G-03 adds the server's hold.
+import { config } from './config';
 
 export interface KeyValue {
   getItem(key: string): string | null;
@@ -12,19 +15,43 @@ export interface Attempt {
   card: number;
   steps: Record<string, unknown>;
   finished: boolean;
+  unreadable?: boolean; // the stored record could not be read; treated as played
 }
 
-const PREFIX = 'fieldcard:card:';
-
 export class AttemptStore {
+  private readonly prefix: string;
+  private readonly overlay = new Map<string, string>();
+  /** False once a write has failed, or when the device would not store anything. */
+  persistent: boolean;
+
   constructor(
     private readonly kv: KeyValue,
-    private readonly lookBack = 366,
-  ) {}
+    persistent = true,
+    private readonly lookBack = config.store.lookBackCards,
+    launch = config.launch,
+  ) {
+    this.prefix = `fieldcard:${launch}:card:`;
+    this.persistent = persistent;
+  }
+
+  private get(card: number): string | null {
+    return this.overlay.get(this.prefix + card) ?? this.kv.getItem(this.prefix + card);
+  }
+
+  private put(card: number, a: Attempt): void {
+    const text = JSON.stringify(a);
+    try {
+      this.kv.setItem(this.prefix + card, text);
+      this.overlay.delete(this.prefix + card);
+    } catch {
+      this.overlay.set(this.prefix + card, text);
+      this.persistent = false;
+    }
+  }
 
   load(card: number): Attempt {
-    const text = this.kv.getItem(PREFIX + card);
-    if (text) {
+    const text = this.get(card);
+    if (text !== null) {
       try {
         const a = JSON.parse(text) as Attempt;
         if (a && a.card === card && a.steps && typeof a.steps === 'object') return a;
@@ -32,7 +59,7 @@ export class AttemptStore {
         /* falls through */
       }
       // unreadable or not this card's record: treated as played, never as a fresh attempt
-      return { card, steps: {}, finished: true };
+      return { card, steps: {}, finished: true, unreadable: true };
     }
     return { card, steps: {}, finished: false };
   }
@@ -42,7 +69,7 @@ export class AttemptStore {
     const a = this.load(card);
     if (a.finished || step in a.steps) return false;
     a.steps[step] = result;
-    this.kv.setItem(PREFIX + card, JSON.stringify(a));
+    this.put(card, a);
     return true;
   }
 
@@ -51,7 +78,7 @@ export class AttemptStore {
     const a = this.load(card);
     if (a.finished) return false;
     a.finished = true;
-    this.kv.setItem(PREFIX + card, JSON.stringify(a));
+    this.put(card, a);
     return true;
   }
 
@@ -62,22 +89,25 @@ export class AttemptStore {
 
   /** True once any card before this one has been played on this device. */
   playedBefore(card: number): boolean {
-    for (let n = card - 1; n >= Math.max(1, card - this.lookBack); n--) {
-      if (this.kv.getItem(PREFIX + n) !== null) return true;
-    }
+    for (let n = card - 1; n >= Math.max(1, card - this.lookBack); n--) if (this.get(n) !== null) return true;
     return false;
   }
 
   /** Card numbers finished on this device, up to `today`, for the streak. */
   finishedCards(today: number): Set<number> {
     const out = new Set<number>();
-    for (let n = today; n >= Math.max(1, today - this.lookBack); n--) if (this.load(n).finished && this.kv.getItem(PREFIX + n) !== null) out.add(n);
+    for (let n = today; n >= Math.max(1, today - this.lookBack); n--) if (this.get(n) !== null && this.load(n).finished) out.add(n);
     return out;
   }
 
   /** Preview builds only (VITE_PREVIEW): lets him play today's card again while it is reviewed. */
   clear(card: number): void {
-    this.kv.removeItem(PREFIX + card);
+    this.overlay.delete(this.prefix + card);
+    try {
+      this.kv.removeItem(this.prefix + card);
+    } catch {
+      /* nothing stored */
+    }
   }
 }
 
@@ -94,7 +124,8 @@ export class MemoryKV implements KeyValue {
   }
 }
 
-/** The device store, or memory when storage is blocked (private browsing). */
+/** The device store, or memory when storage is blocked (private browsing); then `persistent` is
+ *  false and the home screen says the card will not be kept (review 35). */
 export function deviceStore(): AttemptStore {
   try {
     const probe = 'fieldcard:probe';
@@ -102,6 +133,6 @@ export function deviceStore(): AttemptStore {
     localStorage.removeItem(probe);
     return new AttemptStore(localStorage);
   } catch {
-    return new AttemptStore(new MemoryKV());
+    return new AttemptStore(new MemoryKV(), false);
   }
 }

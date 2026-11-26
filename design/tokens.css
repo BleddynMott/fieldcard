@@ -127,10 +127,15 @@
   --mark-stroke: 2.6;        /* mark stroke, in the mark's 24-unit drawing */
   --lane-h: 150px;           /* Stop's track */
   --runner: 36px;            /* Stop's marker */
-  --tape-w: 16px;            /* Stop's notch */
+  --tape-w-min: 6px;         /* Stop's notch at its narrowest; its width is a share of the track (config) */
+  --lane-line-1: 27%;        /* Stop's two white lane lines */
+  --lane-line-2: 70%;
   --tape-stripe: 12px;
   --shadow-trail: -14px 0 0 -6px var(--white-90), -26px 0 0 -10px var(--white-60); /* the marker's trail */
   --tilt: -1.5deg;           /* the sign board */
+  --angle-stripes: 90deg;    /* mown lawn stripes run across */
+  --angle-tape: 0deg;        /* Stop's notch stripes */
+  --angle-sand: 135deg;      /* the sand's grain */
   --bar-h: 56px;             /* the band at the top of a read */
   --step-w: 22px;            /* a step mark in the band */
   --door-h: 230px;           /* Spot it's doors */
@@ -153,5 +158,7 @@
   --dur-tap: 120ms;
   --dur-reveal: 600ms;       /* doors open, sand pours, beads drop */
   --dur-step: 400ms;         /* between reveal items */
+  --dur-note: 1000ms;        /* how long a short note shows ("Not a pair") */
+  --stagger: 30ms;           /* between one figure or bead and the next in a reveal */
   --ease-drop: cubic-bezier(.2, .9, .3, 1.2);
 }

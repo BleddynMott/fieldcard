@@ -2,7 +2,6 @@
   "_about": "Every number in Fieldcard lives here (G-02 R2). Colours, sizes and look durations live in design/tokens.css. Game timings that set difficulty live here (G-02 R10). Labels and fact wording for each event sit beside its numbers.",
   "launch": "2026-11-26",
   "seedName": "fieldcard",
-  "weekdaySteps": 7,
   "games": [
     {
       "id": "stop",
@@ -24,6 +23,8 @@
         "easeFrom": 0.3,
         "easeTo": 0.7,
         "pauseBetweenGoesMs": 900,
+        "notchWidthMonday": 0.07,
+        "notchWidthStepPerDay": -0.007,
         "resultDecimals": 1
       }
     },
@@ -45,9 +46,9 @@
         "targetMax": 30,
         "lanes": 4,
         "guessMax": 60,
-        "colourIntroMs": 1200,
         "holdRepeatMs": 110,
-        "holdDelayMs": 380
+        "holdDelayMs": 380,
+        "laneSpeedJitter": 0.1
       }
     },
     {
@@ -80,7 +81,19 @@
         "nearShareMonday": 0.2,
         "nearShareStepPerDay": 0.1,
         "wrongPenaltyMs": 3000,
-        "columns": 4
+        "columns": 4,
+        "label": "12 shapes",
+        "formNames": [
+          "circle",
+          "square",
+          "triangle",
+          "diamond"
+        ],
+        "styleNames": [
+          "solid",
+          "outline",
+          "with a hole"
+        ]
       }
     },
     {
@@ -98,7 +111,8 @@
         "wobbleTo": 0.13,
         "lobesFrom": 3,
         "lobesTo": 6,
-        "areaLargest": 0.55
+        "areaLargest": 0.55,
+        "label": "5 blobs"
       }
     }
   ],
@@ -336,25 +350,26 @@
     "bucket": 100,
     "pourPerSecond": 45,
     "matchTick": 70,
-    "pointsPerOverlap": 0.8
+    "pointsPerOverlap": 0.8,
+    "scaleFloor": 40,
+    "keyStep": 10
   },
   "scoring": {
     "spotPoints": 10,
     "readPoints": 80,
-    "hotSeatPoints": 10,
     "flagShortMultiplier": 2,
     "beadsPer": 5
   },
   "crowd": {
     "_about": "The simulated crowd, used until 200 real finishers (spec). Every reveal says so.",
     "size": 400,
-    "realFinishersNeeded": 200,
     "skillShare": 0.6,
     "stop": {
       "sdBase": 4.5,
       "skillEffect": 0.35,
       "refSweepMs": 900,
-      "biasSd": 2.5
+      "biasSd": 2.5,
+      "offClamp": 100
     },
     "count": {
       "biasMean": -0.06,
@@ -367,15 +382,16 @@
       "skillEffect": 1.4,
       "stepPenalty": 0.12,
       "noise": 0.8,
-      "msPerItem": 650,
-      "timeNoise": 0.2
+      "timeNoise": 0.2,
+      "msPerTap": 650
     },
     "pair": {
       "medianMs": 5200,
       "nearEffect": 1.2,
       "skillEffect": 0.3,
       "noise": 0.35,
-      "wrongChance": 0.25
+      "wrongChance": 0.25,
+      "wrongCap": 5
     },
     "sort": {
       "perceptionSd": 0.06,
@@ -385,7 +401,9 @@
     },
     "spot": {
       "rightBase": 0.45,
-      "skillEffect": 0.12
+      "skillEffect": 0.12,
+      "rightMin": 0.05,
+      "rightMax": 0.95
     },
     "read": {
       "weightBase": 0.5,
@@ -405,5 +423,17 @@
     "clay",
     "teal",
     "plum"
-  ]
+  ],
+  "abandoned": {
+    "_about": "An event left after Ready counts as played with these results (G-02 R11).",
+    "ms": 99000,
+    "stopOff": 100
+  },
+  "claim": {
+    "bins": 10,
+    "startFlag": 50
+  },
+  "store": {
+    "lookBackCards": 3660
+  }
 }

@@ -3,10 +3,10 @@
   // bucket of sand: hold a finger over a box to pour; the bucket must be empty before Show me. Score:
   // overlap with the crowd's real spread x 0.8; ✓ at 70 or more.
   import Bar from '../components/Bar.svelte';
-  import { dayOfCard, weekday } from '../lib/card';
+  import { dayOfCard, weekday, WEEKDAYS } from '../lib/card';
   import { config, game } from '../lib/config';
   import type { Crowd } from '../lib/crowd';
-  import { boxSpec, overlap, wholeShares } from '../lib/reads';
+  import { boxSpec, matched, overlap, wholeShares } from '../lib/reads';
   import type { EventResults } from '../lib/results';
   import { readPoints } from '../lib/score';
   import { readOfDay, week } from '../lib/week';
@@ -17,10 +17,11 @@
   const ev = $derived(crowd.readEvent);
   const spec = $derived(boxSpec(ev));
   const today = $derived(weekday(dayOfCard(crowd.card)));
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const strip = $derived([1, 2, 3, 4, 5, 6, 0].map((d) => ({ d, form: d === today ? week.readShort[readOfDay(crowd.card).played] : week.readShort[week.read[d].form] })));
 
-  let sand = $state([0, 0, 0, 0, 0]);
+  const empty0 = () => boxSpec(crowd.readEvent).labels.map(() => 0);
+  let sand = $state(empty0());
+  let pointer = -1;
   let box = $state(-1); // the box being poured into
   let shown = $state(false);
   let host: HTMLDivElement | undefined = $state();
@@ -28,17 +29,19 @@
   let last = 0;
   const left = $derived(Math.max(0, P.bucket - sand.reduce((a, b) => a + b, 0)));
   const empty = $derived(left < 0.5);
-  const scale = $derived(Math.max(40, ...sand, ...(shown ? crowd.boxShares : [])));
+  const scale = $derived(Math.max(P.scaleFloor, ...sand, ...(shown ? crowd.boxShares : [])));
   const ov = $derived(overlap(sand, crowd.boxShares));
   const crowdPct = $derived(wholeShares(crowd.boxShares));
-  const order = $derived([0, 1, 2, 3, 4].sort((a, b) => crowd.boxShares[b] - crowd.boxShares[a]));
+  const order = $derived(crowd.boxShares.map((_, i) => i).sort((a, b) => crowd.boxShares[b] - crowd.boxShares[a]));
 
   const context = $derived.by(() => {
     switch (ev) {
       case 'count':
         return `The answer was ${results.count.actual}; you said ${results.count.guess}.`;
       case 'stop':
-        return `You were ${Math.abs(results.stop.signedMean).toFixed(1)}% ${results.stop.signedMean < 0 ? 'early' : 'late'} on average.`;
+        return results.stop.signedMean === 0
+          ? 'You were on the notch on average.'
+          : `You were ${Math.abs(results.stop.signedMean).toFixed(1)}% ${results.stop.signedMean < 0 ? 'early' : 'late'} on average.`;
       case 'repeat':
         return `You repeated ${results.repeat.longest}.`;
       case 'pair':
@@ -52,7 +55,8 @@
   function boxAt(x: number): number {
     if (!host) return -1;
     const r = host.getBoundingClientRect();
-    return Math.max(0, Math.min(4, Math.floor(((x - r.left) / r.width) * 5)));
+    const n = sand.length;
+    return Math.max(0, Math.min(n - 1, Math.floor(((x - r.left) / r.width) * n)));
   }
 
   function tick(t: number) {
@@ -66,8 +70,9 @@
   }
 
   function down(e: PointerEvent) {
-    if (shown) return;
+    if (shown || pointer !== -1) return; // one finger, one loop (review 32, 33)
     e.preventDefault();
+    pointer = e.pointerId;
     box = boxAt(e.clientX);
     last = 0;
     frame = requestAnimationFrame(tick);
@@ -75,13 +80,23 @@
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', up);
   }
-  const move = (e: PointerEvent) => (box = boxAt(e.clientX));
-  function up() {
+  const move = (e: PointerEvent) => {
+    if (e.pointerId === pointer) box = boxAt(e.clientX);
+  };
+  function up(e?: PointerEvent) {
+    if (e && e.pointerId !== pointer) return;
+    pointer = -1;
     box = -1;
     cancelAnimationFrame(frame);
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', up);
     window.removeEventListener('pointercancel', up);
+  }
+
+  /** Keyboard and switch access: each press pours a fixed amount into the box (review 29). */
+  function pourKey(i: number) {
+    if (shown) return;
+    sand[i] = sand[i] + Math.min(left, P.keyStep);
   }
 
   function show() {
@@ -97,9 +112,9 @@
 <section class="screen">
   <Bar title="READ OF THE DAY" step={1} />
   <div class="week" aria-label="the read of the day, by weekday">
-    {#each strip as s (s.d)}<span class:on={s.d === today}>{days[s.d]}<small>{s.form}</small></span>{/each}
+    {#each strip as s (s.d)}<span class:on={s.d === today}>{WEEKDAYS[s.d]}<small>{s.form}</small></span>{/each}
   </div>
-  <p class="idea">Pour the sand · {game(ev).name}</p>
+  <p class="idea">{week.readNames.pour} · {game(ev).name}</p>
   {#if !shown}
     <h1 class="ask">{spec.ask}</h1>
     <p class="sub">{context} Hold over a box to pour: more sand, more people. One bucket.</p>
@@ -111,8 +126,11 @@
     <div class="sandbox" bind:this={host} onpointerdown={down} role="application" aria-label="five boxes to pour sand into">
       {#each spec.labels as label, i (i)}
         <div class="slot" class:pouring={box === i}>
+          {#if !shown}
+            <button class="slot-key" aria-label={`pour into ${label}`} onclick={(e) => e.detail === 0 && pourKey(i)}></button>
+          {/if}
           {#if shown}
-            {#if crowd.boxShares[i] >= 0.5}<div class="pile crowd" style:height={`${(crowd.boxShares[i] / scale) * 100}%`}></div>{/if}
+            {#if crowd.boxShares[i] >= 0.5}<div class="pile crowd grow" style:--k={i * 4} style:height={`${(crowd.boxShares[i] / scale) * 100}%`}></div>{/if}
             {#if sand[i] >= 0.5}<div class="pile mine-line" style:height={`${(sand[i] / scale) * 100}%`}></div>{/if}
           {:else}
             {#if sand[i] >= 0.5}<div class="pile mine" style:height={`${(sand[i] / scale) * 100}%`}></div>{/if}
@@ -142,11 +160,11 @@
 
   <div class="foot">
     {#if !shown}
-      <button class="pill quiet" onclick={() => (sand = [0, 0, 0, 0, 0])} disabled={left >= P.bucket}>Tip it back</button>
+      <button class="pill quiet" onclick={() => (sand = empty0())} disabled={left >= P.bucket}>Tip it back</button>
       <button class="pill" disabled={!empty} onclick={show}>Show me</button>
     {:else}
-      <div class="result" class:bad={ov < P.matchTick}>
-        <span>{ov >= P.matchTick ? '✓' : '✗'}</span>
+      <div class="result" class:bad={!matched(ov)}>
+        <span>{matched(ov) ? '✓' : '✗'}</span>
         <span>Your sand matched {Math.round(ov)}%</span>
         <span class="pts">+{readPoints(ov)}</span>
       </div>
@@ -203,6 +221,16 @@
   .slot.pouring {
     background: var(--tap-ring);
   }
+  .slot-key {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .slot-key:focus-visible {
+    opacity: 1;
+    outline: var(--line) solid var(--you);
+  }
   .pile {
     position: absolute;
     left: var(--space-1);
@@ -212,7 +240,7 @@
     border-radius: var(--r-pile);
   }
   .pile.mine {
-    background: repeating-linear-gradient(135deg, var(--sand) 0 var(--space-1), var(--sand-2) var(--space-1) var(--space-2));
+    background: repeating-linear-gradient(var(--angle-sand), var(--sand) 0 var(--space-1), var(--sand-2) var(--space-1) var(--space-2));
     border: var(--line-thin) solid var(--ink);
   }
   .pile.crowd {
@@ -252,7 +280,7 @@
   .meter .m i {
     display: block;
     height: 100%;
-    background: repeating-linear-gradient(135deg, var(--sand) 0 var(--space-1), var(--sand-2) var(--space-1) var(--space-2));
+    background: repeating-linear-gradient(var(--angle-sand), var(--sand) 0 var(--space-1), var(--sand-2) var(--space-1) var(--space-2));
   }
   .key {
     display: flex;

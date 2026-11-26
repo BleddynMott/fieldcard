@@ -3,7 +3,7 @@
 // one-attempt store.
 import { describe, expect, it } from 'vitest';
 import { config, countParams, pairParams, repeatParams, sortParams } from '../src/lib/config';
-import { crowdFor } from '../src/lib/crowd';
+import { crowdFor, simulateCrowd } from '../src/lib/crowd';
 import { countResult, generateCount } from '../src/lib/events/count';
 import { generatePair, identicalPairs, pairResult } from '../src/lib/events/pair';
 import { generateRepeat } from '../src/lib/events/repeat';
@@ -26,10 +26,11 @@ describe('same card for a date, every event', () => {
   it('each generator gives the same card twice', () => {
     for (const n of cards) for (const g of Object.values(gens)) expect(canonical(g(n))).toBe(canonical(g(n)));
   });
-  it('the crowd is the same for a date', () => {
+  it('the crowd is the same for a date, built afresh each time (review 9)', () => {
     for (const n of [1, 17, 60]) {
-      const a = crowdFor(n);
-      const b = crowdFor(n);
+      const a = simulateCrowd(n);
+      const b = simulateCrowd(n);
+      expect(a).not.toBe(b);
       expect(canonical(a.doorShares)).toBe(canonical(b.doorShares));
       expect(canonical(a.boxShares)).toBe(canonical(b.boxShares));
     }
@@ -41,15 +42,22 @@ describe('no repeat within 365 days, every event and the whole card', () => {
     const seen: Record<string, Map<string, number>> = { count: new Map(), repeat: new Map(), pair: new Map(), sort: new Map(), card: new Map() };
     for (let n = 1; n <= 365; n++) {
       const parts: Record<string, unknown> = {};
-      for (const [id, g] of Object.entries(gens)) {
-        const c = g(n) as { step?: number };
-        const { step: _s, ...content } = c;
+      // what the player sees, not float noise (review 10): Stop's notches to the nearest 1% of the
+      // track, the Repeat sequence, Count's colours in order, Pair's shapes, Sort's order and wobble
+      const seen1 = {
+        count: (() => { const c = generateCount(n); return [c.todayKit, c.figures.map((f) => f.kit)]; })(),
+        repeat: generateRepeat(n).sequence,
+        pair: generatePair(n).shapes,
+        sort: (() => { const c = generateSort(n); return [c.start, c.blobs.map((b) => [b.lobes, Math.round(b.wobble * 100)])]; })(),
+      } as Record<string, unknown>;
+      for (const id of Object.keys(gens)) {
+        const content = seen1[id];
         parts[id] = content;
         const k = canonical(content);
         expect(seen[id].get(k), `${id} on card ${n} repeats card ${seen[id].get(k)}`).toBeUndefined();
         seen[id].set(k, n);
       }
-      const whole = canonical({ ...parts, stop: generateStop(n).goes });
+      const whole = canonical({ ...parts, stop: generateStop(n).goes.map((g) => Math.round(g.notch * 100)) });
       expect(seen.card.get(whole)).toBeUndefined();
       seen.card.set(whole, n);
     }
@@ -65,7 +73,8 @@ describe('parameters in range', () => {
       expect(c.target).toBeLessThanOrEqual(30);
       expect(c.figures.filter((f) => f.kit === c.todayKit)).toHaveLength(c.target);
       for (const f of c.figures) {
-        expect(f.startMs + f.crossMs).toBeLessThanOrEqual(p.showMs * 1.1);
+        expect(f.startMs).toBeGreaterThanOrEqual(0);
+        expect(f.startMs + f.crossMs).toBeLessThanOrEqual(p.showMs);
         expect(f.kit).toBeGreaterThanOrEqual(0);
         expect(f.kit).toBeLessThan(config.kits.length);
       }

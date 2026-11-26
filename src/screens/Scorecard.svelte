@@ -37,7 +37,8 @@
       }
       await navigator.clipboard.writeText(text);
       copied = 'Copied';
-    } catch {
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return; // the share sheet was closed
       copied = 'Select the text below to copy it';
     }
   }

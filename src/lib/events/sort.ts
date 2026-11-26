@@ -2,6 +2,7 @@
 // Raw result: pairs out of order (0 to 10), ties by time. Areas step up by at least 3% each.
 import { dayOfCard, weekdayStep } from '../card';
 import { config, sortParams, type SortParams } from '../config';
+import { powInt } from '../dmath';
 import { between, stream } from '../rng';
 import { shuffle } from '../stats';
 
@@ -32,7 +33,7 @@ export function generateSort(card: number, p: SortParams = sortParams()): SortCa
   for (let i = 0; i < p.blobs; i++) {
     const lobes = Math.floor(between(rng, p.lobesFrom, p.lobesTo + 1));
     blobs.push({
-      area: Math.round((p.areaLargest / (1 + gap) ** (p.blobs - 1 - i)) * 1e5) / 1e5,
+      area: Math.round((p.areaLargest / powInt(1 + gap, p.blobs - 1 - i)) * 1e5) / 1e5,
       wobble: Math.round(between(rng, p.wobbleFrom, p.wobbleTo) * 1000) / 1000,
       lobes: Math.min(lobes, p.lobesTo),
       phase: Math.round(between(rng, 0, Math.PI * 2) * 1000) / 1000,

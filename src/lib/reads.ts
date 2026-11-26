@@ -43,10 +43,17 @@ export function shares<E extends EventId>(e: E, results: EventResults[E][], bin:
   return counts.map((c) => (results.length ? (c / results.length) * 100 : 0));
 }
 
-/** The doors with the biggest share (more than one when tied). */
+/** The doors with the biggest share, judged on the whole percentages the player is shown, so two
+ *  doors showing the same number are both right (spec: "either is right"; review 22). */
 export function topDoors(doorShares: number[]): number[] {
-  const max = Math.max(...doorShares);
-  return doorShares.map((s, i) => (Math.abs(s - max) < 1e-9 ? i : -1)).filter((i) => i >= 0);
+  const shown = wholeShares(doorShares);
+  const max = Math.max(...shown);
+  return shown.map((s, i) => (s === max ? i : -1)).filter((i) => i >= 0);
+}
+
+/** Pour's ✓: the overlap as shown, a whole number, at or above the line (review 21). */
+export function matched(ov: number): boolean {
+  return Math.round(ov) >= config.pour.matchTick;
 }
 
 /** Overlap of two spreads: the sum over the boxes of the smaller share, 0 to 100. */
@@ -56,9 +63,16 @@ export function overlap(a: number[], b: number[]): number {
 
 /** Whole-number shares that sum to exactly 100 (largest remainder), for display. */
 export function wholeShares(s: number[]): number[] {
-  const floors = s.map(Math.floor);
-  let left = 100 - floors.reduce((a, b) => a + b, 0);
-  const order = s.map((x, i) => [x - Math.floor(x), i]).sort((a, b) => b[0] - a[0]);
+  return apportion(s, 100);
+}
+
+/** Whole numbers in proportion to s that sum to exactly `total` (largest remainder). */
+export function apportion(s: number[], total: number): number[] {
+  const sum = s.reduce((a, b) => a + b, 0) || 1;
+  const scaled = s.map((x) => (x / sum) * total);
+  const floors = scaled.map(Math.floor);
+  let left = total - floors.reduce((a, b) => a + b, 0);
+  const order = scaled.map((x, i) => [x - Math.floor(x), i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
   for (const [, i] of order) {
     if (left <= 0) break;
     floors[i] += 1;

@@ -72,14 +72,14 @@ button {
 }
 .foot {
   margin-top: auto;
-  padding: var(--space-6) var(--space-5) var(--space-8);
+  padding: var(--space-6) var(--space-5) calc(var(--space-8) + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
 }
 .bar {
   height: var(--bar-h);
-  background: repeating-linear-gradient(90deg, var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
+  background: repeating-linear-gradient(var(--angle-stripes), var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
   border-bottom: var(--line) solid var(--ink);
   display: flex;
   align-items: center;
@@ -204,4 +204,36 @@ button {
   font-size: var(--size-xl);
   line-height: var(--lh-tight);
   text-align: center;
+}
+
+/* reveals: figures and beads drop in, piles grow (spec, Last 60 seconds: "the crowd pours through",
+   "everyone drops in"); off for people who ask for less motion (review 20, 49) */
+.drop {
+  animation: drop var(--dur-reveal) var(--ease-drop) both;
+  animation-delay: calc(var(--k, 0) * var(--stagger));
+}
+.grow {
+  transform-origin: bottom;
+  animation: grow var(--dur-reveal) var(--ease-drop) both;
+  animation-delay: calc(var(--k, 0) * var(--stagger));
+}
+@keyframes drop {
+  from {
+    transform: translateY(calc(-1 * var(--space-8)));
+    opacity: 0;
+  }
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drop,
+  .grow {
+    animation: none;
+  }
+  .pill {
+    transition: none;
+  }
 }

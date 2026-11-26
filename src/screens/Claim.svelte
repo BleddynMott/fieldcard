@@ -6,6 +6,7 @@
   import Bar from '../components/Bar.svelte';
   import { config } from '../lib/config';
   import type { Crowd } from '../lib/crowd';
+  import { apportion } from '../lib/reads';
   import { flagPoints } from '../lib/score';
   import { signed } from '../lib/share';
 
@@ -13,9 +14,10 @@
 
   const W = 322;
   const MID = 160;
-  const BINS = 10;
+  const BINS = config.claim.bins;
   const bw = W / BINS;
-  let flag = $state(50);
+  let flag = $state(config.claim.startFlag);
+  let pointer = -1;
   let planted = $state(false);
   let svg: SVGSVGElement | undefined = $state();
   const short = $derived(place < flag);
@@ -25,7 +27,7 @@
   function bins(values: number[]): number[] {
     const counts = new Array(BINS).fill(0);
     for (const v of values) counts[Math.min(BINS - 1, Math.floor(v / (100 / BINS)))] += 1;
-    return counts.map((c) => Math.round(((c / values.length) * 100) / per));
+    return apportion(counts, 100 / per); // one bead for every 5 in 100, exactly 20 beads
   }
   const plantBeads = $derived(bins(crowd.players.map((p) => p.flag)));
   const finishBeads = $derived(bins(crowd.players.map((p) => p.place)));
@@ -33,19 +35,22 @@
   const finishedAbove = $derived(Math.round((crowd.players.filter((p) => p.place > 50).length / crowd.players.length) * 100));
 
   function setFrom(e: PointerEvent) {
-    if (!svg) return;
+    if (!svg || (pointer !== -1 && e.pointerId !== pointer)) return;
     const r = svg.getBoundingClientRect();
     flag = Math.max(0, Math.min(100, Math.round(((e.clientX - r.left) / r.width) * 100)));
   }
   function down(e: PointerEvent) {
-    if (planted) return;
+    if (planted || pointer !== -1) return;
     e.preventDefault();
+    pointer = e.pointerId;
     setFrom(e);
     window.addEventListener('pointermove', setFrom);
     window.addEventListener('pointerup', up);
     window.addEventListener('pointercancel', up);
   }
-  function up() {
+  function up(e?: PointerEvent) {
+    if (e && e.pointerId !== pointer) return;
+    pointer = -1;
     window.removeEventListener('pointermove', setFrom);
     window.removeEventListener('pointerup', up);
     window.removeEventListener('pointercancel', up);
@@ -79,10 +84,10 @@
       <text class="end" x={W - 6} y={MID + 4} text-anchor="end">best</text>
       {#if planted}
         {#each plantBeads as n, i (i)}
-          {#each Array(n) as _, k (k)}<circle class="bead plant" cx={i * bw + bw / 2} cy={MID - 24 - k * 13} r="6" />{/each}
+          {#each Array(n) as _, k (k)}<circle class="bead plant drop" style:--k={i + k} cx={i * bw + bw / 2} cy={MID - 24 - k * 13} r="6" />{/each}
         {/each}
         {#each finishBeads as n, i (i)}
-          {#each Array(n) as _, k (k)}<circle class="bead finish" cx={i * bw + bw / 2} cy={MID + 24 + k * 13} r="6" />{/each}
+          {#each Array(n) as _, k (k)}<circle class="bead finish drop" style:--k={i + k} cx={i * bw + bw / 2} cy={MID + 24 + k * 13} r="6" />{/each}
         {/each}
         {#if short}<rect class="gap" x={px} y={MID - 4} width={fx - px} height="8" rx="4" />{/if}
         <circle class="you" cx={px} cy={MID} r="10" />
@@ -110,7 +115,7 @@
 
   {#if planted}
     <span class="simlabel">simulated crowd</span>
-    <div class="fact"><b>{above}% planted above the middle.</b>{finishedAbove}% finished there.</div>
+    <div class="fact"><b>{above}% planted above the middle.</b> {finishedAbove}% finished there.</div>
   {/if}
 
   <div class="foot">

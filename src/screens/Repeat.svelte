@@ -5,8 +5,9 @@
   import EventHeader from '../components/EventHeader.svelte';
   import { repeatParams } from '../lib/config';
   import { generateRepeat, roundLengths, type RepeatResult } from '../lib/events/repeat';
+  import { tokenMs } from '../lib/tokens';
 
-  let { card, date, onresult, onnext }: { card: number; date: string; onresult: (r: RepeatResult) => void; onnext: () => void } = $props();
+  let { card, date, onstart, onresult, onnext }: { card: number; date: string; onstart: () => void; onresult: (r: RepeatResult) => void; onnext: () => void } = $props();
 
   const p = repeatParams();
   const r = $derived(generateRepeat(card));
@@ -46,11 +47,11 @@
     onresult({ longest, timeMs: Math.round(inputMs) });
   }
 
-  function tap(cell: number, e: PointerEvent) {
-    e.preventDefault();
+  function tap(cell: number, e?: Event) {
+    e?.preventDefault();
     if (phase !== 'tap') return;
     pressed = cell;
-    later(() => (pressed = -1), r.flashMs / 2);
+    later(() => (pressed = -1), tokenMs('--dur-tap'));
     if (cell !== r.sequence[tapped]) {
       wrongAt = cell;
       inputMs += performance.now() - tapStart;
@@ -85,6 +86,7 @@
           aria-label={`square ${i + 1}`}
           disabled={phase !== 'tap'}
           onpointerdown={(e) => tap(i, e)}
+          onclick={(e) => e.detail === 0 && tap(i)}
         ></button>
       {/each}
     </div>
@@ -92,7 +94,7 @@
 
   <div class="foot">
     {#if phase === 'ready'}
-      <button class="pill" onclick={play}>Ready</button>
+      <button class="pill" onclick={() => (onstart(), play())}>Ready</button>
     {:else if phase === 'watch'}
       <button class="pill" disabled>Watch</button>
     {:else if phase === 'tap'}

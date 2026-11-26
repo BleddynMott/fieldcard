@@ -7,7 +7,7 @@
   import { config, countParams } from '../lib/config';
   import { countResult, generateCount, type CountResult } from '../lib/events/count';
 
-  let { card, date, onresult, onnext }: { card: number; date: string; onresult: (r: CountResult) => void; onnext: () => void } = $props();
+  let { card, date, onstart, onresult, onnext }: { card: number; date: string; onstart: () => void; onresult: (r: CountResult) => void; onnext: () => void } = $props();
 
   const p = countParams();
   const c = $derived(generateCount(card));
@@ -22,6 +22,7 @@
   let hold: ReturnType<typeof setTimeout> | undefined;
 
   function ready() {
+    onstart();
     phase = 'crossing';
     const end = Math.max(...c.figures.map((f) => f.startMs + f.crossMs));
     timer = setTimeout(() => (phase = 'answer'), end);
@@ -77,9 +78,9 @@
         {/each}
       {:else}
         <div class="stepper">
-          <button class="step" aria-label="one fewer" onpointerdown={() => startHold(-1)} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} disabled={phase === 'done'}>−</button>
+          <button class="step" aria-label="one fewer" onpointerdown={() => startHold(-1)} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} onclick={(e) => e.detail === 0 && nudge(-1)} disabled={phase === 'done'}>−</button>
           <output class="num" aria-live="polite">{guess}</output>
-          <button class="step" aria-label="one more" onpointerdown={() => startHold(1)} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} disabled={phase === 'done'}>+</button>
+          <button class="step" aria-label="one more" onpointerdown={() => startHold(1)} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} onclick={(e) => e.detail === 0 && nudge(1)} disabled={phase === 'done'}>+</button>
         </div>
       {/if}
     </div>
@@ -105,9 +106,10 @@
     height: var(--field-h);
     margin: var(--space-6) 0 0;
     border-radius: var(--r-l);
-    background: repeating-linear-gradient(90deg, var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
+    background: repeating-linear-gradient(var(--angle-stripes), var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
     border: var(--line) solid var(--ink);
     overflow: hidden;
+    container-type: inline-size;
   }
   .today {
     height: 100%;
@@ -129,7 +131,7 @@
     position: absolute;
     width: var(--fig-w);
     height: var(--fig-h);
-    left: calc(-1 * var(--fig-w));
+    left: 0;
     top: calc((100% - var(--fig-h)) * var(--lane) / (var(--lanes) - 1));
     animation-name: cross;
     animation-timing-function: linear;
@@ -137,10 +139,10 @@
   }
   @keyframes cross {
     from {
-      left: calc(-1 * var(--fig-w));
+      transform: translateX(calc(-1 * var(--fig-w)));
     }
     to {
-      left: 100%;
+      transform: translateX(100cqw);
     }
   }
   .stepper {

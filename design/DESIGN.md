@@ -24,6 +24,7 @@
 - You: `--you`, always: your figure, your flag, the step you are on, today in the weekday strip.
 - Everyone else: `--crowd` in a reveal, `--figure` in the photo. Medals: `--gold`, `--silver`, `--bronze`.
 - Event results during the round are plain ink: no colour for good or bad.
+- Kits: `--kit-1` to `--kit-4` (navy, clay, teal, plum) dress Count's figures and Pair's shapes (G-02); never a state, a person or an event.
 - Share text is words and numbers only: "Hands 57 · Hunch 82", "Flag 70, finished 57 · −26".
 
 ## Do

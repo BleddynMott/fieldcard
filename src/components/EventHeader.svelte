@@ -24,7 +24,7 @@
   .lawn {
     height: var(--ev-lawn-h);
     position: relative;
-    background: repeating-linear-gradient(90deg, var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
+    background: repeating-linear-gradient(var(--angle-stripes), var(--lawn) 0 var(--lawn-stripe), var(--lawn-2) var(--lawn-stripe) calc(2 * var(--lawn-stripe)));
     border-bottom: var(--line) solid var(--ink);
   }
   .board {

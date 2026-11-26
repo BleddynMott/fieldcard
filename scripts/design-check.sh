@@ -8,7 +8,11 @@
 #   2. a reference screenshot in design/reference/ is missing, not a PNG, or not 390 px wide;
 #   3. config/games.json (once G-02 adds it) is unreadable, has no games, or has a game without a
 #      non-blank name, a non-blank mark, and a colour that is a token defined in tokens.css;
-#   4. design/DESIGN.md is over 60 lines, or design/tokens.css is missing or holds no tokens.
+#   4. design/DESIGN.md is over 60 lines, or design/tokens.css is missing or holds no tokens;
+#   5. a raw size, length or duration (px, rem, em, pt, vw, vh, vmin, vmax, deg, ms, s) is written in a
+#      stylesheet or a Svelte <style> block outside tokens.css (G-02 review 19). Percentages, unitless
+#      numbers and whole-screen units (dvh, cqw) are layout, not design values. Markup, SVG geometry
+#      and game timings from config/games.json are not scanned (G-02 R7, R10).
 # Not scanned (not build code): design/directions/ (mock-ups), design/references/, design/reference/,
 # tasks/, scripts/, .method/, .claude/, .githooks/, .git/, node_modules/, dist/ (built output, G-02 R9).
 # Usage: bash scripts/design-check.sh [repo-root]
@@ -46,6 +50,19 @@ done < <(find . \( -type f -o -type l \) \( -iname '*.css' -o -iname '*.scss' -o
         -not -path './design/reference/*' -not -path './tasks/*' -not -path './.method/*' -not -path './.claude/*' \
         -not -path './.githooks/*' -not -path './.github/*' -not -path './scripts/*' -not -path './.git/*' -not -path '*/node_modules/*' -not -path './dist/*' \
         -not -name 'package.json' -not -name 'package-lock.json' -not -name 'tsconfig*.json' -print0 2>/dev/null)
+
+# 5. raw sizes and durations in styles
+unit='(^|[^a-zA-Z0-9_.#])[0-9]*\.?[0-9]+(px|rem|em|pt|vw|vh|vmin|vmax|deg|ms|s)([^-a-zA-Z0-9_]|$)'
+while IFS= read -r -d '' f; do
+  case "$f" in
+    *.svelte) body=$(awk '/<style/{f=1} f{print FNR": "$0} /<\/style>/{f=0}' "$f") ;;
+    *) body=$(awk '{print FNR": "$0}' "$f") ;;
+  esac
+  hits=$(printf '%s\n' "$body" | sed -E 's#/\*[^*]*\*/##g; s/var\(--[a-z0-9-]+\)/var()/g' | grep -E "^[0-9]+: .*$unit" | grep -vE '^[0-9]+: *(/\*|\*)' | head -3)
+  [ -n "$hits" ] && { say "FAIL raw size or duration outside tokens.css in $f:"; say "$hits"; fail=1; }
+done < <(find . -type f \( -iname '*.css' -o -iname '*.scss' -o -iname '*.svelte' -o -iname '*.vue' \) \
+        -not -path './design/*' -not -path './tasks/*' -not -path './.method/*' -not -path './.claude/*' \
+        -not -path './scripts/*' -not -path './.git/*' -not -path '*/node_modules/*' -not -path './dist/*' -print0 2>/dev/null)
 
 # 2. reference screenshots: present, PNG, 390 px wide
 for shot in 1-event-stop-mid-play 2-after-fifth-event-spot-it 3-scorecard; do
