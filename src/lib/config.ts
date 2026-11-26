@@ -8,6 +8,11 @@ export interface StopParams {
   sweepMsMonday: number;
   sweepMsStepPerDay: number;
   sweepMsJitter: number;
+  goSpeedUp: number;
+  turnSpeedUp: number;
+  sweepMsFloor: number;
+  easeFrom: number;
+  easeTo: number;
   pauseBetweenGoesMs: number;
   resultDecimals: number;
 }

@@ -1,6 +1,8 @@
 <script lang="ts">
   // Event 1, Stop (spec, Rules 2.1; reference design/reference/1-event-stop-mid-play.png).
-  // One-line how-to and Ready; then the first tap anywhere stops the marker. Three goes.
+  // One-line how-to and a Ready button, which becomes the Stop button in the same place (his note,
+  // 26 Nov: a start button that vanishes for "tap anywhere" felt odd). It acts on the finger landing,
+  // not on release, so the result is where the marker was when he pressed. Three goes.
   // Raw result in plain ink; no colour for good or bad, no comparison during the round.
   import EventHeader from '../components/EventHeader.svelte';
   import Mark from '../components/Mark.svelte';
@@ -38,17 +40,18 @@
   }
 
   function tick() {
-    const m = markerAt(performance.now() - started, goNow.sweepMs);
+    const m = markerAt(performance.now() - started, goNow);
     pos = m.pos;
     dir = m.dir;
     frame = requestAnimationFrame(tick);
   }
 
-  function tap(e: PointerEvent) {
+  function press(e?: Event) {
+    e?.preventDefault();
+    if (phase === 'ready') return begin();
     if (phase !== 'running') return;
-    e.preventDefault();
     cancelAnimationFrame(frame);
-    const m = markerAt(performance.now() - started, goNow.sweepMs);
+    const m = markerAt(performance.now() - started, goNow);
     pos = m.pos;
     offs = [...offs, signedOff(m.pos, m.dir, goNow.notch)];
     if (offs.length >= stop.goes.length) {
@@ -62,12 +65,6 @@
       }, p.pauseBetweenGoesMs);
     }
   }
-
-  $effect(() => {
-    if (phase !== 'running') return;
-    window.addEventListener('pointerdown', tap);
-    return () => window.removeEventListener('pointerdown', tap);
-  });
 
   $effect(() => () => {
     cancelAnimationFrame(frame);
@@ -102,12 +99,10 @@
   </div>
 
   <div class="foot">
-    {#if phase === 'ready'}
-      <button class="pill" onclick={begin}>Ready</button>
-    {:else if phase === 'running'}
-      <p class="hint">Tap anywhere to stop</p>
-    {:else if phase === 'between'}
-      <p class="hint">Go {offs.length + 1} next</p>
+    {#if phase !== 'done'}
+      <button class="pill" class:wait={phase === 'between'} disabled={phase === 'between'} onpointerdown={press} onclick={(e) => e.detail === 0 && press()}>
+        {phase === 'ready' ? 'Ready' : phase === 'running' ? 'Stop' : `Go ${offs.length + 1}`}
+      </button>
     {:else if result}
       <p class="raw">{result.mean.toFixed(p.resultDecimals)}% off the notch, on average</p>
       <button class="pill next" onclick={onnext}>Next</button>
@@ -247,7 +242,10 @@
     padding: var(--space-6) var(--space-5) var(--space-8);
     text-align: center;
   }
-  .hint,
+  .pill.wait {
+    background: var(--chalk);
+    color: var(--dim);
+  }
   .raw {
     font-family: var(--font-display);
     font-size: var(--size-xl);

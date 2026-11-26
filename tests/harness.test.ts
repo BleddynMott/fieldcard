@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import { cardNumber, dayOfCard, localDay, parseDay, weekdayStep, type Day } from '../src/lib/card';
 import { config, stopParams } from '../src/lib/config';
-import { generateStop, markerAt, signedOff, stopResult } from '../src/lib/events/stop';
+import { crossingMs, generateStop, markerAt, shape, signedOff, stopResult } from '../src/lib/events/stop';
 import { mulberry32 } from '../src/lib/rng';
 import { AttemptStore, MemoryKV } from '../src/lib/store';
 
@@ -66,7 +66,7 @@ describe('no repeat', () => {
 
 describe('parameters in range', () => {
   const p = stopParams();
-  it('Stop: three goes, notches inside the track and apart, sweep faster as the week goes on', () => {
+  it('Stop: three goes, notches inside the track and apart, each go faster, faster as the week goes on', () => {
     for (const n of cards) {
       const c = generateStop(n);
       expect(c.goes).toHaveLength(p.goes);
@@ -74,12 +74,48 @@ describe('parameters in range', () => {
         expect(g.notch).toBeGreaterThanOrEqual(p.notchFrom);
         expect(g.notch).toBeLessThanOrEqual(p.notchTo);
         expect(g.sweepMs).toBeGreaterThan(0);
-        const base = p.sweepMsMonday + p.sweepMsStepPerDay * c.step;
+        const base = (p.sweepMsMonday + p.sweepMsStepPerDay * c.step) * p.goSpeedUp ** i;
+        expect(g.ease).toBeGreaterThanOrEqual(p.easeFrom);
+        expect(g.ease).toBeLessThanOrEqual(p.easeTo);
+        expect(g.sweepMs).toBeGreaterThanOrEqual(p.sweepMsFloor);
         expect(g.sweepMs).toBeGreaterThanOrEqual(Math.floor(base * (1 - p.sweepMsJitter)));
         expect(g.sweepMs).toBeLessThanOrEqual(Math.ceil(base * (1 + p.sweepMsJitter)));
         if (i > 0) expect(Math.abs(g.notch - c.goes[i - 1].notch)).toBeGreaterThanOrEqual(p.notchApartMin);
       });
     }
+  });
+
+  it('Stop: every turn is faster, never below the floor; the marker stays on the track and turns at the ends', () => {
+    for (const n of cards) {
+      for (const g of generateStop(n).goes) {
+        let total = 0;
+        for (let k = 0; k < 40; k++) {
+          const ms = crossingMs(g, k);
+          if (k > 0) expect(ms).toBeLessThanOrEqual(crossingMs(g, k - 1));
+          expect(ms).toBeGreaterThanOrEqual(p.sweepMsFloor);
+          const mid = markerAt(total + ms / 2, g);
+          expect(mid.dir).toBe(k % 2 === 0 ? 1 : -1);
+          expect(mid.pos).toBeGreaterThan(0);
+          expect(mid.pos).toBeLessThan(1);
+          total += ms;
+        }
+        expect(markerAt(0, g).pos).toBe(0);
+        expect(markerAt(crossingMs(g, 0) - 1e-6, g).pos).toBeCloseTo(1, 4);
+      }
+    }
+  });
+
+  it('Stop: the motion is fastest in the middle and always moves forward within a crossing', () => {
+    for (const ease of [0, p.easeFrom, p.easeTo]) {
+      let last = -1;
+      for (let f = 0; f <= 1.0001; f += 0.01) {
+        const x = shape(Math.min(1, f), ease);
+        expect(x).toBeGreaterThan(last);
+        last = x;
+      }
+    }
+    const step = 0.05;
+    expect(shape(0.5 + step, p.easeTo) - shape(0.5, p.easeTo)).toBeGreaterThan(shape(step, p.easeTo) - shape(0, p.easeTo));
   });
 });
 
@@ -91,12 +127,13 @@ describe('scores in range', () => {
       const plays: number[][] = [
         c.goes.map(() => 0), // tapped the instant the go began
         c.goes.map((g) => g.sweepMs), // tapped at the far end
-        c.goes.map((g) => g.sweepMs * 2), // back at the start
+        c.goes.map((g) => g.sweepMs * 2), // part way back
+        c.goes.map(() => 10 * 60 * 1000), // waited ten minutes
         ...Array.from({ length: 20 }, () => c.goes.map((g) => rng() * g.sweepMs * 6)),
       ];
       for (const times of plays) {
         const offs = times.map((t, i) => {
-          const { pos, dir } = markerAt(t, c.goes[i].sweepMs);
+          const { pos, dir } = markerAt(t, c.goes[i]);
           return signedOff(pos, dir, c.goes[i].notch);
         });
         const r = stopResult(offs);
