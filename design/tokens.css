@@ -130,6 +130,7 @@
   --tape-w-min: 6px;         /* Stop's notch at its narrowest; its width is a share of the track (config) */
   --lane-line-1: 27%;        /* Stop's two white lane lines */
   --lane-line-2: 70%;
+  --mini-w: 70%;             /* the small track picture on Stop's doors */
   --tape-stripe: 12px;
   --shadow-trail: -14px 0 0 -6px var(--white-90), -26px 0 0 -10px var(--white-60); /* the marker's trail */
   --tilt: -1.5deg;           /* the sign board */

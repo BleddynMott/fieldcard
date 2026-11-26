@@ -7,7 +7,7 @@
   import { config, game } from '../lib/config';
   import type { Crowd } from '../lib/crowd';
   import { boxSpec, matched, overlap, wholeShares } from '../lib/reads';
-  import type { EventResults } from '../lib/results';
+  import { isAbandoned, type EventResults } from '../lib/results';
   import { readPoints } from '../lib/score';
   import { readOfDay, week } from '../lib/week';
 
@@ -35,6 +35,7 @@
   const order = $derived(crowd.boxShares.map((_, i) => i).sort((a, b) => crowd.boxShares[b] - crowd.boxShares[a]));
 
   const context = $derived.by(() => {
+    if (isAbandoned(results[ev])) return `You left ${game(ev).name} before it finished.`;
     switch (ev) {
       case 'count':
         return `The answer was ${results.count.actual}; you said ${results.count.guess}.`;
@@ -123,11 +124,11 @@
   {/if}
 
   <div class="panel">
-    <div class="sandbox" bind:this={host} onpointerdown={down} role="application" aria-label="five boxes to pour sand into">
+    <div class="sandbox" bind:this={host} onpointerdown={down} role="application" aria-label={`${spec.labels.length} boxes to pour sand into`}>
       {#each spec.labels as label, i (i)}
         <div class="slot" class:pouring={box === i}>
           {#if !shown}
-            <button class="slot-key" aria-label={`pour into ${label}`} onclick={(e) => e.detail === 0 && pourKey(i)}></button>
+            <button class="slot-key" aria-label={`pour into ${label}`} onclick={() => pourKey(i)}></button>
           {/if}
           {#if shown}
             {#if crowd.boxShares[i] >= 0.5}<div class="pile crowd grow" style:--k={i * 4} style:height={`${(crowd.boxShares[i] / scale) * 100}%`}></div>{/if}

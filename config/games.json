@@ -48,7 +48,8 @@
         "guessMax": 60,
         "holdRepeatMs": 110,
         "holdDelayMs": 380,
-        "laneSpeedJitter": 0.1
+        "laneSpeedJitter": 0.1,
+        "minLaneGapMs": 150
       }
     },
     {

@@ -88,6 +88,6 @@ export function stopResult(offs: number[], p: StopParams = stopParams()): StopRe
 }
 
 export function round(x: number, decimals: number): number {
-  const f = 10 ** decimals;
+  const f = powInt(10, decimals);
   return Math.round(x * f) / f;
 }

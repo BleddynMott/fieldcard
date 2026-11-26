@@ -47,8 +47,10 @@ export function shares<E extends EventId>(e: E, results: EventResults[E][], bin:
  *  doors showing the same number are both right (spec: "either is right"; review 22). */
 export function topDoors(doorShares: number[]): number[] {
   const shown = wholeShares(doorShares);
-  const max = Math.max(...shown);
-  return shown.map((s, i) => (s === max ? i : -1)).filter((i) => i >= 0);
+  const maxShown = Math.max(...shown);
+  const max = Math.max(...doorShares);
+  // right if the shares are exactly level (round-2 b1), or if the numbers shown are level (22)
+  return doorShares.map((s, i) => (Math.abs(s - max) < 1e-9 || shown[i] === maxShown ? i : -1)).filter((i) => i >= 0);
 }
 
 /** Pour's ✓: the overlap as shown, a whole number, at or above the line (review 21). */

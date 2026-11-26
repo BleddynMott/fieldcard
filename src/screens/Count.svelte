@@ -6,6 +6,9 @@
   import Figure from '../components/Figure.svelte';
   import { config, countParams } from '../lib/config';
   import { countResult, generateCount, type CountResult } from '../lib/events/count';
+  import { pressOrClick } from '../lib/press';
+
+  const tap = pressOrClick();
 
   let { card, date, onstart, onresult, onnext }: { card: number; date: string; onstart: () => void; onresult: (r: CountResult) => void; onnext: () => void } = $props();
 
@@ -78,9 +81,9 @@
         {/each}
       {:else}
         <div class="stepper">
-          <button class="step" aria-label="one fewer" onpointerdown={() => startHold(-1)} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} onclick={(e) => e.detail === 0 && nudge(-1)} disabled={phase === 'done'}>−</button>
+          <button class="step" aria-label="one fewer" onpointerdown={() => tap.press(() => startHold(-1))} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} onclick={() => tap.click(() => nudge(-1))} disabled={phase === 'done'}>−</button>
           <output class="num" aria-live="polite">{guess}</output>
-          <button class="step" aria-label="one more" onpointerdown={() => startHold(1)} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} onclick={(e) => e.detail === 0 && nudge(1)} disabled={phase === 'done'}>+</button>
+          <button class="step" aria-label="one more" onpointerdown={() => tap.press(() => startHold(1))} onpointerup={stopHold} onpointerleave={stopHold} onpointercancel={stopHold} onclick={() => tap.click(() => nudge(1))} disabled={phase === 'done'}>+</button>
         </div>
       {/if}
     </div>
@@ -136,6 +139,20 @@
     animation-name: cross;
     animation-timing-function: linear;
     animation-fill-mode: both;
+  }
+  /* where container units are missing (iOS 15 and older), cross by `left` instead (round-2 b3) */
+  @supports not (container-type: inline-size) {
+    .walker {
+      animation-name: cross-left;
+    }
+  }
+  @keyframes cross-left {
+    from {
+      left: calc(-1 * var(--fig-w));
+    }
+    to {
+      left: 100%;
+    }
   }
   @keyframes cross {
     from {

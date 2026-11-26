@@ -86,6 +86,8 @@ plant "a raw px size in a Svelte style block" "src/A.svelte" $'<div class="x"></
 plant "a raw duration in a stylesheet"       "src/a.css"    ".x { transition: opacity 200ms; }"
 plant "a raw rem margin"                     "src/a.css"    ".x { margin: 1.5rem 0; }"
 plant "a raw deg rotation"                   "src/a.css"    ".x { transform: rotate(-2deg); }"
+d=$(fresh); mkdir -p "$d/src"; printf '/* a note across lines:\n   the old value was 1.5s and 12px\n*/\n.x { width: var(--chip); }\n' > "$d/src/c.css"
+expect pass "values inside a multi-line comment are not refused" "$d"
 d=$(fresh); mkdir -p "$d/src"; printf '<svg viewBox="0 0 100 100"><circle r="6" cx="50" cy="50"/></svg>\n<p style="width: 12px">x</p>\n<style>\n  .x { width: var(--chip); margin: 0 var(--space-2); left: 50%%; height: 100dvh; z-index: 1; }\n</style>\n' > "$d/src/B.svelte"
 expect pass "tokens, percentages, unitless numbers and markup outside <style> pass" "$d"
 

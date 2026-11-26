@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   // Event 5, Sort (spec, Rules 2.5). Five blobs of close size: drag them into order, smallest to
   // largest, then Done. Raw result: pairs out of order, in plain ink.
   import EventCard from '../components/EventCard.svelte';
@@ -68,6 +69,8 @@
     const next = order.filter((x) => x !== id);
     next.splice(to, 0, id);
     order = next;
+    // the keyed list moves the node; keep focus on the blob being moved (round-2 b4)
+    tick().then(() => row?.querySelector<HTMLElement>(`[data-id="${id}"]`)?.focus());
   }
 
   function done() {
@@ -94,6 +97,7 @@
             style:transform={drag?.id === id ? `translateX(${drag.dx}px)` : undefined}
             onpointerdown={(e) => down(id, e)}
             onkeydown={(e) => key(id, e)}
+            data-id={id}
             role="button"
             tabindex="0"
             aria-label={`blob ${String.fromCharCode(65 + c.start.indexOf(id))}, place ${order.indexOf(id) + 1} of ${order.length}; arrow keys move it`}

@@ -10,9 +10,9 @@ echo "-- types (svelte-check)"
 npm run --silent check
 echo "-- harness and unit tests (vitest)"
 if out=$(npx vitest run --reporter=verbose 2>&1); then printf '%s\n' "$out" | grep -E '✓|↓|skipped|todo|Tests |Test Files'
-  if printf '%s\n' "$out" | grep -qE 'skipped|todo'; then echo "FAIL a harness test is skipped or todo" >&2; exit 1; fi
+  if printf '%s\n' "$out" | grep -E '^ *Tests ' | grep -qE 'skipped|todo'; then echo "FAIL a harness test is skipped or todo" >&2; exit 1; fi
 else printf '%s\n' "$out" | tail -40; echo "FAIL vitest" >&2; exit 1; fi
 echo "-- build"
-npm run --silent build 2>&1 | grep -iE 'warn|error' || true
-npm run --silent build >/dev/null
+if ! build=$(npm run --silent build 2>&1); then printf '%s\n' "$build" | tail -20; echo "FAIL build" >&2; exit 1; fi
+printf '%s\n' "$build" | grep -iE 'warn' || true
 echo "task-checks: pass"

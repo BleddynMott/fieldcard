@@ -57,7 +57,7 @@ describe('no repeat within 365 days, every event and the whole card', () => {
         expect(seen[id].get(k), `${id} on card ${n} repeats card ${seen[id].get(k)}`).toBeUndefined();
         seen[id].set(k, n);
       }
-      const whole = canonical({ ...parts, stop: generateStop(n).goes.map((g) => Math.round(g.notch * 100)) });
+      const whole = canonical({ ...parts, stop: generateStop(n).goes.map((g) => [Math.round(g.notch * 100), Math.round(g.sweepMs / 50)]) });
       expect(seen.card.get(whole)).toBeUndefined();
       seen.card.set(whole, n);
     }

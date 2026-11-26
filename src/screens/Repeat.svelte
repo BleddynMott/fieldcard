@@ -6,6 +6,9 @@
   import { repeatParams } from '../lib/config';
   import { generateRepeat, roundLengths, type RepeatResult } from '../lib/events/repeat';
   import { tokenMs } from '../lib/tokens';
+  import { pressOrClick } from '../lib/press';
+
+  const input = pressOrClick();
 
   let { card, date, onstart, onresult, onnext }: { card: number; date: string; onstart: () => void; onresult: (r: RepeatResult) => void; onnext: () => void } = $props();
 
@@ -19,6 +22,7 @@
   let lit = $state(-1); // the square lit by the sequence
   let pressed = $state(-1); // the square the finger just pressed
   let wrongAt = $state(-1);
+  let said = $state('');
   let tapped = 0;
   let longest = $state(0);
   let inputMs = 0;
@@ -33,10 +37,14 @@
     tapped = 0;
     const each = r.flashMs + p.gapMs;
     for (let i = 0; i < len; i++) {
-      later(() => (lit = r.sequence[i]), p.pauseBeforeMs + i * each);
+      later(() => {
+        lit = r.sequence[i];
+        said = `Square ${r.sequence[i] + 1}`; // announced, for players who cannot see the grid
+      }, p.pauseBeforeMs + i * each);
       later(() => (lit = -1), p.pauseBeforeMs + i * each + r.flashMs);
     }
     later(() => {
+      said = 'Your turn';
       phase = 'tap';
       tapStart = performance.now();
     }, p.pauseBeforeMs + len * each);
@@ -77,6 +85,7 @@
   <EventHeader {card} {date} current="repeat" />
 
   <EventCard id="repeat" {status}>
+    <p class="said" aria-live="assertive">{said}</p>
     <div class="grid" style:--n={p.grid}>
       {#each Array(p.grid * p.grid) as _, i (i)}
         <button
@@ -84,9 +93,9 @@
           class:lit={lit === i || pressed === i}
           class:wrong={wrongAt === i}
           aria-label={`square ${i + 1}`}
-          disabled={phase !== 'tap'}
-          onpointerdown={(e) => tap(i, e)}
-          onclick={(e) => e.detail === 0 && tap(i)}
+          aria-disabled={phase !== 'tap'}
+          onpointerdown={(e) => input.press(() => tap(i, e))}
+          onclick={() => input.click(() => tap(i))}
         ></button>
       {/each}
     </div>
@@ -124,8 +133,15 @@
     transition: background var(--dur-tap);
     touch-action: none;
   }
-  .sq:disabled {
+  .sq[aria-disabled='true'] {
     cursor: default;
+  }
+  .said {
+    position: absolute;
+    width: var(--line);
+    height: var(--line);
+    overflow: hidden;
+    clip-path: inset(50%);
   }
   .sq.lit {
     background: var(--repeat);

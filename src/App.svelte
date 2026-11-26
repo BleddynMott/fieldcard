@@ -14,15 +14,14 @@
   import Pour from './screens/Pour.svelte';
   import Claim from './screens/Claim.svelte';
   import ScorecardScreen from './screens/Scorecard.svelte';
-  import { abandonedResult } from './lib/abandon';
   import { boardDate, cardNumber, localDay, parseDay } from './lib/card';
-  import { config, game } from './lib/config';
+  import { config } from './lib/config';
   import { crowdFor } from './lib/crowd';
   import type { EventResults } from './lib/results';
   import { scoreBeforeFlag, scorecard, type Reads, type Scorecard } from './lib/score';
   import { deviceStore } from './lib/store';
   import { streak } from './lib/streak';
-  import { EVENTS, type EventId } from './lib/week';
+  import { nextMove, type Step } from './lib/flow';
 
   const preview = import.meta.env.VITE_PREVIEW === '1';
   const store = deviceStore();
@@ -31,13 +30,12 @@
   const date = boardDate(today);
   const opensOn = boardDate(parseDay(config.launch));
 
-  const STEPS = ['stop', 'count', 'repeat', 'pair', 'sort', 'spot', 'read', 'flag'] as const;
-  type Step = (typeof STEPS)[number];
   type Screen = 'home' | Step | 'scorecard';
 
   const initial = card === null ? null : store.load(card);
   let attempt = $state(initial);
   let notice = $state('');
+  let saving = $state(store.persistent); // live: a write can fail mid-card (round-2 a9)
   const steps = $derived((attempt?.steps ?? {}) as Record<string, unknown>);
   const started = $derived(Object.keys(steps).length > 0);
   const closed = $derived(!!attempt?.finished && !('scorecard' in steps));
@@ -56,6 +54,7 @@
 
   function refresh() {
     if (card !== null) attempt = store.load(card);
+    saving = store.persistent;
   }
 
   function save(step: string, value: unknown) {
@@ -72,27 +71,20 @@
     refresh();
   }
 
-  /** The next screen: the first step not played. An event started and not finished is closed with
-   *  its worst result first (R11), and the next screen says so. */
+  /** The next screen, as lib/flow.ts decides it (R6, R11). A flag stored without its scorecard
+   *  (a failed write) is scored and finished here, so the Scorecard stays fixed at finish. */
   function next() {
-    notice = '';
     if (card === null) return;
     refresh();
-    if (attempt?.finished) {
-      screen = 'scorecard' in steps ? 'scorecard' : 'home';
-      return;
+    const move = nextMove(card, steps, !!attempt?.finished);
+    for (const [s, v] of move.record) save(s, v);
+    notice = move.notice;
+    if (move.screen === 'scorecard' && !attempt?.finished && crowd && 'flag' in steps) {
+      save('scorecard', scorecard(crowd, results, reads, (steps.flag as { flag: number }).flag));
+      store.finish(card);
+      refresh();
     }
-    for (const s of STEPS) {
-      if (s in steps) continue;
-      if ((EVENTS as string[]).includes(s) && `${s}:started` in steps) {
-        save(s, abandonedResult(s as EventId, card));
-        notice = `You left ${game(s).name} before it finished, so it counts as played.`;
-        continue;
-      }
-      screen = s;
-      return;
-    }
-    screen = 'scorecard';
+    screen = move.screen;
   }
 
   const start = (s: string) => () => save(`${s}:started`, true);
@@ -104,28 +96,35 @@
     screen = 'home';
   }
 
-  // a new local day while the page is open or asleep: load the new card
+  // a new local day: load the new card, but never in the middle of a card (round-2 b2). On the home
+  // screen at any time; on the Scorecard only when the tab comes back from sleep, so a card finished
+  // just after midnight is not snatched away; during a card, not at all: it can be finished.
+  const newDay = () => {
+    const now = localDay(new Date());
+    return now.y !== today.y || now.m !== today.m || now.d !== today.d;
+  };
   $effect(() => {
-    const check = () => {
-      const now = localDay(new Date());
-      if (now.y !== today.y || now.m !== today.m || now.d !== today.d) location.reload();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && newDay() && (screen === 'home' || screen === 'scorecard')) location.reload();
     };
-    const onVisible = () => document.visibilityState === 'visible' && check();
+    const check = () => {
+      if (newDay() && screen === 'home') location.reload();
+    };
     document.addEventListener('visibilitychange', onVisible);
-    window.addEventListener('pageshow', check);
+    window.addEventListener('pageshow', onVisible);
     const t = setInterval(check, 30_000);
     return () => {
       document.removeEventListener('visibilitychange', onVisible);
-      window.removeEventListener('pageshow', check);
+      window.removeEventListener('pageshow', onVisible);
       clearInterval(t);
     };
   });
 </script>
 
-{#if notice}<p class="notice" role="status">{notice}</p>{/if}
+<div class="live" role="status">{#if notice}<button class="notice" onclick={() => (notice = '')}>{notice}</button>{/if}</div>
 
 {#if card === null || screen === 'home'}
-  <Home {card} {date} {opensOn} {started} {closed} saving={store.persistent} firstTime={card !== null && !started && !store.playedBefore(card)} onplay={next} />
+  <Home {card} {date} {opensOn} {started} {closed} {saving} firstTime={card !== null && !started && !store.playedBefore(card)} onplay={next} />
 {:else if screen === 'stop'}
   <Stop {card} {date} onstart={start('stop')} onresult={(r) => save('stop', r)} onnext={next} />
 {:else if screen === 'count'}
@@ -145,12 +144,21 @@
 {:else if screen === 'scorecard' && score}
   <ScorecardScreen {score} streak={streakLine} {preview} onagain={again} />
 {:else}
-  <Home {card} {date} {opensOn} {started} closed={true} saving={store.persistent} firstTime={false} onplay={next} />
+  <Home {card} {date} {opensOn} {started} closed={true} {saving} firstTime={false} onplay={next} />
 {/if}
 
 <style>
+  /* over the screen, not above it, so it never pushes the screen's buttons down (round-2 b5) */
   .notice {
-    margin: var(--space-3) var(--space-5) 0;
+    position: fixed;
+    z-index: 2;
+    top: var(--space-3);
+    left: var(--space-5);
+    right: var(--space-5);
+    max-width: var(--page-max);
+    margin: 0 auto;
+    text-align: left;
+    box-shadow: var(--shadow-s);
     padding: var(--space-2) var(--space-3);
     border: var(--line-thin) solid var(--ink);
     border-radius: var(--r-m);

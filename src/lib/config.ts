@@ -32,6 +32,7 @@ export interface CountParams {
   lanes: number;
   guessMax: number;
   laneSpeedJitter: number;
+  minLaneGapMs: number;
   holdRepeatMs: number;
   holdDelayMs: number;
 }

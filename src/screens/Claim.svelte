@@ -68,7 +68,7 @@
 
 <section class="screen">
   <Bar title="CLAIM IT" step={2} />
-  <p class="idea">Today's five events</p>
+  <p class="idea">Today's events</p>
   {#if !planted}
     <h1 class="ask">Plant your flag where you finished.</h1>
     <p class="sub">Everyone, worst to best. Make it and you bank your flag. Fall short and you lose double the gap.</p>

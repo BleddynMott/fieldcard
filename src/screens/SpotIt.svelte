@@ -139,7 +139,7 @@
     position: absolute;
     left: 50%;
     top: var(--space-8);
-    width: 70%;
+    width: var(--mini-w);
     transform: translateX(-50%);
   }
   .mini-track {
@@ -150,7 +150,7 @@
   .mini-notch {
     fill: var(--stop);
     stroke: var(--ink);
-    stroke-width: var(--fig-stroke);
+    stroke-width: var(--line-thin);
   }
   .mini-runner {
     fill: var(--white);

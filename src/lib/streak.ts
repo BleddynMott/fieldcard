@@ -13,8 +13,8 @@ export interface StreakLine {
 /** Monday-based week number of a card, for the one-repair-a-week rule. */
 function weekOf(card: number): number {
   const w = weekday(dayOfCard(card)); // 0 Sunday
-  const mondayCard = card - ((w + 6) % 7);
-  return Math.floor((mondayCard + 7 * 1000) / 7);
+  const mondayCard = card - ((w + 6) % 7); // may be 0 or less in launch week
+  return Math.floor(mondayCard / 7); // the same for every card of one Monday-to-Sunday week
 }
 
 /** Streak up to and including `today`, from the set of finished card numbers. */

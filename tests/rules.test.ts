@@ -1,7 +1,9 @@
 // G-02 harness, part 3: rules worked out by hand from the spec, so a test fails when a rule is
 // wrong, not only when a value leaves its range (review 3, 9 to 14, 24, 55). Over the same dates.
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { abandonedResult } from '../src/lib/abandon';
+import { nextMove, STEPS } from '../src/lib/flow';
 import { dayOfCard, weekday } from '../src/lib/card';
 import { config, countParams, pairParams, repeatParams, sortParams, stopParams } from '../src/lib/config';
 import { crowdFor, type Crowd, type SimPlayer } from '../src/lib/crowd';
@@ -39,6 +41,40 @@ describe('the weekday tables are the spec\'s, as written', () => {
       { form: 'pick', event: 'sort' },
       { form: 'fix', event: 'pair' },
     ]);
+  });
+});
+
+describe('harder at every step from Monday to Sunday, not only at the ends (round-2 a4)', () => {
+  const byStep = <T,>(f: (n: number) => T) => {
+    const out: T[][] = Array.from({ length: 7 }, () => []);
+    for (const n of cards) out[(weekday(dayOfCard(n)) + 6) % 7].push(f(n));
+    return out;
+  };
+  it('Stop: the notch narrows and the mean sweep shortens each day', () => {
+    const w = byStep((n) => generateStop(n).notchWidth).map((xs) => xs[0]);
+    const sweep = byStep((n) => generateStop(n).goes[0].sweepMs).map(mean);
+    for (let s = 1; s < 7; s++) {
+      expect(w[s]).toBeLessThan(w[s - 1]);
+      expect(sweep[s]).toBeLessThan(sweep[s - 1]);
+    }
+  });
+  it('Count: more figures each day; Repeat: shorter flashes each day; Sort: closer sizes each day until the floor; Pair: never fewer near shapes', () => {
+    const figs = byStep((n) => generateCount(n).figures.length).map((xs) => xs[0]);
+    const flash = byStep((n) => generateRepeat(n).flashMs).map((xs) => xs[0]);
+    const gap = byStep((n) => { const b = generateSort(n).blobs; return b[1].area / b[0].area - 1; }).map((xs) => xs[0]);
+    const near = byStep((n) => {
+      const c = generatePair(n);
+      const P = c.shapes[c.pair[0]];
+      return c.shapes.filter((s) => [s.form !== P.form, s.kit !== P.kit, s.style !== P.style].filter(Boolean).length === 1).length;
+    }).map((xs) => xs[0]);
+    for (let s = 1; s < 7; s++) {
+      expect(figs[s]).toBeGreaterThan(figs[s - 1]);
+      expect(flash[s]).toBeLessThan(flash[s - 1]);
+      expect(gap[s]).toBeLessThanOrEqual(gap[s - 1] + 1e-12);
+      expect(near[s]).toBeGreaterThanOrEqual(near[s - 1]);
+    }
+    expect(gap[6]).toBeLessThan(gap[0]);
+    expect(near[6]).toBeGreaterThan(near[0]);
   });
 });
 
@@ -84,7 +120,8 @@ describe('Count: no figure catches the one ahead in its lane (review 40)', () =>
         const fs = c.figures.filter((f) => f.lane === lane);
         for (let i = 1; i < fs.length; i++) {
           expect(fs[i].crossMs).toBe(fs[0].crossMs);
-          expect(fs[i].startMs).toBeGreaterThan(fs[i - 1].startMs);
+          // far enough apart at entry not to overlap (round-2 b15)
+          expect(fs[i].startMs - fs[i - 1].startMs).toBeGreaterThanOrEqual(countParams().minLaneGapMs);
         }
       }
     }
@@ -136,8 +173,11 @@ describe('scores worked out by hand (review 13)', () => {
     const s = scorecard(crowd, res(2), { door: 0, read: [0, 0, 100, 0, 0] }, 90);
     expect(s.flagPoints).toBe(-2 * (90 - s.place));
   });
-  it('two doors showing the same whole percentage are both right (review 22)', () => {
+  it('two doors showing the same whole percentage are both right (review 22), and so are exactly level ones (round-2 b1)', () => {
     expect(topDoors([49.25, 49, 1.75])).toEqual([0, 1]);
+    expect(topDoors([37.5, 37.5, 25])).toEqual([0, 1]);
+    expect(topDoors([25, 37.5, 37.5])).toEqual([1, 2]);
+    expect(topDoors([100 / 3, 100 / 3, 100 / 3])).toEqual([0, 1, 2]);
     expect(topDoors([50, 30, 20])).toEqual([0]);
   });
   it('Pour\'s tick follows the number shown (review 21)', () => {
@@ -157,13 +197,60 @@ describe('the crowd', () => {
     const played = new Set([0, ...roundLengths(repeatParams())]);
     for (const n of [1, 9, 33]) for (const p of crowdFor(n).players) expect(played.has(p.results.repeat.longest)).toBe(true);
   });
-  it('an abandoned event is the worst result: it beats no one outright', () => {
+  it('an abandoned event beats no one, not even the worst real result (round-2 a1)', () => {
+    const worst: EventResults = {
+      stop: stopResult([100, 100, 100]),
+      count: countResult(countParams().guessMax, countParams().targetMin), // 1900% off
+      repeat: { longest: 0, timeMs: 1e9 },
+      pair: pairResult(1e9, 99),
+      sort: { order: [4, 3, 2, 1, 0], pairsOut: 10, timeMs: 1e9 },
+    };
     for (const n of [2, 30]) {
       const c = crowdFor(n);
       for (const ev of EVENTS) {
         const r = abandonedResult(ev, n);
-        expect(shareBeaten(rankKey(ev, r), c.players.map((p) => rankKey(ev, p.results[ev])))).toBeLessThanOrEqual(5);
+        expect(shareBeaten(rankKey(ev, r), c.players.map((p) => rankKey(ev, p.results[ev])))).toBe(0);
+        expect(shareBeaten(rankKey(ev, r), [rankKey(ev, worst[ev])])).toBe(0);
       }
+    }
+  });
+});
+
+describe('the order of play and one attempt (round-2 a2)', () => {
+  it('goes through the steps in order, and to the Scorecard once the flag is planted', () => {
+    const steps: Record<string, unknown> = {};
+    for (const s of STEPS) {
+      expect(nextMove(3, steps, false).screen).toBe(s);
+      steps[s] = {};
+    }
+    expect(nextMove(3, steps, false).screen).toBe('scorecard');
+    expect(nextMove(3, { ...steps, scorecard: {} }, true).screen).toBe('scorecard');
+  });
+  it('an event started and not finished is recorded as abandoned, and play moves on with a notice', () => {
+    const m = nextMove(3, { stop: {}, 'count:started': true }, false);
+    expect(m.screen).toBe('repeat');
+    expect(m.record).toHaveLength(1);
+    expect(m.record[0][0]).toBe('count');
+    expect((m.record[0][1] as { abandoned?: boolean }).abandoned).toBe(true);
+    expect(m.notice).toContain('Count');
+  });
+  it('a finished card with no scorecard (unreadable record) goes home, never back to an event', () => {
+    expect(nextMove(3, {}, true)).toEqual({ screen: 'home', record: [], notice: '' });
+  });
+  it('every event screen marks itself started at Ready', () => {
+    for (const f of ['Stop', 'Count', 'Repeat', 'Pair', 'Sort']) {
+      const src = readFileSync(`src/screens/${f}.svelte`, 'utf8');
+      expect(src, f).toMatch(/onstart\(\)/);
+    }
+  });
+});
+
+describe('every duration token the code reads exists (round-2 a7)', () => {
+  it('tokenMs names are defined in tokens.css', () => {
+    const tokens = readFileSync('design/tokens.css', 'utf8');
+    for (const f of ['Stop', 'Repeat', 'Pair']) {
+      const src = readFileSync(`src/screens/${f}.svelte`, 'utf8');
+      for (const m of src.matchAll(/tokenMs\('(--[a-z0-9-]+)'\)/g)) expect(tokens, `${f}: ${m[1]}`).toMatch(new RegExp(`^\\s*${m[1]}:\\s*\\d+m?s;`, 'm'));
     }
   });
 });

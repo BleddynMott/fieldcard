@@ -6,6 +6,9 @@
   import PairShape from '../components/PairShape.svelte';
   import { config, pairParams } from '../lib/config';
   import { tokenMs } from '../lib/tokens';
+  import { pressOrClick } from '../lib/press';
+
+  const input = pressOrClick();
   import { generatePair, pairResult, type PairResult } from '../lib/events/pair';
 
   let { card, date, onstart, onresult, onnext }: { card: number; date: string; onstart: () => void; onresult: (r: PairResult) => void; onnext: () => void } = $props();
@@ -83,8 +86,8 @@
           aria-label={phase === 'ready' ? `shape ${i + 1}` : label(i)}
           aria-pressed={picked === i}
           disabled={phase !== 'play'}
-          onpointerdown={(e) => tap(i, e)}
-          onclick={(e) => e.detail === 0 && tap(i)}
+          onpointerdown={(e) => input.press(() => tap(i, e))}
+          onclick={() => input.click(() => tap(i))}
         >
           {#if phase !== 'ready'}<PairShape shape={s} />{/if}
         </button>

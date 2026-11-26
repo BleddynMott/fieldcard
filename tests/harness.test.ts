@@ -72,7 +72,8 @@ describe('no repeat', () => {
   it(`no two cards share Stop within ${REPEAT_WINDOW} days`, () => {
     const seen = new Map<string, number>();
     for (let n = 1; n <= REPEAT_WINDOW; n++) {
-      const key = canonical(generateStop(n).goes);
+      // what the player sees (round-2 a3): each notch to the nearest 1% of the track, each speed to 50 ms
+      const key = canonical(generateStop(n).goes.map((g) => [Math.round(g.notch * 100), Math.round(g.sweepMs / 50)]));
       expect(seen.get(key), `card ${n} repeats card ${seen.get(key)}`).toBeUndefined();
       seen.set(key, n);
     }

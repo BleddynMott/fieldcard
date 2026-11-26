@@ -54,9 +54,11 @@ done < <(find . \( -type f -o -type l \) \( -iname '*.css' -o -iname '*.scss' -o
 # 5. raw sizes and durations in styles
 unit='(^|[^a-zA-Z0-9_.#])[0-9]*\.?[0-9]+(px|rem|em|pt|vw|vh|vmin|vmax|deg|ms|s)([^-a-zA-Z0-9_]|$)'
 while IFS= read -r -d '' f; do
+  # comments are blanked first, across lines, keeping the line count (round-2 a6)
+  nocomment=$(perl -0pe 's{/\*.*?\*/}{ (my $c = $&) =~ s/[^\n]//g; $c }gse' "$f")
   case "$f" in
-    *.svelte) body=$(awk '/<style/{f=1} f{print FNR": "$0} /<\/style>/{f=0}' "$f") ;;
-    *) body=$(awk '{print FNR": "$0}' "$f") ;;
+    *.svelte) body=$(printf '%s\n' "$nocomment" | awk '/<style/{f=1} f{print NR": "$0} /<\/style>/{f=0}') ;;
+    *) body=$(printf '%s\n' "$nocomment" | awk '{print NR": "$0}') ;;
   esac
   hits=$(printf '%s\n' "$body" | sed -E 's#/\*[^*]*\*/##g; s/var\(--[a-z0-9-]+\)/var()/g' | grep -E "^[0-9]+: .*$unit" | grep -vE '^[0-9]+: *(/\*|\*)' | head -3)
   [ -n "$hits" ] && { say "FAIL raw size or duration outside tokens.css in $f:"; say "$hits"; fail=1; }

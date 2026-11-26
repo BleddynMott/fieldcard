@@ -233,7 +233,9 @@ button {
   .grow {
     animation: none;
   }
-  .pill {
-    transition: none;
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
   }
 }
