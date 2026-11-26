@@ -39,6 +39,12 @@
   --pair: #ec4899;
   --sort: #f97316;
 
+  /* kits: figures in Count and shapes in Pair (G-02); never a state, a person or an event */
+  --kit-1: #1e3f7a;          /* navy */
+  --kit-2: #c8643b;          /* clay */
+  --kit-3: #2f8f86;          /* teal */
+  --kit-4: #8e4f8f;          /* plum */
+
   /* states and people */
   --right: #1fa85a;          /* right, made it, where your read matched the crowd */
   --wrong: #b42318;          /* wrong, fell short; always with the ✗ mark */
@@ -125,6 +131,23 @@
   --tape-stripe: 12px;
   --shadow-trail: -14px 0 0 -6px var(--white-90), -26px 0 0 -10px var(--white-60); /* the marker's trail */
   --tilt: -1.5deg;           /* the sign board */
+  --bar-h: 56px;             /* the band at the top of a read */
+  --step-w: 22px;            /* a step mark in the band */
+  --door-h: 230px;           /* Spot it's doors */
+  --knob: 12px;
+  --field-h: 176px;          /* Count's field */
+  --fig-w: 20px;             /* a figure in Count */
+  --fig-h: 30px;
+  --tile: 84px;              /* a Repeat square */
+  --shape-cell: 72px;        /* a Pair tile */
+  --blob-cell: 64px;         /* a Sort blob */
+  --sandbox-h: 220px;        /* Pour the sand's boxes */
+  --meter-h: 14px;           /* the bucket meter */
+  --claim-h: 300px;          /* Claim it's chart */
+  --stepper: 56px;           /* Count's minus and plus */
+  --fig-stroke: 1.6;         /* a figure's outline, in its 20-unit drawing */
+  --shape-stroke: 5;         /* a Pair shape's outline, in its 100-unit drawing */
+  --shape-stroke-bold: 12;   /* an outline-style Pair shape */
 
   /* motion: set by the agent (the mock-ups are still); checked at the G-02 phone step */
   --dur-tap: 120ms;

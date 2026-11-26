@@ -216,9 +216,6 @@
   .runner.back {
     transform: translateY(-50%) scaleX(-1);
   }
-  .next {
-    margin-top: var(--space-4);
-  }
   .tries {
     display: flex;
     gap: var(--space-2);

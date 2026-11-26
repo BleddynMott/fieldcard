@@ -68,6 +68,13 @@ export class AttemptStore {
     return false;
   }
 
+  /** Card numbers finished on this device, up to `today`, for the streak. */
+  finishedCards(today: number): Set<number> {
+    const out = new Set<number>();
+    for (let n = today; n >= Math.max(1, today - this.lookBack); n--) if (this.load(n).finished && this.kv.getItem(PREFIX + n) !== null) out.add(n);
+    return out;
+  }
+
   /** Preview builds only (VITE_PREVIEW): lets him play today's card again while it is reviewed. */
   clear(card: number): void {
     this.kv.removeItem(PREFIX + card);

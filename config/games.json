@@ -1,5 +1,5 @@
 {
-  "_about": "Every number in Fieldcard lives here (G-02 R2). Colours, sizes and look durations live in design/tokens.css. Game timings that set difficulty live here (G-02 R10).",
+  "_about": "Every number in Fieldcard lives here (G-02 R2). Colours, sizes and look durations live in design/tokens.css. Game timings that set difficulty live here (G-02 R10). Labels and fact wording for each event sit beside its numbers.",
   "launch": "2026-11-26",
   "seedName": "fieldcard",
   "weekdaySteps": 7,
@@ -27,9 +27,383 @@
         "resultDecimals": 1
       }
     },
-    { "id": "count", "name": "Count", "mark": "three dots", "colour": "var(--count)" },
-    { "id": "repeat", "name": "Repeat", "mark": "looped arrow", "colour": "var(--repeat)" },
-    { "id": "pair", "name": "Pair", "mark": "two rings", "colour": "var(--pair)" },
-    { "id": "sort", "name": "Sort", "mark": "rising bars", "colour": "var(--sort)" }
+    {
+      "id": "count",
+      "name": "Count",
+      "mark": "three dots",
+      "colour": "var(--count)",
+      "how": "Count the figures in today's colour. They cross once.",
+      "params": {
+        "showMs": 4000,
+        "crossMsMonday": 2400,
+        "crossMsStepPerDay": -150,
+        "totalMonday": 14,
+        "totalStepPerDay": 3,
+        "targetShareFrom": 0.3,
+        "targetShareTo": 0.6,
+        "targetMin": 3,
+        "targetMax": 30,
+        "lanes": 4,
+        "guessMax": 60,
+        "colourIntroMs": 1200,
+        "holdRepeatMs": 110,
+        "holdDelayMs": 380
+      }
+    },
+    {
+      "id": "repeat",
+      "name": "Repeat",
+      "mark": "looped arrow",
+      "colour": "var(--repeat)",
+      "how": "Watch the squares light up, then tap them back in order.",
+      "params": {
+        "grid": 3,
+        "startLength": 3,
+        "maxLength": 9,
+        "flashMsMonday": 520,
+        "flashMsStepPerDay": -30,
+        "gapMs": 160,
+        "pauseBeforeMs": 700,
+        "betweenRoundsMs": 700
+      }
+    },
+    {
+      "id": "pair",
+      "name": "Pair",
+      "mark": "two rings",
+      "colour": "var(--pair)",
+      "how": "Two of these are exactly the same. Tap both.",
+      "params": {
+        "shapes": 12,
+        "forms": 4,
+        "styles": 3,
+        "nearShareMonday": 0.2,
+        "nearShareStepPerDay": 0.1,
+        "wrongPenaltyMs": 3000,
+        "columns": 4
+      }
+    },
+    {
+      "id": "sort",
+      "name": "Sort",
+      "mark": "rising bars",
+      "colour": "var(--sort)",
+      "how": "Drag the blobs into order, smallest to largest. Then press Done.",
+      "params": {
+        "blobs": 5,
+        "gapMonday": 0.14,
+        "gapStepPerDay": -0.018,
+        "gapMin": 0.03,
+        "wobbleFrom": 0.05,
+        "wobbleTo": 0.13,
+        "lobesFrom": 3,
+        "lobesTo": 6,
+        "areaLargest": 0.55
+      }
+    }
+  ],
+  "kits": [
+    "var(--kit-1)",
+    "var(--kit-2)",
+    "var(--kit-3)",
+    "var(--kit-4)"
+  ],
+  "week": {
+    "doors": [
+      "stop",
+      "repeat",
+      "count",
+      "stop",
+      "sort",
+      "pair",
+      "count"
+    ],
+    "read": [
+      {
+        "form": "pour",
+        "event": "count"
+      },
+      {
+        "form": "pick",
+        "event": "count"
+      },
+      {
+        "form": "fix",
+        "event": "stop"
+      },
+      {
+        "form": "pour",
+        "event": "count"
+      },
+      {
+        "form": "find",
+        "event": "repeat"
+      },
+      {
+        "form": "pick",
+        "event": "sort"
+      },
+      {
+        "form": "fix",
+        "event": "pair"
+      }
+    ],
+    "_order": "index 0 is Sunday, 1 Monday ... 6 Saturday (spec, Spot it and the Read of the day table)",
+    "readNames": {
+      "pick": "Pick the crowd",
+      "fix": "Fix the crowd",
+      "pour": "Pour the sand",
+      "find": "Find yourself"
+    },
+    "readShort": {
+      "pick": "Pick",
+      "fix": "Fix",
+      "pour": "Pour",
+      "find": "Find"
+    }
+  },
+  "doors": {
+    "stop": {
+      "metric": "signedMean",
+      "below": -2,
+      "above": 2,
+      "labels": [
+        "Early",
+        "On it",
+        "Late"
+      ],
+      "facts": [
+        "stopped early",
+        "stopped on the notch",
+        "stopped late"
+      ],
+      "ask": "Everyone had the same sweep you just had. Where did the biggest share stop: early, on the notch, or late?"
+    },
+    "count": {
+      "metric": "signedError",
+      "below": 0,
+      "above": 0,
+      "labels": [
+        "Too few",
+        "Spot on",
+        "Too many"
+      ],
+      "facts": [
+        "counted too few",
+        "counted exactly right",
+        "counted too many"
+      ],
+      "ask": "Everyone saw the same crowd you just counted. Did the biggest share say too few, spot on, or too many?"
+    },
+    "repeat": {
+      "metric": "longest",
+      "below": 5,
+      "above": 6,
+      "labels": [
+        "Under 5",
+        "5 or 6",
+        "7 or more"
+      ],
+      "facts": [
+        "repeated fewer than 5",
+        "repeated 5 or 6",
+        "repeated 7 or more"
+      ],
+      "ask": "Everyone had the same squares you just had. How far did the biggest share get?"
+    },
+    "pair": {
+      "metric": "seconds",
+      "below": 5,
+      "above": 10,
+      "labels": [
+        "Under 5 s",
+        "5 to 10 s",
+        "Over 10 s"
+      ],
+      "facts": [
+        "found the pair in under 5 seconds",
+        "found it in 5 to 10 seconds",
+        "took over 10 seconds"
+      ],
+      "ask": "Everyone had the same twelve shapes you just had. How long did the biggest share take?"
+    },
+    "sort": {
+      "metric": "pairsOut",
+      "below": 1,
+      "above": 1,
+      "labels": [
+        "Perfect",
+        "One pair out",
+        "More"
+      ],
+      "facts": [
+        "sorted them perfectly",
+        "had one pair out",
+        "had more than one pair out"
+      ],
+      "ask": "Everyone had the same five blobs you just had. How did the biggest share do?"
+    }
+  },
+  "boxes": {
+    "_rule": "a result goes in the first box whose cut it is below; the last box takes the rest",
+    "stop": {
+      "metric": "signedMean",
+      "cuts": [
+        -6,
+        -2,
+        2,
+        6
+      ],
+      "labels": [
+        "very early",
+        "early",
+        "on it",
+        "late",
+        "very late"
+      ],
+      "ask": "Where did everyone stop, on average?"
+    },
+    "count": {
+      "metric": "signedError",
+      "cuts": [
+        -2.5,
+        -0.5,
+        0.5,
+        2.5
+      ],
+      "labels": [
+        "3+ under",
+        "1–2 under",
+        "spot on",
+        "1–2 over",
+        "3+ over"
+      ],
+      "ask": "Where did the crowd's guesses land?"
+    },
+    "repeat": {
+      "metric": "longest",
+      "cuts": [
+        3.5,
+        5.5,
+        6.5,
+        7.5
+      ],
+      "labels": [
+        "0–3",
+        "4–5",
+        "6",
+        "7",
+        "8–9"
+      ],
+      "ask": "How far did the crowd get?"
+    },
+    "pair": {
+      "metric": "seconds",
+      "cuts": [
+        4,
+        6,
+        9,
+        14
+      ],
+      "labels": [
+        "under 4 s",
+        "4–6 s",
+        "6–9 s",
+        "9–14 s",
+        "over 14 s"
+      ],
+      "ask": "How long did the crowd take?"
+    },
+    "sort": {
+      "metric": "pairsOut",
+      "cuts": [
+        0.5,
+        1.5,
+        2.5,
+        4.5
+      ],
+      "labels": [
+        "0 out",
+        "1 out",
+        "2 out",
+        "3–4 out",
+        "5+ out"
+      ],
+      "ask": "How many pairs did the crowd get out of order?"
+    }
+  },
+  "pour": {
+    "bucket": 100,
+    "pourPerSecond": 45,
+    "matchTick": 70,
+    "pointsPerOverlap": 0.8
+  },
+  "scoring": {
+    "spotPoints": 10,
+    "readPoints": 80,
+    "hotSeatPoints": 10,
+    "flagShortMultiplier": 2,
+    "beadsPer": 5
+  },
+  "crowd": {
+    "_about": "The simulated crowd, used until 200 real finishers (spec). Every reveal says so.",
+    "size": 400,
+    "realFinishersNeeded": 200,
+    "skillShare": 0.6,
+    "stop": {
+      "sdBase": 4.5,
+      "skillEffect": 0.35,
+      "refSweepMs": 900,
+      "biasSd": 2.5
+    },
+    "count": {
+      "biasMean": -0.06,
+      "biasSd": 0.08,
+      "sd": 0.16,
+      "skillEffect": 0.3
+    },
+    "repeat": {
+      "mean": 5.6,
+      "skillEffect": 1.4,
+      "stepPenalty": 0.12,
+      "noise": 0.8,
+      "msPerItem": 650,
+      "timeNoise": 0.2
+    },
+    "pair": {
+      "medianMs": 5200,
+      "nearEffect": 1.2,
+      "skillEffect": 0.3,
+      "noise": 0.35,
+      "wrongChance": 0.25
+    },
+    "sort": {
+      "perceptionSd": 0.06,
+      "skillEffect": 0.3,
+      "medianMs": 7000,
+      "timeNoise": 0.3
+    },
+    "spot": {
+      "rightBase": 0.45,
+      "skillEffect": 0.12
+    },
+    "read": {
+      "weightBase": 0.5,
+      "weightSkill": 0.15,
+      "noise": 0.08
+    },
+    "flag": {
+      "bias": 8,
+      "sd": 15
+    }
+  },
+  "streak": {
+    "repairsPerWeek": 1
+  },
+  "kitNames": [
+    "navy",
+    "clay",
+    "teal",
+    "plum"
   ]
 }

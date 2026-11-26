@@ -5,9 +5,10 @@
     card,
     date,
     firstTime,
+    started = false,
     opensOn,
     onplay,
-  }: { card: number | null; date: string; firstTime: boolean; opensOn: string; onplay: () => void } = $props();
+  }: { card: number | null; date: string; firstTime: boolean; started?: boolean; opensOn: string; onplay: () => void } = $props();
 </script>
 
 <section class="screen">
@@ -28,7 +29,7 @@
   {/if}
 
   {#if card !== null}
-    <div class="foot"><button class="pill" onclick={onplay}>Play card #{card}</button></div>
+    <div class="foot"><button class="pill" onclick={onplay}>{started ? `Carry on with card #${card}` : `Play card #${card}`}</button></div>
   {/if}
 </section>
 
