@@ -109,6 +109,23 @@
   --space-6: 24px;
   --space-8: 48px;
 
+  /* component sizes: the mock-up wrote these literally and no token is near (G-02 R7) */
+  --page-max: 480px;         /* the card column on wide screens */
+  --lawn-stripe: 39px;       /* one mown stripe */
+  --ev-lawn-h: 140px;        /* lawn band above an event */
+  --bib-w: 56px;             /* event bib */
+  --bib-h: 48px;
+  --bib-hole: 5px;           /* the bib's two pin holes */
+  --chip: 44px;              /* coloured mark tile */
+  --mark: 22px;              /* a mark inside a bib or chip */
+  --mark-stroke: 2.6;        /* mark stroke, in the mark's 24-unit drawing */
+  --lane-h: 150px;           /* Stop's track */
+  --runner: 36px;            /* Stop's marker */
+  --tape-w: 16px;            /* Stop's notch */
+  --tape-stripe: 12px;
+  --shadow-trail: -14px 0 0 -6px var(--white-90), -26px 0 0 -10px var(--white-60); /* the marker's trail */
+  --tilt: -1.5deg;           /* the sign board */
+
   /* motion: set by the agent (the mock-ups are still); checked at the G-02 phone step */
   --dur-tap: 120ms;
   --dur-reveal: 600ms;       /* doors open, sand pours, beads drop */

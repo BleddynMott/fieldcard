@@ -1,0 +1,65 @@
+/* Global layout. Every value is a token from design/tokens.css (imported in main.ts). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--size-m);
+  line-height: var(--lh-body);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  max-width: var(--page-max);
+  min-height: 100dvh;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pill {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: var(--space-4);
+  border-radius: var(--r-pill);
+  border: var(--line) solid var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--size-xl);
+  background: var(--lawn);
+  color: var(--chalk);
+  box-shadow: var(--shadow-m);
+  transition: transform var(--dur-tap);
+}
+
+.pill:active {
+  transform: translateY(var(--space-1));
+}
+
+.mark-svg {
+  width: var(--mark);
+  height: var(--mark);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--mark-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

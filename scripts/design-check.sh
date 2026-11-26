@@ -10,7 +10,7 @@
 #      non-blank name, a non-blank mark, and a colour that is a token defined in tokens.css;
 #   4. design/DESIGN.md is over 60 lines, or design/tokens.css is missing or holds no tokens.
 # Not scanned (not build code): design/directions/ (mock-ups), design/references/, design/reference/,
-# tasks/, scripts/, .method/, .claude/, .githooks/, .git/, node_modules/.
+# tasks/, scripts/, .method/, .claude/, .githooks/, .git/, node_modules/, dist/ (built output, G-02 R9).
 # Usage: bash scripts/design-check.sh [repo-root]
 set -uo pipefail
 root="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -35,7 +35,7 @@ while IFS= read -r -d '' f; do
   # a typeface value: any font declaration whose value names something other than var(--...) tokens
   fonts=$(grep -noiE "$font" "$f" 2>/dev/null | while IFS= read -r line; do
             val=$(printf '%s' "$line" | sed -E 's/^[0-9]+://; s/^[^:=]*[:=][[:space:]]*//; s/var\(--[a-z0-9-]+\)//g; s/[[:space:],;"'"'"'`]//g; s/!important//')
-            [ -n "$val" ] && printf '%s\n' "$line"
+            case "$val" in (''|inherit|initial|unset|revert|revert-layer) ;; (*) printf '%s\n' "$line" ;; esac  # CSS-wide keywords name no typeface
           done | head -3)
   [ -n "$fonts" ] && { say "FAIL typeface value outside tokens.css in $f:"; say "$fonts"; fail=1; }
 done < <(find . \( -type f -o -type l \) \( -iname '*.css' -o -iname '*.scss' -o -iname '*.sass' -o -iname '*.less' -o -iname '*.pcss' \
@@ -44,7 +44,7 @@ done < <(find . \( -type f -o -type l \) \( -iname '*.css' -o -iname '*.scss' -o
           -o -iname '*.json' -o -iname '*.webmanifest' \) \
         -not -path './design/tokens.css' -not -path './design/directions/*' -not -path './design/references/*' \
         -not -path './design/reference/*' -not -path './tasks/*' -not -path './.method/*' -not -path './.claude/*' \
-        -not -path './.githooks/*' -not -path './.github/*' -not -path './scripts/*' -not -path './.git/*' -not -path '*/node_modules/*' \
+        -not -path './.githooks/*' -not -path './.github/*' -not -path './scripts/*' -not -path './.git/*' -not -path '*/node_modules/*' -not -path './dist/*' \
         -not -name 'package.json' -not -name 'package-lock.json' -not -name 'tsconfig*.json' -print0 2>/dev/null)
 
 # 2. reference screenshots: present, PNG, 390 px wide

@@ -1,0 +1,30 @@
+{
+  "_about": "Every number in Fieldcard lives here (G-02 R2). Colours, sizes and look durations live in design/tokens.css. Game timings that set difficulty live here (G-02 R10).",
+  "launch": "2026-11-26",
+  "seedName": "fieldcard",
+  "weekdaySteps": 7,
+  "games": [
+    {
+      "id": "stop",
+      "name": "Stop",
+      "mark": "notch on a line",
+      "colour": "var(--stop)",
+      "how": "Stop the marker on the notch. Three goes.",
+      "params": {
+        "goes": 3,
+        "notchFrom": 0.2,
+        "notchTo": 0.8,
+        "notchApartMin": 0.15,
+        "sweepMsMonday": 1500,
+        "sweepMsStepPerDay": -90,
+        "sweepMsJitter": 0.12,
+        "pauseBetweenGoesMs": 900,
+        "resultDecimals": 1
+      }
+    },
+    { "id": "count", "name": "Count", "mark": "three dots", "colour": "var(--count)" },
+    { "id": "repeat", "name": "Repeat", "mark": "looped arrow", "colour": "var(--repeat)" },
+    { "id": "pair", "name": "Pair", "mark": "two rings", "colour": "var(--pair)" },
+    { "id": "sort", "name": "Sort", "mark": "rising bars", "colour": "var(--sort)" }
+  ]
+}

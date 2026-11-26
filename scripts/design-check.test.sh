@@ -71,5 +71,15 @@ expect fail "a PNG signature followed by junk" "$d"
 d=$(fresh); mkdir -p "$d/src"; printf '#add-button { font: var(--size-m) var(--font-body); color: var(--ink); }\n' > "$d/src/ok.css"
 expect pass "an id selector and token-only font shorthand" "$d"
 
+# G-02 R9: built output in dist/ is skipped; the same value in src/ is still refused
+d=$(fresh); mkdir -p "$d/dist/assets"; printf '.x { color: #%s; }\n' "ff0000" > "$d/dist/assets/index.css"
+expect pass "a colour in built output (dist/) is skipped" "$d"
+d=$(fresh); mkdir -p "$d/dist" "$d/src/dist"; printf '.x { color: #%s; }\n' "ff0000" > "$d/src/dist/a.css"
+expect fail "a colour in src/dist/ is still refused (only the root dist/ is skipped)" "$d"
+
+d=$(fresh); mkdir -p "$d/src"; printf 'button { font: inherit; }\n' > "$d/src/reset.css"
+expect pass "a CSS-wide keyword (font: inherit) names no typeface" "$d"
+plant "a keyword followed by a typeface"  "src/a.css"        ".x { font-family: inherit, Arial; }"
+
 printf '\n  passed: %d   failed: %d\n' "$pass" "$fail"
 [ "$fail" -eq 0 ]
