@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · Sports day · round 6: the drafted run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e4; --ink:#22201c; --lawn:#4f8f4a; --lawn2:#5e9e56; --chalk:#fffdf7; --dim:#7a7064; --track:#c8643b;
+    --stop:#e5484d; --count:#3b82f6; --repeat:#8b5cf6; --pair:#ec4899; --sort:#f97316;
+    --hit:#1fa85a; --gold:#e8b100; --you:#f5c518; --crowd:#3b82f6; --sand:#e9c98f; --sand2:#c99a52; --oxf:#1e3a8a; --cam:#4aa3d8;
+    --disp:"Bowlby One","Arial Black",sans-serif; --body:"Outfit",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px}
+  .intro{padding:18px;background:var(--chalk);border-bottom:3px solid var(--ink)}
+  .intro h1{font-family:var(--disp);font-size:24px;font-weight:400;line-height:1.1}
+  .intro p{margin-top:8px;line-height:1.4;color:#4a443c;font-size:15px}
+  .flow{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-weight:800;font-size:12.5px}
+  .flow span{border:2px solid var(--ink);border-radius:99px;padding:3px 9px;background:var(--paper)}
+  .flow i{font-style:normal;color:var(--dim)}
+  .cap{padding:16px 18px 6px;font-weight:800;letter-spacing:2px;font-size:12px;color:var(--dim)}
+  .cap b{color:var(--ink)}
+  .screen{position:relative;width:390px;height:720px;overflow:hidden;background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+  .bar{height:56px;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+  .bar .t{font-family:var(--disp);color:var(--chalk);font-size:16px;letter-spacing:1px;text-shadow:0 2px 0 var(--ink)}
+  .bar .steps{display:flex;gap:5px}
+  .bar .steps i{width:22px;height:8px;border-radius:9px;background:#ffffff70;border:2px solid var(--ink)}
+  .bar .steps i.on{background:var(--you)} .bar .steps i.done{background:var(--chalk)}
+  .idea{margin:16px 18px 0;font-weight:800;font-size:12px;letter-spacing:2px;color:var(--dim)}
+  .ask{font-family:var(--disp);font-size:27px;line-height:1.05;margin:4px 18px 0}
+  .sub{margin:6px 18px 0;color:#4a443c;font-size:15px;line-height:1.35}
+  .big{font-family:var(--disp);font-size:40px;line-height:1;margin:16px 18px 0}
+  .card{margin:16px 18px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:20px;padding:16px;box-shadow:0 6px 0 var(--ink)}
+  .fact{margin:16px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);font-size:15px;line-height:1.3}
+  .fact b{font-family:var(--disp);font-weight:400;font-size:19px;display:block;line-height:1.1;margin-bottom:4px}
+  .result{position:absolute;left:18px;right:18px;bottom:22px;display:flex;align-items:center;gap:10px;padding:13px 16px;border:3px solid var(--ink);border-radius:16px;background:var(--hit);color:#fff;font-weight:800;font-size:16px;box-shadow:0 5px 0 var(--ink)}
+  .result.bad{background:var(--stop)} .result.mid{background:var(--gold);color:var(--ink)}
+  .result .pts{margin-left:auto;font-family:var(--disp);font-size:22px}
+  .pill{position:absolute;left:18px;right:18px;bottom:22px;text-align:center;padding:15px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:20px;background:var(--lawn);color:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  .pill.alt{background:var(--chalk);color:var(--ink)}
+  svg.fig{display:block}
+  /* home */
+  .home-lawn{height:210px;position:relative;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink)}
+  .board{position:absolute;left:50%;top:26px;transform:translateX(-50%) rotate(-1.5deg);background:var(--chalk);border:3px solid var(--ink);border-radius:14px;padding:10px 22px 8px;text-align:center;box-shadow:0 6px 0 var(--ink)}
+  .board .t{font-family:var(--disp);font-size:34px;line-height:1}
+  .board .s{font-weight:700;font-size:13px;color:var(--dim);margin-top:3px}
+  .seat{margin:-58px 18px 0;position:relative;background:var(--chalk);border:3px solid var(--ink);border-radius:22px;padding:16px;box-shadow:0 7px 0 var(--ink)}
+  .seat .lab{display:inline-block;background:var(--stop);color:#fff;font-weight:800;font-size:12px;letter-spacing:2px;border:2px solid var(--ink);border-radius:99px;padding:2px 10px}
+  .seat h3{font-family:var(--disp);font-weight:400;font-size:22px;line-height:1.1;margin-top:10px}
+  .seat p{font-size:14.5px;color:#4a443c;margin-top:6px;line-height:1.35}
+  .chair{display:flex;align-items:center;gap:12px;margin-top:10px}
+  .chair .who{font-weight:800;font-size:14px}
+  .chair .who small{display:block;font-weight:600;color:var(--dim);font-size:13px}
+  .yn{display:flex;gap:10px;margin-top:14px}
+  .yn div{flex:1;text-align:center;padding:12px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:18px;background:var(--paper);box-shadow:0 4px 0 var(--ink)}
+  .yn div.on{background:var(--you)}
+  .split{display:flex;height:34px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;margin-top:12px;font-weight:800;font-size:13px}
+  .split span{display:flex;align-items:center;padding:0 10px}
+  /* doors */
+  .doors{display:flex;gap:10px;margin:18px 18px 0}
+  .door{flex:1;position:relative;height:230px;border:3px solid var(--ink);border-radius:60px 60px 10px 10px;background:#8b5a3c;box-shadow:0 6px 0 var(--ink);overflow:hidden}
+  .door .panel{position:absolute;inset:14px 14px 50px;border:3px solid #6b4029;border-radius:46px 46px 6px 6px}
+  .door .knob{position:absolute;right:14px;top:120px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--ink)}
+  .door .sign{position:absolute;left:8px;right:8px;bottom:10px;text-align:center;background:var(--chalk);border:2.5px solid var(--ink);border-radius:8px;font-family:var(--disp);font-size:16px;padding:3px 0}
+  .door svg.mini{position:absolute;left:50%;top:44px;transform:translateX(-50%)}
+  .door.pick{box-shadow:0 0 0 4px var(--you),0 6px 0 var(--ink)}
+  .door.open{background:#2b1a10}
+  .door.open .panel{display:none}
+  .door .pct{position:absolute;left:0;right:0;top:10px;text-align:center;font-family:var(--disp);font-size:26px;color:#fff;text-shadow:0 2px 0 var(--ink)}
+  .door .crowdin{position:absolute;left:6px;right:6px;bottom:50px;display:flex;flex-wrap:wrap-reverse;gap:2px;justify-content:center}
+  /* sand */
+  .sandbox{position:relative;height:300px;margin-top:4px}
+  .slotrow{position:absolute;left:0;right:0;bottom:0;display:flex;gap:6px;height:240px;align-items:flex-end}
+  .slot{flex:1;height:100%;position:relative;border:3px solid var(--ink);border-top:0;border-radius:0 0 12px 12px;background:linear-gradient(#fffdf700,#f6f0e4)}
+  .pile{position:absolute;left:3px;right:3px;bottom:3px;border-radius:40px 40px 8px 8px}
+  .pile.me{background:repeating-linear-gradient(135deg,var(--sand) 0 5px,var(--sand2) 5px 7px);border:2px solid var(--ink)}
+  .pile.crowd{background:#3b82f6cc;border:2px solid var(--ink)}
+  .pile.match{box-shadow:0 0 0 3px var(--gold),0 0 18px var(--gold)}
+  .slot .lbl{position:absolute;left:-4px;right:-4px;bottom:-40px;text-align:center;font-size:11px;font-weight:800;color:var(--dim);line-height:1.1}
+  .tap{position:absolute;top:0;width:44px;height:44px;margin-left:-22px;border-radius:50%;background:#22201c22;border:3px dashed var(--ink)}
+  .stream{position:absolute;top:44px;width:10px;margin-left:-5px;height:96px;background:repeating-linear-gradient(var(--sand2) 0 4px,transparent 4px 8px)}
+  .meter{display:flex;align-items:center;gap:8px;margin-top:52px;font-weight:800;font-size:13px;color:var(--dim)}
+  .meter .m{flex:1;height:14px;border:2.5px solid var(--ink);border-radius:9px;overflow:hidden;background:var(--paper)}
+  .meter .m i{display:block;height:100%;width:28%;background:repeating-linear-gradient(135deg,var(--sand) 0 5px,var(--sand2) 5px 7px)}
+  /* queue */
+  .queue{position:relative;height:210px;margin-top:6px}
+  .lane{position:absolute;left:0;right:0;top:120px;height:22px;background:var(--track);border:3px solid var(--ink);border-radius:8px}
+  .qlbl{position:absolute;top:150px;font-size:11px;font-weight:800;color:var(--dim)}
+  .stake{display:flex;gap:8px;margin-top:4px}
+  .stake div{flex:1;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700;color:var(--dim);background:var(--paper)}
+  .stake b{display:block;font-family:var(--disp);font-weight:400;font-size:22px;color:var(--ink)}
+  .stake .w b{color:var(--hit)} .stake .l b{color:var(--stop)}
+  /* scorecard */
+  .hh{display:flex;gap:10px;margin:14px 18px 0}
+  .hh div{flex:1;border:3px solid var(--ink);border-radius:18px;background:var(--chalk);padding:12px 12px 10px;box-shadow:0 5px 0 var(--ink)}
+  .hh small{font-weight:800;font-size:12px;letter-spacing:2px;color:var(--dim)}
+  .hh b{display:block;font-family:var(--disp);font-weight:400;font-size:44px;line-height:1}
+  .hh span{display:block;font-size:13px;font-weight:600;color:#4a443c;line-height:1.25;margin-top:4px}
+  .claimline{margin:12px 18px 0;display:flex;align-items:center;gap:10px;border:3px solid var(--ink);border-radius:14px;padding:9px 12px;background:#fde3e1;font-weight:700;font-size:14px}
+  .claimline b{margin-left:auto;font-family:var(--disp);font-weight:400;font-size:20px;color:var(--stop)}
+  .duel{margin:12px 18px 0;border:3px solid var(--ink);border-radius:18px;background:var(--chalk);padding:12px 14px;box-shadow:0 5px 0 var(--ink)}
+  .duel .vs{display:flex;align-items:center;justify-content:space-between}
+  .duel .p{text-align:center;width:120px}
+  .duel .p b{display:block;font-family:var(--disp);font-weight:400;font-size:26px}
+  .duel .p small{display:block;font-size:12px;font-weight:700;color:var(--dim)}
+  .duel .x{font-family:var(--disp);font-size:18px;color:var(--dim)}
+  .rope{position:relative;height:40px;margin-top:8px}
+  .rope .r{position:absolute;left:0;right:0;top:15px;height:10px;border-radius:9px;background:repeating-linear-gradient(60deg,#c9a26b 0 6px,#a9824e 6px 12px);border:2px solid var(--ink)}
+  .rope .mid{position:absolute;left:50%;top:2px;width:3px;height:36px;background:var(--ink)}
+  .rope .knot{position:absolute;top:7px;width:16px;height:26px;margin-left:-8px;background:var(--stop);border:2.5px solid var(--ink);border-radius:4px}
+  .teamline{display:flex;justify-content:space-between;font-weight:800;font-size:13px}
+  /* class photo */
+  .photo{margin:16px 18px 0;border:3px solid var(--ink);border-radius:12px;background:linear-gradient(#cfe3f5 0 30%,var(--lawn) 30%);padding:14px 8px 10px;box-shadow:0 6px 0 var(--ink);position:relative}
+  .photo .banner{position:absolute;left:50%;top:-14px;transform:translateX(-50%);background:var(--chalk);border:2.5px solid var(--ink);border-radius:8px;padding:2px 12px;font-family:var(--disp);font-size:14px;white-space:nowrap}
+  .rowp{display:flex;justify-content:center;gap:2px;margin-top:-4px}
+  .photo .bench{height:8px;background:#8b5a3c;border:2px solid var(--ink);border-radius:4px;margin:0 6px}
+  .rowlab{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--chalk);padding:4px 6px 0}
+  .persona{margin:14px 18px 0;border:3px solid var(--ink);border-radius:18px;background:var(--you);padding:14px 16px;box-shadow:0 6px 0 var(--ink)}
+  .persona small{font-weight:800;letter-spacing:2px;font-size:11px}
+  .persona h3{font-family:var(--disp);font-weight:400;font-size:28px;line-height:1;margin-top:4px}
+  .persona p{margin-top:6px;font-size:14px;line-height:1.35;font-weight:600}
+  .rules{padding:18px;background:var(--chalk);border-top:3px solid var(--ink);font-size:14px;line-height:1.45;color:#4a443c}
+  .rules h2{font-family:var(--disp);font-weight:400;font-size:20px;color:var(--ink);margin:14px 0 4px}
+  .rules h2:first-child{margin-top:0}
+  .rules b{color:var(--ink)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="person" viewBox="0 0 20 30"><circle cx="10" cy="7" r="5.5"/><path d="M3 29 V19 Q3 13 10 13 Q17 13 17 19 V29 Z"/></symbol>
+</svg>
+
+<section class="intro">
+  <h1>Round 6 · the drafted run</h1>
+  <p>Your keeps in one run. Every screen has one job and one picture. Other players are always "everyone" or "the crowd". Two scores: <b>Hands</b> (the events) and <b>Hunch</b> (reading the crowd).</p>
+  <div class="flow"><span>Hot Seat</span><i>→</i><span>5 events</span><i>→</i><span>Spot it</span><i>→</i><span>Draw it</span><i>→</i><span>Claim it</span><i>→</i><span>Scorecard</span><i>…</i><span>Sunday</span></div>
+</section>
+
+<!-- HOME / HOT SEAT -->
+<div class="cap">HOME · <b>THE HOT SEAT</b> · ONE TAP BEFORE YOU PLAY</div>
+<section class="screen">
+  <div class="home-lawn"><div class="board"><div class="t">FIELDCARD</div><div class="s">Card #41 · Wed 25 Nov</div></div></div>
+  <div class="seat">
+    <span class="lab">THE HOT SEAT</span>
+    <h3>Yesterday, one player claimed they beat 90% of everyone.</h3>
+    <div class="chair"><svg class="fig" width="34" height="50" fill="#e5484d" stroke="#22201c" stroke-width="1.6"><use href="#person"/></svg><div class="who">A player from Leeds<small>Card #40 · played 6:52 am · 31-day streak</small></div></div>
+    <p>Did they make it?</p>
+    <div class="yn"><div class="on">Made it</div><div>Fell short</div></div>
+  </div>
+  <div class="pill">Play card #41</div>
+</section>
+<div class="cap">THE HOT SEAT · REVEAL, BEFORE THE EVENTS START</div>
+<section class="screen" style="height:520px">
+  <div class="bar"><span class="t">THE HOT SEAT</span><span class="steps"></span></div>
+  <div class="big">They beat 96%.</div>
+  <div class="sub">You said they'd make it. Most people didn't:</div>
+  <div class="card"><div style="font-weight:800;font-size:14px">What everyone said</div>
+    <div class="split"><span style="width:32%;background:var(--hit);color:#fff">Made it 32%</span><span style="flex:1;background:#e7dfd0">Fell short 68%</span></div>
+    <div style="font-size:13.5px;color:#4a443c;margin-top:10px;line-height:1.35">They'll see this tonight: <b>68% of everyone bet against them.</b></div></div>
+  <div class="result">You backed them, and they did it<span class="pts">✓</span></div>
+</section>
+
+<!-- SPOT IT -->
+<div class="cap">AFTER THE FIVE EVENTS · <b>SPOT IT</b> · THREE DOORS</div>
+<section class="screen">
+  <div class="bar"><span class="t">SPOT IT</span><span class="steps"><i class="on"></i><i></i><i></i></span></div>
+  <div class="idea">THREE DOORS · STOP</div>
+  <div class="ask">Which door did the crowd go through?</div>
+  <div class="sub">Everyone had the same sweep you just had. Did most of them stop early, on the notch, or late?</div>
+  <div class="doors" id="doorsIn"></div>
+  <div class="pill">Open the doors</div>
+</section>
+<div class="cap">SPOT IT · REVEAL</div>
+<section class="screen">
+  <div class="bar"><span class="t">SPOT IT</span><span class="steps"><i class="on"></i><i></i><i></i></span></div>
+  <div class="idea">THREE DOORS · STOP</div>
+  <div class="ask">The crowd went late.</div>
+  <div class="doors" id="doorsOut"></div>
+  <div class="fact"><b>61% stopped late.</b>People wait to see the marker arrive, and by then it's gone.</div>
+  <div class="result">You picked the crowd's door<span class="pts">✓</span></div>
+</section>
+
+<!-- DRAW IT -->
+<div class="cap"><b>DRAW IT</b> · POUR THE SAND</div>
+<section class="screen">
+  <div class="bar"><span class="t">DRAW IT</span><span class="steps"><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="idea">POUR THE SAND · COUNT</div>
+  <div class="ask">Where did the crowd's guesses land?</div>
+  <div class="sub">The answer was 17. Hold your finger over a box to pour sand: more sand, more people. You have one bucket.</div>
+  <div class="card"><div class="sandbox" id="sandIn"></div>
+    <div class="meter">Bucket<div class="m"><i></i></div>28% left</div></div>
+</section>
+<div class="cap">DRAW IT · THE CROWD POURS IN</div>
+<section class="screen">
+  <div class="bar"><span class="t">DRAW IT</span><span class="steps"><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="idea">POUR THE SAND · COUNT</div>
+  <div class="ask">Your sand, then the crowd's.</div>
+  <div class="card" style="padding-bottom:46px"><div class="sandbox" id="sandOut"></div></div>
+  <div class="fact"><b>Most people said 15 or 16.</b>A moving crowd always looks smaller than it is.</div>
+  <div class="result mid">Gold where you matched: 83% of your sand<span class="pts">83</span></div>
+</section>
+
+<!-- CLAIM IT -->
+<div class="cap"><b>CLAIM IT</b> · JOIN THE QUEUE</div>
+<section class="screen">
+  <div class="bar"><span class="t">CLAIM IT</span><span class="steps"><i class="done"></i><i class="done"></i><i class="on"></i></span></div>
+  <div class="idea">JOIN THE QUEUE · TODAY'S FIVE EVENTS</div>
+  <div class="ask">Where did you finish?</div>
+  <div class="sub">Everyone, queued from worst to best. Each figure is 5 in 100. Step into the queue.</div>
+  <div class="card"><div class="queue" id="qIn"></div>
+    <div class="stake"><div class="w">Get there or further<b>+70</b></div><div class="l">Fall short<b>−2 a step</b></div></div></div>
+  <div class="pill">Step in</div>
+</section>
+<div class="cap">CLAIM IT · THE QUEUE SORTS ITSELF</div>
+<section class="screen">
+  <div class="bar"><span class="t">CLAIM IT</span><span class="steps"><i class="done"></i><i class="done"></i><i class="on"></i></span></div>
+  <div class="idea">JOIN THE QUEUE · TODAY'S FIVE EVENTS</div>
+  <div class="ask">You finished 13 behind your claim.</div>
+  <div class="card"><div class="queue" id="qOut"></div></div>
+  <div class="fact"><b>3 in 4 of everyone stood too far forward.</b>You claimed 70; you finished at 57.</div>
+  <div class="result bad">13 short, lose double<span class="pts">−26</span></div>
+</section>
+
+<!-- SCORECARD -->
+<div class="cap"><b>SCORECARD</b> · HANDS AND HUNCH · MIRROR DUEL</div>
+<section class="screen" style="height:auto;padding-bottom:24px">
+  <div class="bar"><span class="t">SCORECARD #41</span><span class="steps"><i class="done"></i><i class="done"></i><i class="done"></i></span></div>
+  <div class="hh">
+    <div><small>HANDS</small><b>57</b><span>You beat 57 in 100 at the events.</span></div>
+    <div style="background:#e4f5ea"><small>HUNCH</small><b>82</b><span>You read the crowd better than 82 in 100.</span></div>
+  </div>
+  <div class="claimline">Claim: said 70, finished 57<b>−26</b></div>
+  <div class="duel">
+    <div style="font-weight:800;font-size:12px;letter-spacing:2px;color:var(--dim)">YOUR DUEL TODAY · HUNCH V HUNCH</div>
+    <div class="vs" style="margin-top:6px">
+      <div class="p"><svg class="fig" width="26" height="38" fill="#f5c518" stroke="#22201c" stroke-width="1.6" style="margin:0 auto"><use href="#person"/></svg><b>82</b><small>You · Oxford</small></div>
+      <div class="x">beat</div>
+      <div class="p"><svg class="fig" width="26" height="38" fill="#4aa3d8" stroke="#22201c" stroke-width="1.6" style="margin:0 auto"><use href="#person"/></svg><b>74</b><small>A player · Cambridge</small></div>
+    </div>
+    <div class="rope"><div class="r"></div><div class="mid"></div><div class="knot" style="left:38%"></div></div>
+    <div class="teamline"><span style="color:var(--oxf)">Oxford won 214 duels</span><span style="color:#2b7fb0">Cambridge 167</span></div>
+  </div>
+  <div class="card" style="background:var(--ink);color:var(--chalk);box-shadow:none;padding:12px 14px;white-space:pre;font-weight:600;font-size:15px;line-height:1.4"><span style="font-size:10.5px;letter-spacing:2px;color:#b7ad9c">SHARE TEXT</span>
+Fieldcard #41
+Hands 57 · Hunch 82
+Claimed 70, made 57 · Oxford won</div>
+</section>
+
+<!-- SUNDAY -->
+<div class="cap"><b>SUNDAY</b> · CLASS PHOTO</div>
+<section class="screen" style="height:auto;padding-bottom:24px">
+  <div class="bar"><span class="t">YOUR WEEK · 23–29 NOV</span><span class="steps"></span></div>
+  <div class="photo" id="photo" style="margin-top:28px"><span class="banner">WEEK 48 · THE WHOLE FIELD</span></div>
+  <div style="margin:8px 18px 0;font-size:13px;font-weight:700;color:var(--dim)">Front row: the best at reading the crowd this week. You're the one in colour, second row.</div>
+  <div class="persona"><small>THIS WEEK YOU WERE</small><h3>The Show-off Scout</h3><p>You claimed 11 higher than you finished on 5 days of 6, but you read the crowd better than nearly everyone.</p></div>
+</section>
+
+<section class="rules">
+  <h2>Rules behind the draft</h2>
+  <p><b>The Hot Seat.</b> Each day one player from yesterday who chose to be eligible, shown only by town, time and streak. One tap: did they make their claim? It counts toward Hunch. The seated player sees tonight how everyone bet on them.</p>
+  <p><b>Spot it (Three Doors).</b> One tap on one event, which rotates daily. Right if you pick the door most of the crowd went through.</p>
+  <p><b>Draw it (Pour the Sand).</b> Five boxes; one bucket of sand to share between them by holding your finger over a box. Score: the share of your sand that sits where the crowd's sand also sits, 0 to 100.</p>
+  <p><b>Claim it (Join the Queue).</b> 20 figures, each 5 in 100 of everyone. Step in where you think you finished. Get there or further: score your claim. Fall short: lose 2 for every point short.</p>
+  <p><b>Hands</b> is your place in the five events, out of 100. <b>Hunch</b> is your place among everyone at the Hot Seat, Spot it and Draw it, out of 100. Claim points are kept apart and feed the Sunday character.</p>
+  <p><b>Mirror Duel.</b> Each member is paired with a random member of today's rival team; higher Hunch wins the duel. The team that wins the larger share of duels pulls the rope. Using a share, not a count, means a small team is not beaten by size alone.</p>
+  <p><b>Class Photo.</b> Every Sunday: up to 60 figures drawn from the week's field, rows by weekly Hunch, front row best. Your figure is the coloured one.</p>
+</section>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+function fig(color,w=12,h=18){return `<svg class="fig" width="${w}" height="${h}" fill="${color}" stroke="#22201c" stroke-width="1.4"><use href="#person"/></svg>`}
+// doors
+const DOORS=[['Early',18,'early'],['On it',21,'on'],['Late',61,'late']];
+function doors(id,reveal){const host=document.getElementById(id);DOORS.forEach(([n,p,k])=>{const d=document.createElement('div');
+  d.className='door'+(k==='late'?' pick':'')+(reveal&&k==='late'?' open':'');
+  let inner=`<div class="panel"></div><div class="knob"></div><div class="sign">${n}</div>`;
+  const off={early:-0.22,on:0,late:0.22}[k];
+  inner+=`<svg class="mini" width="70" height="26"><rect x="1" y="14" width="68" height="10" rx="3" fill="#c8643b" stroke="#22201c" stroke-width="2"/><rect x="33" y="8" width="4" height="18" fill="#e5484d" stroke="#22201c" stroke-width="1.2"/><circle cx="${35+off*120}" cy="8" r="5" fill="#fff" stroke="#22201c" stroke-width="2"/></svg>`;
+  if(reveal){inner+=`<div class="pct">${p}%</div><div class="crowdin">${Array.from({length:Math.round(p/4)},(_,i)=>fig(k==='late'&&i===0?'#f5c518':'#3b82f6',11,16)).join('')}</div>`}
+  d.innerHTML=inner;host.appendChild(d)})}
+doors('doorsIn',false);doors('doorsOut',true);
+// sand
+const LBL=['3+ under','1–2 under','spot on','1–2 over','3+ over'];
+const ME=[10,25,35,20,10], CROWD=[15,36,18,21,10];
+function sand(id,reveal){const host=document.getElementById(id);const row=document.createElement('div');row.className='slotrow';
+  ME.forEach((m,i)=>{const s=document.createElement('div');s.className='slot';const H=200;
+    const mine=reveal?m:(i<4?[10,25,35,0][i]:0);
+    if(reveal){const c=CROWD[i];const match=Math.min(m,c);
+      s.innerHTML=`<div class="pile crowd" style="height:${c/40*H}px"></div><div class="pile me ${''}" style="height:${m/40*H}px;opacity:.55"></div><div class="pile match" style="height:${match/40*H}px;background:var(--gold);border:2px solid var(--ink);opacity:.9"></div>`;
+    } else { s.innerHTML=mine?`<div class="pile me" style="height:${mine/40*H}px"></div>`:'';}
+    s.innerHTML+=`<div class="lbl">${LBL[i]}</div>`;row.appendChild(s)});
+  host.appendChild(row);
+  if(!reveal){const x=3.5*(1/5); const t=document.createElement('div');t.className='tap';t.style.left=(x*100)+'%';host.appendChild(t);const st=document.createElement('div');st.className='stream';st.style.left=(x*100)+'%';host.appendChild(st);}
+  else{const k=document.createElement('div');k.style.cssText='position:absolute;left:0;top:0;display:flex;gap:12px;font-size:12px;font-weight:800;color:#7a7064';k.innerHTML='<span><i style="display:inline-block;width:12px;height:12px;background:#3b82f6;border:2px solid #22201c;border-radius:3px;vertical-align:-2px"></i> the crowd</span><span><i style="display:inline-block;width:12px;height:12px;background:#e9c98f;border:2px solid #22201c;border-radius:3px;vertical-align:-2px"></i> your sand</span><span><i style="display:inline-block;width:12px;height:12px;background:#e8b100;border:2px solid #22201c;border-radius:3px;vertical-align:-2px"></i> matched</span>';host.appendChild(k)}}
+sand('sandIn',false);sand('sandOut',true);
+// queue: 20 figures, worst on the left
+function queue(id,reveal){const host=document.getElementById(id);const W=322;const step=W/20;
+  let html='<div class="lane"></div><div class="qlbl" style="left:0">worst</div><div class="qlbl" style="right:0">best</div><div class="qlbl" style="left:46%">middle</div>';
+  for(let i=0;i<20;i++){const x=i*step+2;html+=`<div style="position:absolute;left:${x}px;top:${90}px">${fig(reveal?'#3b82f6':'#cfc6b6',13,20)}</div>`}
+  const claimX=0.70*W, realX=0.57*W;
+  html+=`<div style="position:absolute;left:${claimX-11}px;top:${reveal?40:52}px">${fig(reveal?'#ffffff':'#f5c518',22,34)}</div>`;
+  html+=`<div style="position:absolute;left:${claimX-30}px;top:${reveal?18:30}px;font-size:12px;font-weight:800;width:90px;margin-left:-15px;text-align:center">${reveal?'you said 70':'you: 70'}</div>`;
+  if(reveal){html+=`<div style="position:absolute;left:${realX-11}px;top:52px">${fig('#f5c518',22,34)}</div>`;
+    html+=`<div style="position:absolute;left:${realX+12}px;width:${claimX-realX-22}px;top:70px;height:0;border-top:3px dashed #e5484d"></div>`;
+    html+=`<div style="position:absolute;left:${realX-50}px;top:176px;font-size:12px;font-weight:800;color:#1fa85a;width:100px;text-align:center">you finished 57</div>`;
+    for(let k=0;k<4;k++) html+=`<div style="position:absolute;left:${realX+18+k*12}px;top:84px;width:6px;height:9px;border-radius:50%;background:#7a7064;transform:rotate(-20deg)"></div>`;}
+  host.innerHTML=html}
+queue('qIn',false);queue('qOut',true);
+// class photo: 6 rows of 10, front row at the bottom
+(function(){const host=document.getElementById('photo');const rows=6;let html='';
+  for(let r=rows-1;r>=0;r--){html+='<div class="rowp">';for(let i=0;i<10;i++){const me=(r===1&&i===4);html+=fig(me?'#f5c518':'#efe6d4',26-r,40-r*1.5)}html+='</div>';if(r===0)html+='<div class="bench"></div>'}
+  html+='<div class="rowlab"><span>front row: sharpest Hunch</span><span>back row: furthest off</span></div>';
+  host.insertAdjacentHTML('beforeend',html)})();
+</script>
+</body>
+</html>

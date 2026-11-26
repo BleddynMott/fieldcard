@@ -1,0 +1,28 @@
+# checks: the one required job (setup items 2 and 6 in 22 Pilot plan). It runs CI's lines,
+# scripts/ci-checks.sh, exactly as a reviewer runs them locally. Read-only token; action pinned to a SHA.
+name: checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: git identity for the hook tests
+        run: |
+          git config --global user.name "ci"
+          git config --global user.email "ci@example.invalid"
+      - name: ci-checks
+        run: bash scripts/ci-checks.sh

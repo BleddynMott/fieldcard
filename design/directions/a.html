@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · direction A · High score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0b1426; --deep:#050a14; --phosphor:#4de3ff; --signal:#ff5d8f; --ghost:#8fa3c4; --white:#e8f1ff;
+    --stop:#ff5a5a; --count:#5b7cff; --repeat:#b07bff; --pair:#ff7bd0; --sort:#ff9a3d;
+    --hit:#3dff8b; --near:#ffe14d; --miss:#2a3a58;
+    --px: "VT323", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--deep);color:var(--white);font-family:var(--px);font-size:20px;line-height:1.1;-webkit-font-smoothing:none}
+  .note{padding:18px 18px 22px;background:#0e1830;border-bottom:2px solid var(--phosphor)}
+  .note h1{font-size:30px;letter-spacing:2px;color:var(--phosphor)}
+  .note p{color:var(--ghost);margin-top:6px;font-size:19px}
+  .note dl{margin-top:10px;display:grid;grid-template-columns:76px 1fr;gap:6px 8px;font-size:18px}
+  .note dt{color:var(--signal)} .note dd{color:var(--white)}
+  .sw{display:flex;flex-wrap:wrap;gap:6px}
+  .sw span{display:inline-flex;align-items:center;gap:5px}
+  .sw i{width:14px;height:14px;display:inline-block;border:1px solid #ffffff40}
+  .label{padding:14px 18px 6px;color:var(--ghost);letter-spacing:3px;font-size:17px;background:var(--deep)}
+  .screen{position:relative;width:390px;height:780px;overflow:hidden;
+    background:radial-gradient(120% 60% at 50% 0%, #17305a 0%, var(--night) 45%, var(--deep) 100%);border-top:1px solid #ffffff14;border-bottom:1px solid #ffffff14}
+  .screen::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg, #00000038 0 1px, transparent 1px 3px);mix-blend-mode:multiply}
+  .stars{position:absolute;inset:0;background-image:radial-gradient(#ffffff55 1px,transparent 1px);background-size:37px 41px;opacity:.25}
+  .marquee{position:relative;text-align:center;padding:16px 0 10px}
+  .title{font-size:44px;letter-spacing:6px;color:#fff;text-shadow:-3px 0 var(--signal),3px 0 var(--phosphor)}
+  .sub{letter-spacing:4px;color:var(--phosphor);font-size:18px;margin-top:2px}
+  .round{display:flex;justify-content:center;gap:10px;margin:8px 0 0}
+  .round .m{width:40px;height:40px;display:grid;place-items:center;border:2px solid #ffffff22;color:#ffffff40}
+  .round .m.on{border-color:currentColor;box-shadow:0 0 12px currentColor}
+  .round .m.done{color:#ffffff90;border-color:#ffffff40}
+  svg.mk{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:square}
+  .frame{position:relative;margin:18px 16px 0;border:3px solid var(--phosphor);background:#0b152acc;padding:16px;box-shadow:0 0 0 3px var(--deep),0 0 0 5px #4de3ff40}
+  .gname{display:flex;align-items:center;gap:10px;font-size:34px;letter-spacing:3px}
+  .gname small{margin-left:auto;font-size:20px;color:var(--ghost);letter-spacing:2px}
+  .track{position:relative;height:120px;margin:34px 4px 16px}
+  .rail{position:absolute;left:0;right:0;top:58px;height:6px;background:repeating-linear-gradient(90deg,#4de3ff 0 8px,transparent 8px 12px)}
+  .notch{position:absolute;top:30px;left:62%;width:18px;height:62px;margin-left:-9px;border:3px solid var(--stop);box-shadow:0 0 14px var(--stop)}
+  .marker{position:absolute;top:22px;left:40%;width:10px;height:78px;margin-left:-5px;background:#fff;box-shadow:0 0 16px #fff, -14px 0 0 -2px #ffffff40,-28px 0 0 -3px #ffffff20}
+  .ghostmark{position:absolute;top:36px;left:63.2%;width:4px;height:50px;background:var(--hit);opacity:.7}
+  .tries{display:flex;gap:10px;font-size:22px}
+  .tries span{flex:1;border:2px solid #ffffff30;padding:6px 8px;text-align:center;color:var(--ghost)}
+  .tries span.done{border-color:var(--hit);color:var(--hit)}
+  .tap{margin-top:22px;text-align:center;font-size:26px;letter-spacing:3px;color:var(--white);animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .btn{display:block;margin:16px 16px 0;padding:14px;text-align:center;font-size:30px;letter-spacing:5px;border:3px solid var(--phosphor);color:#fff;background:#0b152a;box-shadow:0 0 0 3px var(--deep),0 0 0 5px #4de3ff50}
+  .btn.off{border-color:#ffffff25;color:#ffffff40;box-shadow:none}
+  .btn.hot{background:var(--phosphor);color:var(--deep)}
+  .h2{font-size:38px;letter-spacing:5px;text-align:center;margin-top:16px;text-shadow:-2px 0 var(--signal),2px 0 var(--phosphor)}
+  .lead{color:var(--ghost);text-align:center;font-size:21px;padding:4px 24px 0}
+  .slots{margin:14px 16px 0}
+  .slot{display:flex;align-items:center;gap:10px;height:52px;margin-bottom:7px;border:2px dashed #ffffff30;padding:0 10px}
+  .slot b{width:30px;font-size:30px;color:var(--phosphor);font-weight:400}
+  .slot.fill{border:2px solid currentColor;background:#0b152a}
+  .slot .nm{font-size:26px;letter-spacing:2px;color:var(--white)}
+  .slot .rs{margin-left:auto;color:var(--ghost);font-size:20px}
+  .slot em{font-style:normal;color:#ffffff40;font-size:18px;margin-left:auto;letter-spacing:2px}
+  .tray{display:flex;gap:10px;margin:12px 16px 0}
+  .card{flex:1;border:2px solid currentColor;padding:8px 10px;background:#0b152a;box-shadow:4px 4px 0 currentColor}
+  .card .nm{font-size:24px;letter-spacing:2px;color:#fff;display:flex;gap:8px;align-items:center}
+  .card .rs{color:var(--ghost);font-size:19px}
+  .card.lift{transform:translate(-3px,-6px) rotate(-2deg);box-shadow:8px 10px 0 currentColor}
+  .result{text-align:center;padding:14px 10px 4px}
+  .result .big{font-size:40px;letter-spacing:2px;color:#fff;text-shadow:-2px 0 var(--signal),2px 0 var(--phosphor)}
+  .result .meta{color:var(--ghost);font-size:19px;letter-spacing:1px;margin-top:4px}
+  table{width:358px;margin:8px 16px 0;border-collapse:collapse;font-size:20px}
+  th{color:var(--signal);font-weight:400;text-align:left;font-size:16px;letter-spacing:2px;padding:2px 4px;border-bottom:2px solid #ffffff25}
+  td{padding:6px 4px;border-bottom:1px dashed #ffffff18;white-space:nowrap}
+  td.g{display:flex;align-items:center;gap:6px;letter-spacing:1px}
+  td .pc{color:#fff} td .raw{color:var(--ghost);font-size:17px}
+  .sq{display:inline-block;width:14px;height:14px;vertical-align:-1px;margin-right:3px}
+  .sq.hit{background:var(--hit);box-shadow:0 0 6px var(--hit)}
+  .sq.near{background:linear-gradient(90deg,var(--near) 50%,transparent 50%);border:2px solid var(--near)}
+  .sq.miss{border:2px solid var(--ghost)}
+  .two{display:flex;gap:8px;margin:10px 16px 0;font-size:19px}
+  .two div{flex:1;border:2px solid #ffffff25;padding:6px 8px;color:var(--ghost)}
+  .two b{display:block;color:#fff;font-weight:400;font-size:22px}
+  .foot{display:flex;justify-content:space-between;margin:10px 16px 0;color:var(--ghost);font-size:18px}
+  .share{margin:16px;border:2px dashed var(--phosphor);padding:12px 14px;background:#050a14;font-size:22px;white-space:pre;line-height:1.25;color:#fff}
+  .share h3{font-weight:400;color:var(--signal);font-size:16px;letter-spacing:3px;margin-bottom:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="m-stop" viewBox="0 0 24 24"><path d="M2 15h20M12 5v16"/></symbol>
+  <symbol id="m-count" viewBox="0 0 24 24"><rect x="4" y="14" width="4" height="4" fill="currentColor"/><rect x="10" y="6" width="4" height="4" fill="currentColor"/><rect x="16" y="14" width="4" height="4" fill="currentColor"/></symbol>
+  <symbol id="m-repeat" viewBox="0 0 24 24"><path d="M19 9a7 7 0 1 0 1 6"/><path d="M20 3v6h-6"/></symbol>
+  <symbol id="m-pair" viewBox="0 0 24 24"><rect x="3" y="6" width="11" height="11"/><rect x="10" y="9" width="11" height="11"/></symbol>
+  <symbol id="m-sort" viewBox="0 0 24 24"><path d="M5 20v-5M12 20v-9M19 20V5"/></symbol>
+</svg>
+
+<section class="note">
+  <h1>A · HIGH SCORE</h1>
+  <p>The arcade high-score table was the first place you ranked yourself against everyone who played the same machine. Five cabinets, one go each, then you call your place before the table lights up.</p>
+  <dl>
+    <dt>Palette</dt><dd class="sw"><span><i style="background:#0b1426"></i>Night #0b1426</span><span><i style="background:#050a14"></i>Deep #050a14</span><span><i style="background:#4de3ff"></i>Phosphor #4de3ff</span><span><i style="background:#ff5d8f"></i>Signal #ff5d8f</span><span><i style="background:#e8f1ff"></i>Screen #e8f1ff</span></dd>
+    <dt>Games</dt><dd class="sw"><span><i style="background:#ff5a5a"></i>Stop</span><span><i style="background:#5b7cff"></i>Count</span><span><i style="background:#b07bff"></i>Repeat</span><span><i style="background:#ff7bd0"></i>Pair</span><span><i style="background:#ff9a3d"></i>Sort</span></dd>
+    <dt>Type</dt><dd>VT323, everything; title with a red and cyan split</dd>
+    <dt>Marks</dt><dd>Hit: lit green block #3dff8b. Near: half yellow block #ffe14d. Miss: unlit outline. Par ▲ ● ▼ in white. Share: 🟩 🟨 ⬜ and ▲ ● ▼.</dd>
+    <dt>From</dt><dd>Krillion, followed closely: pixel type, split-colour title, night gradient, square framed buttons with a cyan edge, scanlines. The subject fact: the high-score table.</dd>
+  </dl>
+</section>
+
+<div class="label">1 · STOP, MID-PLAY</div>
+<section class="screen">
+  <div class="stars"></div>
+  <div class="marquee"><div class="title">FIELDCARD</div><div class="sub">CARD #41 · WED 25 NOV</div></div>
+  <div class="round">
+    <div class="m on" style="color:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg></div>
+    <div class="m" ><svg class="mk"><use href="#m-count"/></svg></div>
+    <div class="m"><svg class="mk"><use href="#m-repeat"/></svg></div>
+    <div class="m"><svg class="mk"><use href="#m-pair"/></svg></div>
+    <div class="m"><svg class="mk"><use href="#m-sort"/></svg></div>
+  </div>
+  <div class="frame" style="height:440px">
+    <div class="gname" style="color:var(--stop)"><svg class="mk" style="width:30px;height:30px"><use href="#m-stop"/></svg>STOP<small>GO 2 OF 3</small></div>
+    <div style="color:var(--ghost);font-size:20px;margin-top:6px">Stop the marker on the notch. Three goes.</div>
+    <div class="track"><div class="rail"></div><div class="ghostmark"></div><div class="notch"></div><div class="marker"></div></div>
+    <div class="tries"><span class="done">1.2% OFF</span><span>GO 2</span><span>GO 3</span></div>
+    <div class="tap">TAP ANYWHERE TO STOP</div>
+  </div>
+</section>
+
+<div class="label">2 · THE CALL</div>
+<section class="screen">
+  <div class="stars"></div>
+  <div class="h2">THE CALL</div>
+  <div class="lead">Where did you beat the field most? Order your five.</div>
+  <div class="slots">
+    <div class="slot fill" style="color:var(--stop)"><b>1</b><svg class="mk"><use href="#m-stop"/></svg><span class="nm">STOP</span><span class="rs">1.8% off</span></div>
+    <div class="slot fill" style="color:var(--pair)"><b>2</b><svg class="mk"><use href="#m-pair"/></svg><span class="nm">PAIR</span><span class="rs">6.4 s</span></div>
+    <div class="slot fill" style="color:var(--repeat)"><b>3</b><svg class="mk"><use href="#m-repeat"/></svg><span class="nm">REPEAT</span><span class="rs">7 long</span></div>
+    <div class="slot"><b>4</b><em></em></div>
+    <div class="slot"><b>5</b><em>BEAT LEAST</em></div>
+  </div>
+  <div class="tray">
+    <div class="card lift" style="color:var(--count)"><div class="nm"><svg class="mk"><use href="#m-count"/></svg>COUNT</div><div class="rs">12% off</div></div>
+    <div class="card" style="color:var(--sort)"><div class="nm"><svg class="mk"><use href="#m-sort"/></svg>SORT</div><div class="rs">1 pair wrong</div></div>
+  </div>
+  <div class="btn off" style="margin-top:22px">LOCK</div>
+  <div style="text-align:center;color:var(--ghost);font-size:18px;margin-top:10px">Slot 1 is where you beat the field most.</div>
+</section>
+
+<div class="label">3 · SCORECARD, WITH THE SHARE TEXT</div>
+<section class="screen" style="height:auto;padding-bottom:6px">
+  <div class="stars"></div>
+  <div class="result"><div class="big">CALLED 3 OF 5 · BEAT THE FIELD ON 3</div><div class="meta">CARD #41 · WED 25 NOV · AGAINST 1,204 PLAYERS</div></div>
+  <table>
+    <tr><th>GAME</th><th>RESULT</th><th>FIELD</th><th>CALL</th></tr>
+    <tr><td class="g" style="color:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg>STOP</td><td><span class="raw">1.8% off</span></td><td><span class="pc">81%</span> ▲</td><td><span class="sq hit"></span>1→1</td></tr>
+    <tr><td class="g" style="color:var(--count)"><svg class="mk"><use href="#m-count"/></svg>COUNT</td><td><span class="raw">12% off</span></td><td><span class="pc">34%</span> ▼</td><td><span class="sq hit"></span>5→5</td></tr>
+    <tr><td class="g" style="color:var(--repeat)"><svg class="mk"><use href="#m-repeat"/></svg>REPEAT</td><td><span class="raw">7 long</span></td><td><span class="pc">66%</span> ▲</td><td><span class="sq near"></span>3→2</td></tr>
+    <tr><td class="g" style="color:var(--pair)"><svg class="mk"><use href="#m-pair"/></svg>PAIR</td><td><span class="raw">6.4 s</span></td><td><span class="pc">58%</span> ▲</td><td><span class="sq near"></span>2→3</td></tr>
+    <tr><td class="g" style="color:var(--sort)"><svg class="mk"><use href="#m-sort"/></svg>SORT</td><td><span class="raw">1 pair wrong</span></td><td><span class="pc">47%</span> ▼</td><td><span class="sq hit"></span>4→4</td></tr>
+  </table>
+  <div class="two"><div>PLAY<b>You beat 57% of the field.</b></div><div>CALL<b>Your call beat 70% of callers.</b></div></div>
+  <div class="btn hot">SHARE</div>
+  <div class="foot"><span>Day 12 in a row · best 12</span><span>Next card in 7 h 12 m</span></div>
+  <div class="share"><h3>SHARE TEXT</h3>Fieldcard #41
+Called 3/5 🟩🟨🟨🟩🟩
+Beat the field ▲▼▲▲▼</div>
+</section>
+</body>
+</html>

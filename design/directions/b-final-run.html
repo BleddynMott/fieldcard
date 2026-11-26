@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · Sports day · the picked run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Outfit:ital,wght@0,400;0,600;0,800;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  :root{ /* names used in this mock, mapped onto design/tokens.css */
+    --lawn2:var(--lawn-2); --hit:var(--right); --miss:var(--wrong); --sand2:var(--sand-2);
+    --oxf:var(--team-a); --cam:var(--team-b); --fig:var(--figure); --disp:var(--font-display); --body:var(--font-body);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px}
+  .intro{padding:18px;background:var(--chalk);border-bottom:3px solid var(--ink)}
+  .intro h1{font-family:var(--disp);font-size:24px;font-weight:400;line-height:1.1}
+  .intro p{margin-top:8px;line-height:1.4;color:#4a443c;font-size:15px}
+  .flow{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-weight:800;font-size:12.5px}
+  .flow span{border:2px solid var(--ink);border-radius:99px;padding:3px 9px;background:var(--paper)}
+  .flow i{font-style:normal;color:var(--dim)}
+  .cap{padding:16px 18px 6px;font-weight:800;letter-spacing:2px;font-size:12px;color:var(--dim)}
+  .cap b{color:var(--ink)}
+  .screen{position:relative;width:390px;height:740px;overflow:hidden;background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+  .screen.auto{height:auto;padding-bottom:24px}
+  .bar{height:56px;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+  .bar .t{font-family:var(--disp);color:var(--chalk);font-size:16px;letter-spacing:1px;text-shadow:0 2px 0 var(--ink)}
+  .bar .steps{display:flex;gap:5px}
+  .bar .steps i{width:22px;height:8px;border-radius:9px;background:#ffffff70;border:2px solid var(--ink)}
+  .bar .steps i.on{background:var(--you)} .bar .steps i.done{background:var(--chalk)}
+  .idea{margin:16px 18px 0;font-weight:800;font-size:12px;letter-spacing:2px;color:var(--dim)}
+  .ask{font-family:var(--disp);font-size:27px;line-height:1.05;margin:4px 18px 0}
+  .sub{margin:6px 18px 0;color:#4a443c;font-size:15px;line-height:1.35}
+  .big{font-family:var(--disp);font-size:40px;line-height:1;margin:16px 18px 0}
+  .card{margin:16px 18px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:20px;padding:16px;box-shadow:0 6px 0 var(--ink)}
+  .fact{margin:16px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);font-size:15px;line-height:1.3}
+  .fact b{font-family:var(--disp);font-weight:400;font-size:19px;display:block;line-height:1.1;margin-bottom:4px}
+  .result{position:absolute;left:18px;right:18px;bottom:22px;display:flex;align-items:center;gap:10px;padding:13px 16px;border:3px solid var(--ink);border-radius:16px;background:var(--hit);color:var(--ink);font-weight:800;font-size:16px;box-shadow:0 5px 0 var(--ink)}
+  .result.bad{background:var(--miss);color:var(--white)}
+  .result .pts{margin-left:auto;font-family:var(--disp);font-size:22px}
+  .pill{position:absolute;left:18px;right:18px;bottom:22px;text-align:center;padding:15px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:20px;background:var(--lawn);color:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  svg.fig{display:block}
+  .chip{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:3px solid var(--ink);color:var(--chalk);flex:none}
+  svg.mk{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  /* event: stop */
+  .ev-lawn{height:140px;position:relative;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink)}
+  .ev-board{position:absolute;left:50%;top:18px;transform:translateX(-50%) rotate(-1.5deg);background:var(--chalk);border:3px solid var(--ink);border-radius:14px;padding:6px 18px 5px;text-align:center;box-shadow:0 6px 0 var(--ink)}
+  .ev-board .t{font-family:var(--disp);font-size:26px;line-height:1}
+  .ev-board .s{font-weight:600;font-size:12px;color:var(--dim)}
+  .bibs{position:absolute;bottom:-24px;left:0;right:0;display:flex;justify-content:center;gap:8px}
+  .bib{width:56px;height:48px;background:var(--chalk);border:3px solid var(--ink);border-radius:8px;display:grid;place-items:center;position:relative;color:var(--dim);box-shadow:0 4px 0 var(--ink)}
+  .bib::before,.bib::after{content:"";position:absolute;top:5px;width:5px;height:5px;border-radius:50%;background:var(--ink)}
+  .bib::before{left:6px}.bib::after{right:6px}
+  .bib.on{background:var(--stop);color:var(--chalk);transform:translateY(-6px)}
+  .game{margin:48px 16px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:22px;padding:18px;box-shadow:0 7px 0 var(--ink)}
+  .gh{display:flex;align-items:center;gap:10px}
+  .gh .n{font-family:var(--disp);font-size:30px;line-height:1}
+  .gh .g{margin-left:auto;font-weight:800;font-size:14px;background:var(--paper);border:2px solid var(--ink);border-radius:99px;padding:4px 10px}
+  .how{color:#4a443c;margin-top:8px;font-size:16px}
+  .lane{position:relative;height:150px;margin:22px 0 8px;border-radius:16px;background:var(--track);border:3px solid var(--ink);overflow:hidden}
+  .lane::before{content:"";position:absolute;left:0;right:0;top:40px;height:3px;background:#fff;box-shadow:0 64px 0 #fff}
+  .tape{position:absolute;top:0;bottom:0;left:64%;width:16px;background:repeating-linear-gradient(0deg,#fff 0 12px,var(--stop) 12px 24px);border-left:3px solid var(--ink);border-right:3px solid var(--ink)}
+  .runner{position:absolute;top:56px;left:38%;width:36px;height:36px;border-radius:50%;background:var(--chalk);border:3px solid var(--ink);box-shadow:-14px 0 0 -6px #ffffff90,-26px 0 0 -10px #ffffff60}
+  .tries{display:flex;gap:8px}
+  .tries span{flex:1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:7px 0;font-weight:800;background:var(--paper);color:var(--dim)}
+  .tries span.done{background:var(--chalk);color:var(--ink)}
+  /* home */
+  .home-lawn{height:210px;position:relative;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink)}
+  .board{position:absolute;left:50%;top:26px;transform:translateX(-50%) rotate(-1.5deg);background:var(--chalk);border:3px solid var(--ink);border-radius:14px;padding:10px 22px 8px;text-align:center;box-shadow:0 6px 0 var(--ink)}
+  .board .t{font-family:var(--disp);font-size:34px;line-height:1}
+  .board .s{font-weight:800;font-size:13px;color:var(--dim);margin-top:3px}
+  .seat{margin:-58px 18px 0;position:relative;background:var(--chalk);border:3px solid var(--ink);border-radius:22px;padding:16px;box-shadow:0 7px 0 var(--ink)}
+  .seat .lab{display:inline-block;background:var(--ink);color:#fff;font-weight:800;font-size:12px;letter-spacing:2px;border:2px solid var(--ink);border-radius:99px;padding:2px 10px}
+  .seat h3{font-family:var(--disp);font-weight:400;font-size:22px;line-height:1.1;margin-top:10px}
+  .seat p{font-size:14.5px;color:#4a443c;margin-top:6px;line-height:1.35}
+  .chair{display:flex;align-items:center;gap:12px;margin-top:10px}
+  .chair .who{font-weight:800;font-size:14px}
+  .chair .who small{display:block;font-weight:600;color:var(--dim);font-size:13px}
+  .yn{display:flex;gap:10px;margin-top:14px}
+  .yn div{flex:1;text-align:center;padding:12px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:18px;background:var(--paper);box-shadow:0 4px 0 var(--ink)}
+  .yn div.on{background:var(--you)}
+  /* doors */
+  .doors{display:flex;gap:10px;margin:18px 18px 0}
+  .door{flex:1;position:relative;height:230px;border:3px solid var(--ink);border-radius:60px 60px 10px 10px;background:var(--wood);box-shadow:0 6px 0 var(--ink);overflow:hidden}
+  .door .panel{position:absolute;inset:14px 14px 50px;border:3px solid #6b4029;border-radius:46px 46px 6px 6px}
+  .door .knob{position:absolute;right:14px;top:120px;width:12px;height:12px;border-radius:50%;background:var(--wood-dark);border:2px solid var(--ink)}
+  .door .sign{position:absolute;left:8px;right:8px;bottom:10px;text-align:center;background:var(--chalk);border:2.5px solid var(--ink);border-radius:8px;font-family:var(--disp);font-size:16px;padding:3px 0}
+  .door svg.mini{position:absolute;left:50%;top:44px;transform:translateX(-50%)}
+  .door.pick{box-shadow:0 0 0 4px var(--you),0 6px 0 var(--ink)}
+  .door.open{background:#2b1a10}
+  .door.open .panel{display:none}
+  .door .pct{position:absolute;left:0;right:0;top:10px;text-align:center;font-family:var(--disp);font-size:26px;color:#fff;text-shadow:0 2px 0 var(--ink)}
+  .door .crowdin{position:absolute;left:6px;right:6px;bottom:50px;display:flex;flex-wrap:wrap-reverse;gap:2px;justify-content:center}
+  /* read of the day */
+  .week{display:flex;gap:4px;margin:14px 18px 0}
+  .week span{flex:1;text-align:center;font-size:11px;font-weight:800;border:2px solid var(--ink);border-radius:8px;padding:4px 0;background:var(--sand);line-height:1.15}
+  .week span.on{background:var(--you)}
+  .week span small{display:block;font-weight:600;color:var(--dim);font-size:10px}
+  .sandbox{position:relative;height:270px;margin-top:4px}
+  .slotrow{position:absolute;left:0;right:0;bottom:0;display:flex;gap:6px;height:240px;align-items:flex-end}
+  .slot{flex:1;height:100%;position:relative;border:3px solid var(--ink);border-top:0;border-radius:0 0 12px 12px}
+  .pile{position:absolute;left:3px;right:3px;bottom:3px;border-radius:40px 40px 8px 8px}
+  .pile.me{background:repeating-linear-gradient(135deg,var(--sand) 0 5px,var(--sand2) 5px 7px);border:2px solid var(--ink)}
+  .pile.crowd{background:var(--crowd-fill);border:2px solid var(--ink)}
+  .slot .lbl{position:absolute;left:-4px;right:-4px;bottom:-40px;text-align:center;font-size:11px;font-weight:800;color:var(--dim);line-height:1.1}
+  .tap{position:absolute;top:0;width:44px;height:44px;margin-left:-22px;border-radius:50%;background:#22201c22;border:3px dashed var(--ink)}
+  .stream{position:absolute;top:44px;width:10px;margin-left:-5px;height:96px;background:repeating-linear-gradient(var(--sand2) 0 4px,transparent 4px 8px)}
+  .meter{display:flex;align-items:center;gap:8px;margin-top:52px;font-weight:800;font-size:13px;color:var(--dim)}
+  .meter .m{flex:1;height:14px;border:2.5px solid var(--ink);border-radius:9px;overflow:hidden;background:var(--paper)}
+  .meter .m i{display:block;height:100%;width:30%;background:repeating-linear-gradient(135deg,var(--sand) 0 5px,var(--sand2) 5px 7px)}
+  .three{display:flex;flex-direction:column;gap:10px}
+  .shape{display:flex;align-items:center;gap:12px;border:3px solid var(--ink);border-radius:16px;background:var(--paper);padding:10px 12px}
+  .shape .l{font-family:var(--disp);font-size:20px;width:22px}
+  .shape.pick{box-shadow:0 0 0 3px var(--you)}
+  .handle{position:absolute;width:30px;height:16px;margin-left:-15px;border-radius:8px;background:var(--you);border:2.5px solid var(--ink)}
+  /* claim */
+  .stake{display:flex;gap:8px;margin-top:8px}
+  .stake div{flex:1;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:800;color:var(--dim);background:var(--paper)}
+  .stake b{display:block;font-family:var(--disp);font-weight:400;font-size:22px;color:var(--ink)}
+  .stake .w b{color:var(--hit)} .stake .l b{color:var(--miss)}
+  .key{display:flex;gap:14px;margin-top:8px;font-size:12px;font-weight:800;color:var(--dim)}
+  .key i{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid var(--ink);vertical-align:-2px;margin-right:4px}
+  /* scorecard */
+  .hh{display:flex;gap:10px;margin:14px 18px 0}
+  .hh div{flex:1;border:3px solid var(--ink);border-radius:18px;background:var(--chalk);padding:12px 12px 10px;box-shadow:0 5px 0 var(--ink)}
+  .hh small{font-weight:800;font-size:12px;letter-spacing:2px;color:var(--dim)}
+  .hh b{display:block;font-family:var(--disp);font-weight:400;font-size:44px;line-height:1}
+  .hh span{display:block;font-size:13px;font-weight:600;color:#4a443c;line-height:1.25;margin-top:4px}
+  .claimline{margin:12px 18px 0;display:flex;align-items:center;gap:10px;border:3px solid var(--ink);border-radius:14px;padding:9px 12px;background:#fde3e1;font-weight:800;font-size:14px}
+  .claimline b{margin-left:auto;font-family:var(--disp);font-weight:400;font-size:20px;color:var(--miss)}
+  .duel{margin:12px 18px 0;border:3px solid var(--ink);border-radius:18px;background:var(--chalk);padding:12px 14px;box-shadow:0 5px 0 var(--ink)}
+  .duel .vs{display:flex;align-items:center;justify-content:space-between}
+  .duel .p{text-align:center;width:120px}
+  .duel .p b{display:block;font-family:var(--disp);font-weight:400;font-size:26px}
+  .duel .p small{display:block;font-size:12px;font-weight:800;color:var(--dim)}
+  .duel .x{font-family:var(--disp);font-size:18px;color:var(--dim)}
+  .rope{position:relative;height:40px;margin-top:8px}
+  .rope .r{position:absolute;left:0;right:0;top:15px;height:10px;border-radius:9px;background:repeating-linear-gradient(60deg,#c9a26b 0 6px,#a9824e 6px 12px);border:2px solid var(--ink)}
+  .rope .mid{position:absolute;left:50%;top:2px;width:3px;height:36px;background:var(--ink)}
+  .rope .knot{position:absolute;top:7px;width:16px;height:26px;margin-left:-8px;background:var(--chalk);border:2.5px solid var(--ink);border-radius:4px}
+  .teamline{display:flex;justify-content:space-between;font-weight:800;font-size:13px}
+  .sharebox{margin:12px 18px 0;background:var(--ink);color:var(--chalk);border-radius:14px;padding:10px 14px;white-space:pre;font-weight:600;font-size:15px;line-height:1.4}
+  .sharebox small{font-size:10.5px;letter-spacing:2px;color:#b7ad9c}
+  /* class photo */
+  .polaroid{margin:22px 16px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:6px;padding:12px 12px 0;box-shadow:0 10px 0 var(--ink);transform:rotate(-1.2deg);position:relative}
+  .polaroid .pin{position:absolute;top:-12px;left:50%;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:var(--wood);border:3px solid var(--ink)}
+  .pic{position:relative;height:330px;border:3px solid var(--ink);border-radius:3px;overflow:hidden;background:linear-gradient(var(--sky) 0 36%,var(--lawn) 36%)}
+  .pic .bunting{position:absolute;left:-10px;right:-10px;top:10px;height:22px}
+  .pic .tier{position:absolute;left:8px;right:8px;height:12px;background:var(--wood);border:2px solid var(--ink);border-radius:3px}
+  .pic .row{position:absolute;left:0;right:0;display:flex;justify-content:center}
+  .pic .banner{position:absolute;left:14px;right:14px;bottom:10px;background:var(--chalk);border:3px solid var(--ink);border-radius:6px;text-align:center;font-family:var(--disp);font-size:13px;white-space:nowrap;padding:4px 0}
+  .pic .trophy{position:absolute;left:50%;bottom:40px;margin-left:-18px}
+  .pic .tag{position:absolute;background:var(--you);border:2.5px solid var(--ink);border-radius:99px;padding:2px 9px;font-weight:800;font-size:11px;white-space:nowrap}
+  .caption{padding:10px 4px 12px;font-style:italic;font-weight:600;font-size:15px;display:flex;justify-content:space-between}
+  .chips{display:flex;gap:8px;margin:20px 18px 0}
+  .chips div{flex:1;border:3px solid var(--ink);border-radius:14px;background:var(--chalk);padding:8px;font-size:12px;font-weight:800;color:var(--dim);line-height:1.2}
+  .chips b{display:block;font-family:var(--disp);font-weight:400;font-size:20px;color:var(--ink)}
+  .persona{margin:14px 18px 0;border:3px solid var(--ink);border-radius:18px;background:var(--you);padding:14px 16px;box-shadow:0 6px 0 var(--ink)}
+  .persona small{font-weight:800;letter-spacing:2px;font-size:11px}
+  .persona h3{font-family:var(--disp);font-weight:400;font-size:28px;line-height:1;margin-top:4px}
+  .persona p{margin-top:6px;font-size:14px;line-height:1.35;font-weight:600}
+  .lead{font-family:var(--disp);font-size:24px;line-height:1.1;margin:16px 18px 0}
+  .evs{display:flex;gap:6px;margin:12px 18px 0}
+  .evs div{flex:1;border:3px solid var(--ink);border-radius:12px;background:var(--chalk);padding:6px 0 4px;text-align:center}
+  .evs svg{margin:0 auto;display:block}
+  .evs b{display:block;font-weight:800;font-size:14px}
+  .evcap{margin:4px 18px 0;font-size:12px;font-weight:600;color:var(--dim)}
+  .sharebtn{margin:14px 18px 0;text-align:center;padding:13px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:19px;background:var(--lawn);color:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  .foot{display:flex;justify-content:space-between;margin:12px 18px 0;font-weight:600;font-size:13px;color:var(--dim)}
+  .report{margin:14px 18px 0;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);padding:12px 14px}
+  .report h4{font-family:var(--disp);font-weight:400;font-size:18px}
+  .report li{margin:6px 0 0 18px;font-size:14px;line-height:1.35}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="person" viewBox="0 0 20 30"><circle cx="10" cy="7" r="5.5"/><path d="M3 29 V19 Q3 13 10 13 Q17 13 17 19 V29 Z"/></symbol>
+  <symbol id="m-stop" viewBox="0 0 24 24"><path d="M2 15h20M12 9v6"/></symbol>
+  <symbol id="m-count" viewBox="0 0 24 24"><circle cx="6" cy="16" r="2.2" fill="currentColor"/><circle cx="12" cy="8" r="2.2" fill="currentColor"/><circle cx="18" cy="16" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="m-repeat" viewBox="0 0 24 24"><path d="M19 9a7 7 0 1 0 1 6"/><path d="M20 3v6h-6"/></symbol>
+  <symbol id="m-pair" viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></symbol>
+  <symbol id="m-sort" viewBox="0 0 24 24"><path d="M5 20v-5M12 20v-9M19 20V5"/></symbol>
+  <symbol id="trophy" viewBox="0 0 36 40"><path d="M8 4h20v8a10 10 0 0 1-20 0z" /><path d="M8 7H3a5 5 0 0 0 5 8M28 7h5a5 5 0 0 1-5 8" fill="none"/><rect x="15" y="22" width="6" height="7"/><rect x="9" y="29" width="18" height="7" rx="2"/></symbol>
+</svg>
+
+<section class="intro">
+  <h1>Fieldcard · the picked run</h1>
+  <p>Sports day. Every screen has one job. Other players are "everyone" or "the crowd". Three scores: <b>Hands</b> (the events), <b>Hunch</b> (reading the crowd) and your <b>Flag</b>. Picked 25 Nov.</p>
+  <div class="flow"><span>Hot Seat</span><i>→</i><span>5 events</span><i>→</i><span>Spot it</span><i>→</i><span>Read of the day</span><i>→</i><span>Claim it</span><i>→</i><span>Scorecard</span><i>…</i><span>Sunday</span></div>
+</section>
+
+<!-- HOME -->
+<div class="cap">HOME · <b>THE HOT SEAT</b></div>
+<section class="screen" id="ref-home">
+  <div class="home-lawn"><div class="board"><div class="t">FIELDCARD</div><div class="s">Card #41 · Wed 25 Nov</div></div></div>
+  <div class="seat">
+    <span class="lab">THE HOT SEAT</span>
+    <h3>Yesterday, one player claimed they beat 90% of everyone.</h3>
+    <div class="chair"><svg width="44" height="54" viewBox="0 0 44 54"><use href="#person" x="8" y="0" width="22" height="33" fill="#22201c"/><rect x="4" y="30" width="30" height="5" rx="2" fill="#8b5a3c" stroke="#22201c" stroke-width="2"/><path d="M8 35v17M30 35v17M34 32V6" stroke="#22201c" stroke-width="3" stroke-linecap="round"/></svg><div class="who">A player from Leeds<small>Card #40 · played 6:52 am · 31-day streak</small></div></div>
+    <p>Did they make it?</p>
+    <div class="yn"><div class="on">Made it</div><div>Fell short</div></div>
+  </div>
+  <div class="pill">Play card #41</div>
+</section>
+
+<!-- EVENT -->
+<div class="cap">EVENT 1 OF 5 · <b>STOP</b>, MID-PLAY</div>
+<section class="screen" id="ref-event">
+  <div class="ev-lawn">
+    <div class="ev-board"><div class="t">FIELDCARD</div><div class="s">Card #41 · Wed 25 Nov</div></div>
+    <div class="bibs">
+      <div class="bib on"><svg class="mk"><use href="#m-stop"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-count"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-repeat"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-pair"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-sort"/></svg></div>
+    </div>
+  </div>
+  <div class="game">
+    <div class="gh"><div class="chip" style="background:var(--stop)"><svg class="mk" style="stroke:#fffdf7"><use href="#m-stop"/></svg></div><div class="n">Stop</div><div class="g">Go 2 of 3</div></div>
+    <div class="how">Stop the marker on the notch. Three goes.</div>
+    <div class="lane"><div class="tape"></div><div class="runner"></div></div>
+    <div class="tries"><span class="done">1.2% off</span><span>Go 2</span><span>Go 3</span></div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:40px;text-align:center;font-family:var(--disp);font-size:22px">Tap anywhere to stop</div>
+</section>
+
+<!-- SPOT IT -->
+<div class="cap">AFTER THE FIFTH EVENT · <b>SPOT IT</b> · THREE DOORS</div>
+<section class="screen" id="ref-step">
+  <div class="bar"><span class="t">SPOT IT</span><span class="steps"><i class="on"></i><i></i><i></i></span></div>
+  <div class="idea">THREE DOORS · STOP</div>
+  <div class="ask">Which door did the crowd go through?</div>
+  <div class="sub">Everyone had the same sweep you just had. Where did the biggest share stop: early, on the notch, or late?</div>
+  <div class="doors" id="doorsIn"></div>
+  <div class="pill">Open the doors</div>
+</section>
+<div class="cap">SPOT IT · REVEAL</div>
+<section class="screen">
+  <div class="bar"><span class="t">SPOT IT</span><span class="steps"><i class="on"></i><i></i><i></i></span></div>
+  <div class="idea">THREE DOORS · STOP</div>
+  <div class="ask">The crowd went late.</div>
+  <div class="doors" id="doorsOut"></div>
+  <div class="fact"><b>61% stopped late.</b>Only 21% were on it, and 18% went early.</div>
+  <div class="result">You picked the crowd's door<span class="pts">✓</span></div>
+</section>
+
+<!-- READ OF THE DAY -->
+<div class="cap"><b>READ OF THE DAY</b> · ONE OF FOUR, BY WEEKDAY · TODAY: POUR THE SAND</div>
+<section class="screen">
+  <div class="bar"><span class="t">READ OF THE DAY</span><span class="steps"><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="week"><span>Mon<small>Pick</small></span><span>Tue<small>Fix</small></span><span class="on">Wed<small>Pour</small></span><span>Thu<small>Find</small></span><span>Fri<small>Pick</small></span><span>Sat<small>Fix</small></span><span>Sun<small>Pour</small></span></div>
+  <div class="idea">POUR THE SAND · COUNT</div>
+  <div class="ask">Where did the crowd's guesses land?</div>
+  <div class="sub">The answer was 17. Hold over a box to pour: more sand, more people. One bucket.</div>
+  <div class="card"><div class="sandbox" id="sandIn"></div><div class="meter">Bucket<div class="m"><i></i></div>30% left</div></div>
+</section>
+<div class="cap">POUR THE SAND · REVEAL</div>
+<section class="screen">
+  <div class="bar"><span class="t">READ OF THE DAY</span><span class="steps"><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="idea">POUR THE SAND · COUNT</div>
+  <div class="ask">Your sand, then the crowd's.</div>
+  <div class="card" style="padding-bottom:46px"><div class="sandbox" id="sandOut"></div></div>
+  <div class="fact"><b>The biggest group said 15 or 16.</b>51% undercounted; 18% were spot on.</div>
+  <div class="result">✓ Your sand matched 83%<span class="pts">+66</span></div>
+</section>
+<div class="cap">THE OTHER THREE READS · INPUT SCREENS</div>
+<section class="screen" style="height:580px">
+  <div class="bar"><span class="t">READ OF THE DAY</span><span class="steps"><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="idea">PICK THE CROWD · MONDAY · COUNT</div>
+  <div class="ask">Which is the real crowd?</div>
+  <div class="sub">Three pictures of how everyone guessed. Two are fakes.</div>
+  <div class="card"><div class="three" id="pick"></div></div>
+</section>
+<section class="screen" style="height:560px">
+  <div class="bar"><span class="t">READ OF THE DAY</span><span class="steps"><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="idea">FIX THE CROWD · TUESDAY · STOP</div>
+  <div class="ask">Fix this guess at the crowd.</div>
+  <div class="sub">Here is a guess at where everyone stopped. Drag the bars to what really happened.</div>
+  <div class="card"><svg id="fix" width="322" height="250"></svg></div>
+</section>
+<section class="screen" style="height:520px">
+  <div class="bar"><span class="t">READ OF THE DAY</span><span class="steps"><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="idea">FIND YOURSELF · THURSDAY · REPEAT</div>
+  <div class="ask">You reached 7. Where does that put you?</div>
+  <div class="sub">Your run is marked. The crowd's runs are hidden. Slide to how much of the crowd you think is behind you.</div>
+  <div class="card"><svg id="find" width="322" height="230"></svg></div>
+</section>
+
+<!-- CLAIM IT -->
+<div class="cap"><b>CLAIM IT</b> · PLANT YOUR FLAG</div>
+<section class="screen">
+  <div class="bar"><span class="t">CLAIM IT</span><span class="steps"><i class="done"></i><i class="done"></i><i class="on"></i></span></div>
+  <div class="idea">TODAY'S FIVE EVENTS</div>
+  <div class="ask">Plant your flag where you finished.</div>
+  <div class="sub">Everyone, worst to best. Make it and you bank your flag. Fall short and you lose double the gap.</div>
+  <div class="card"><svg id="claimIn" width="322" height="230"></svg>
+    <div class="stake"><div class="w">Make it<b>+70</b></div><div class="l">Fall short<b>−2 a point</b></div></div></div>
+  <div class="pill">Plant it</div>
+</section>
+<div class="cap">CLAIM IT · THE FIELD DROPS IN</div>
+<section class="screen">
+  <div class="bar"><span class="t">CLAIM IT</span><span class="steps"><i class="done"></i><i class="done"></i><i class="on"></i></span></div>
+  <div class="idea">TODAY'S FIVE EVENTS</div>
+  <div class="ask">13 short of your flag.</div>
+  <div class="card"><svg id="claimOut" width="322" height="300"></svg>
+    <div class="key"><span><i style="background:var(--chalk);border-color:#b7ad9c"></i>where everyone planted</span><span><i style="background:var(--crowd)"></i>where they finished</span></div></div>
+  <div class="fact"><b>80% planted above the middle.</b>50% finished there.</div>
+  <div class="result bad">✗ Flag 70, finished 57<span class="pts">−26</span></div>
+</section>
+
+<!-- SCORECARD -->
+<div class="cap"><b>SCORECARD</b></div>
+<section class="screen auto" id="ref-results">
+  <div class="bar"><span class="t">SCORECARD #41</span><span class="steps"><i class="done"></i><i class="done"></i><i class="done"></i></span></div>
+  <div class="lead">You read the crowd better than 82 in 100.</div>
+  <div class="hh">
+    <div style="background:var(--hunch-bg)"><small>HUNCH</small><b>82</b><span>Ranked against everyone's reads today</span></div>
+    <div><small>HANDS</small><b>57</b><span>You beat 57 in 100 at the events, on average</span></div>
+  </div>
+  <div class="evs">
+    <div><svg class="mk" style="color:var(--stop)"><use href="#m-stop"/></svg><b>beat 81%</b></div>
+    <div><svg class="mk" style="color:var(--count)"><use href="#m-count"/></svg><b>beat 34%</b></div>
+    <div><svg class="mk" style="color:var(--repeat)"><use href="#m-repeat"/></svg><b>beat 66%</b></div>
+    <div><svg class="mk" style="color:var(--pair)"><use href="#m-pair"/></svg><b>beat 58%</b></div>
+    <div><svg class="mk" style="color:var(--sort)"><use href="#m-sort"/></svg><b>beat 47%</b></div>
+  </div>
+  <div class="evcap">Each event on its own.</div>
+  <div class="claimline">✗ Flag 70, finished 57<b>−26</b></div>
+  <div class="duel">
+    <div style="font-weight:800;font-size:12px;letter-spacing:2px;color:var(--dim)">MIRROR DUEL · YOUR HUNCH V ONE CAMBRIDGE PLAYER'S</div>
+    <div class="vs" style="margin-top:6px">
+      <div class="p"><svg class="fig" width="26" height="38" fill="#f5c518" stroke="#22201c" stroke-width="1.6" style="margin:0 auto"><use href="#person"/></svg><b>82</b><small>You · Oxford</small></div>
+      <div class="x">beat</div>
+      <div class="p"><svg class="fig" width="26" height="38" fill="#4aa3d8" stroke="#22201c" stroke-width="1.6" style="margin:0 auto"><use href="#person"/></svg><b>74</b><small>A player · Cambridge</small></div>
+    </div>
+    <div class="rope"><div class="r"></div><div class="mid"></div><div class="knot" style="left:38%"></div></div>
+    <div class="teamline"><span style="color:var(--oxf)">Oxford leading · 56% of duels</span><span style="color:var(--team-b-text)">Cambridge 44%</span></div>
+  </div>
+  <div class="sharebtn">Share</div>
+  <div class="sharebox"><small>COPIES THIS</small>
+Fieldcard #41
+Hands 57 · Hunch 82
+Flag 70, finished 57 · −26 · Oxford leading</div>
+  <div class="foot"><span>Day 12 in a row · best 12</span><span>Next card in 7 h 12 m</span></div>
+</section>
+
+<!-- SUNDAY -->
+<div class="cap"><b>SUNDAY</b> · THE CLASS PHOTO</div>
+<section class="screen auto">
+  <div class="bar"><span class="t">WEEK 7 · 23–29 NOV</span><span class="steps"></span></div>
+  <div class="polaroid"><span class="pin"></span>
+    <div class="pic" id="pic"></div>
+    <div class="caption"><span>Fieldcard, week 7</span><span>4,812 in the field</span></div>
+  </div>
+  <div style="margin:14px 18px 0;font-size:12px;font-weight:800;letter-spacing:2px;color:var(--dim)">PROVISIONAL UNTIL SUNDAY'S LAST RESET</div>
+  <div class="chips" style="margin-top:8px">
+    <div>Your row<b>2nd</b>from the front</div>
+    <div>Hunch, week<b>Top 8%</b>of everyone</div>
+    <div>Oxford<b>5–2</b>this week</div>
+  </div>
+  <div class="persona"><small>THIS WEEK YOU WERE</small><h3>The Show-off Scout</h3><p>Your flag averaged 11 above where you finished. On most Pour and Fix days your read sat nearer the real crowd than to everyone else's average read.</p></div>
+  <div class="report"><h4>The field this week</h4><ul>
+    <li>The crowd undercounted on Count on all 7 cards.</li>
+    <li>Flags averaged 19 above where people finished.</li>
+    <li>All 3 times Stop was read this week, the biggest share stopped late.</li>
+    <li>Most honest team: Cambridge. Boldest: Leeds.</li>
+  </ul></div>
+</section>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,o={}){const t=el('text',Object.assign({x,y,'font-size':11,'font-weight':800,fill:'#7a7064','font-family':'Outfit'},o),p);t.textContent=s;return t}
+function fig(color,w=12,h=18,extra=''){return `<svg class="fig" width="${w}" height="${h}" fill="${color}" stroke="#22201c" stroke-width="1.4" ${extra}><use href="#person"/></svg>`}
+// doors
+const DOORS=[['Early',18,'early'],['On it',21,'on'],['Late',61,'late']];
+function doors(id,reveal){const host=document.getElementById(id);DOORS.forEach(([n,p,k])=>{const d=document.createElement('div');
+  d.className='door'+(k==='late'?' pick':'')+(reveal&&k==='late'?' open':'');
+  let inner=`<div class="panel"></div><div class="knob"></div><div class="sign">${n}</div>`;
+  const off={early:-0.22,on:0,late:0.22}[k];
+  inner+=`<svg class="mini" width="70" height="26"><rect x="1" y="14" width="68" height="10" rx="3" fill="#c8643b" stroke="#22201c" stroke-width="2"/><rect x="33" y="8" width="4" height="18" fill="#e5484d" stroke="#22201c" stroke-width="1.2"/><circle cx="${35+off*120}" cy="8" r="5" fill="#fff" stroke="#22201c" stroke-width="2"/></svg>`;
+  if(reveal){inner+=`<div class="pct">${p}%</div><div class="crowdin">${Array.from({length:Math.round(p/4)},(_,i)=>fig(k==='late'&&i===0?'#f5c518':'#4f6d8f',11,16)).join('')}</div>`}
+  d.innerHTML=inner;host.appendChild(d)})}
+doors('doorsIn',false);doors('doorsOut',true);
+// sand
+const LBL=['3+ under','1–2 under','spot on','1–2 over','3+ over'], ME=[10,25,35,20,10], CROWD=[15,36,18,21,10];
+function sand(id,reveal){const host=document.getElementById(id);const row=document.createElement('div');row.className='slotrow';const H=200;
+  ME.forEach((m,i)=>{const s=document.createElement('div');s.className='slot';
+    if(reveal){const c=CROWD[i],match=Math.min(m,c);
+      s.innerHTML=`<div class="pile crowd" style="height:${c/40*H}px"></div><div class="pile" style="height:${m/40*H}px;background:none;border:3px dashed var(--ink)"></div>`;
+    } else {const mine=[10,25,35,0,0][i]; s.innerHTML=mine?`<div class="pile me" style="height:${mine/40*H}px"></div>`:'';}
+    s.innerHTML+=`<div class="lbl">${LBL[i]}</div>`;row.appendChild(s)});
+  host.appendChild(row);
+  if(!reveal){const x=0.7;const t=document.createElement('div');t.className='tap';t.style.left=(x*100)+'%';host.appendChild(t);const st=document.createElement('div');st.className='stream';st.style.left=(x*100)+'%';host.appendChild(st);}
+  else{const k=document.createElement('div');k.className='key';k.style.cssText='position:absolute;left:0;top:0;margin:0';k.innerHTML='<span><i style="background:#4f6d8f;border-radius:3px"></i>the crowd</span><span><i style="background:none;border-style:dashed;border-radius:3px"></i>your sand</span>';host.appendChild(k)}}
+sand('sandIn',false);sand('sandOut',true);
+// pick: three shapes
+(function(){const host=document.getElementById('pick');const S={A:[15,36,18,21,10],B:[8,20,44,20,8],C:[6,14,22,34,24]};
+  Object.entries(S).forEach(([k,v],j)=>{const d=document.createElement('div');d.className='shape'+(k==='A'?' pick':'');d.innerHTML=`<span class="l">${k}</span>`;
+    const s=document.createElementNS(NS,'svg');s.setAttribute('width','240');s.setAttribute('height','70');
+    v.forEach((x,i)=>el('rect',{x:i*48+4,y:66-x*1.3,width:40,height:x*1.3,rx:6,fill:'#4f6d8f',stroke:'#22201c','stroke-width':2},s));
+    d.appendChild(s);host.appendChild(d)})})();
+// fix: start from the seeded guess, drag bars
+(function(){const svg=document.getElementById('fix');const START=[8,20,40,22,10],NOW=[14,32,24,20,10];const W=322,bw=W/5,base=200,k=3.6;
+  el('line',{x1:0,y1:base,x2:W,y2:base,stroke:'#22201c','stroke-width':3},svg);
+  START.forEach((v,i)=>el('rect',{x:i*bw+8,y:base-v*k,width:bw-16,height:v*k,rx:8,fill:'none',stroke:'#b7ad9c','stroke-width':3,'stroke-dasharray':'6 5'},svg));
+  NOW.forEach((v,i)=>{el('rect',{x:i*bw+8,y:base-v*k,width:bw-16,height:v*k,rx:8,fill:'#4f6d8f',stroke:'#22201c','stroke-width':2.5},svg);
+    el('rect',{x:i*bw+bw/2-15,y:base-v*k-8,width:30,height:16,rx:8,fill:'#f5c518',stroke:'#22201c','stroke-width':2.5},svg)});
+  ['very early','early','on it','late','very late'].forEach((l,i)=>txt(svg,i*bw+bw/2,base+18,l,{'text-anchor':'middle','font-size':10.5}));
+  txt(svg,0,base+38,'dashed: the guess you started from',{'font-size':11})})();
+// find yourself: raw results along the track, your result marked; a slider for the share you think is behind you
+(function(){const svg=document.getElementById('find');const W=322,base=96,bw=W/10;
+  el('rect',{x:0,y:base,width:W,height:22,rx:6,fill:'#c8643b',stroke:'#22201c','stroke-width':3},svg);
+  for(let i=0;i<10;i++){txt(svg,i*bw+bw/2,base+15,String(i),{'text-anchor':'middle',fill:'#fff','font-size':11})}
+  for(let i=0;i<10;i++) for(let r=0;r<3;r++) el('circle',{cx:i*bw+bw/2,cy:base-12-r*14,r:5,fill:'#e2d9c8'},svg);
+  const you=7*bw+bw/2;svg.insertAdjacentHTML('beforeend',`<g transform="translate(${you-11},${base-80})"><svg width="22" height="34" fill="#f5c518" stroke="#22201c" stroke-width="1.6"><use href="#person"/></svg></g>`);
+  txt(svg,you-16,base-60,'you: 7',{'text-anchor':'end',fill:'#22201c'});
+  txt(svg,2,base+36,'run length · the crowd\u2019s runs appear when you let go');
+  const sy=base+76;txt(svg,2,sy-14,'How much of the crowd is behind you?',{fill:'#22201c','font-size':12});
+  el('rect',{x:0,y:sy,width:W,height:12,rx:6,fill:'#e7dfd0',stroke:'#22201c','stroke-width':2},svg);
+  el('rect',{x:0,y:sy,width:W*0.66,height:12,rx:6,fill:'#f5c518',stroke:'#22201c','stroke-width':2},svg);
+  el('circle',{cx:W*0.66,cy:sy+6,r:12,fill:'#f5c518',stroke:'#22201c','stroke-width':3},svg);
+  txt(svg,W*0.66,sy+34,'66%',{'text-anchor':'middle',fill:'#22201c','font-size':13})})();
+// claim: clean bead chart. 10 bins; one column of beads per bin; each bead = 4 in 100.
+const REAL=[2,2,2,2,2,2,2,2,2,2], PLANT=[0,0,1,1,2,2,3,5,4,2];
+function claim(id,reveal){const svg=document.getElementById(id),W=322,bw=W/10,mid=reveal?150:150,r=6,gap=14;
+  el('rect',{x:0,y:mid-10,width:W,height:20,rx:6,fill:'#c8643b',stroke:'#22201c','stroke-width':3},svg);
+  ['worst','best'].forEach((t,i)=>txt(svg,[6,W-6][i],mid+4,t,{'text-anchor':['start','end'][i],fill:'#fff','font-size':10}));
+  const fx=0.70*W, rx=0.57*W;
+  if(reveal){
+    PLANT.forEach((n,i)=>{for(let k=0;k<n;k++) el('circle',{cx:i*bw+bw/2,cy:mid-24-k*gap,r,fill:'#fffdf7',stroke:'#b7ad9c','stroke-width':2.5},svg)});
+    REAL.forEach((n,i)=>{for(let k=0;k<n;k++) el('circle',{cx:i*bw+bw/2,cy:mid+24+k*gap,r,fill:'#4f6d8f',stroke:'#22201c','stroke-width':2},svg)});
+    el('rect',{x:rx,y:mid-4,width:fx-rx,height:8,rx:4,fill:'#b42318',stroke:'#22201c','stroke-width':1.5},svg);
+    el('circle',{cx:rx,cy:mid,r:10,fill:'#f5c518',stroke:'#22201c','stroke-width':3},svg);
+    txt(svg,rx-14,mid+34+3*gap,'you finished 57',{'text-anchor':'end',fill:'#22201c'});
+    el('line',{x1:rx,y1:mid+12,x2:rx,y2:mid+22+3*gap,stroke:'#22201c','stroke-width':1.5,'stroke-dasharray':'3 3'},svg);
+  } else {
+    for(let i=0;i<10;i++){el('circle',{cx:i*bw+bw/2,cy:mid+26,r:4,fill:'#e2d9c8'},svg);el('circle',{cx:i*bw+bw/2,cy:mid-26,r:4,fill:'#e2d9c8'},svg)}
+    txt(svg,W/2,mid+56,'everyone drops in when you plant',{'text-anchor':'middle'});
+  }
+  const top=reveal?mid-128:mid-90;
+  el('line',{x1:fx,y1:mid-10,x2:fx,y2:top,stroke:'#22201c','stroke-width':3.5},svg);
+  el('path',{d:`M${fx} ${top} L${fx+30} ${top+10} L${fx} ${top+20} Z`,fill:'#f5c518',stroke:'#22201c','stroke-width':2.5},svg);
+  txt(svg,fx-6,top+14,'your flag: 70',{'text-anchor':'end',fill:'#22201c','font-size':12});
+}
+claim('claimIn',false);claim('claimOut',true);
+// class photo
+(function(){const pic=document.getElementById('pic');let h='';
+  // bunting
+  let b='<svg class="bunting" viewBox="0 0 340 22" preserveAspectRatio="none"><path d="M0 4 Q170 18 340 4" fill="none" stroke="#22201c" stroke-width="2"/>';
+  const cols=['#e5484d','#3b82f6','#ffffff','#8b5cf6','#ec4899','#f97316','#cfe3f5'];
+  for(let i=0;i<17;i++){const x=6+i*20,y=4+14*Math.sin(Math.PI*x/340)*0.95;b+=`<path d="M${x} ${y} L${x+14} ${y} L${x+7} ${y+12} Z" fill="${cols[i%7]}" stroke="#22201c" stroke-width="1.2"/>`}
+  h+=b+'</svg>';
+  // tiers: back (top, small) to front (bottom, big)
+  const rows=[{y:52,n:13,w:16,h:24},{y:92,n:12,w:18,h:27},{y:134,n:11,w:20,h:30},{y:178,n:10,w:22,h:33},{y:224,n:9,w:25,h:37}];
+  rows.forEach((r,ri)=>{h+=`<div class="tier" style="top:${r.y+r.h-4}px"></div><div class="row" style="top:${r.y}px;gap:${ri<2?1:2}px">`;
+    for(let i=0;i<r.n;i++){const me=(ri===3&&i===6);const oxf=(i+ri)%4===0;
+      h+=`<span style="position:relative;display:inline-block">${fig(me?'#f5c518':'#efe6d4',r.w,r.h)}${oxf&&!me?`<i style="position:absolute;left:${r.w*0.2}px;top:${r.h*0.45}px;width:${r.w*0.6}px;height:3px;background:#1e3a8a;border-radius:2px"></i>`:''}</span>`}
+    h+='</div>'});
+  // medals on the three middle figures of the front tier (y 224, 9 figures of 25px, gap 2px)
+  const fw=25,gp=2,n=9,rowW=n*fw+(n-1)*gp,x0=(340-rowW)/2;
+  [[3,'#a9b1bb'],[4,'#e8b100'],[5,'#c27c4a']].forEach(([i,c])=>h+=`<i style="position:absolute;left:${x0+i*(fw+gp)+fw/2-6}px;top:${224+20}px;width:12px;height:12px;border-radius:50%;background:${c};border:2px solid #22201c"></i>`);
+  h+=`<div class="banner">WEEK 7 · BEST AT READING THE CROWD</div>`;
+  // you: second tier from the front (y 178, 10 figures of 22px)
+  const yw=22,yn=10,yW=yn*yw+(yn-1)*2,yx0=(340-yW)/2,meX=yx0+6*(yw+2)+yw/2;
+  h+=`<span class="tag" style="left:${meX+18}px;top:150px">YOU · TOP 8%</span>`;
+  h+=`<svg style="position:absolute;left:${meX+2}px;top:160px" width="22" height="22"><path d="M18 2 Q8 6 4 18" fill="none" stroke="#22201c" stroke-width="2.5"/></svg>`;
+  h+=`<svg style="position:absolute;left:12px;bottom:64px" width="30" height="34" viewBox="0 0 36 40" fill="#e8b100" stroke="#22201c" stroke-width="2.5"><use href="#trophy"/></svg>`;
+  pic.innerHTML=h})();
+</script>
+</body>
+</html>

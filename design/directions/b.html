@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · direction B · Sports day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e4; --ink:#22201c; --lawn:#4f8f4a; --lawn2:#5e9e56; --chalk:#fffdf7; --dim:#7a7064;
+    --stop:#e5484d; --count:#3b82f6; --repeat:#8b5cf6; --pair:#ec4899; --sort:#f97316;
+    --hit:#1fa85a; --near:#f5c518; --miss:#cfc6b6;
+    --disp:"Bowlby One", "Arial Black", sans-serif; --body:"Outfit", sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px}
+  .note{padding:18px;background:var(--chalk);border-bottom:3px solid var(--ink)}
+  .note h1{font-family:var(--disp);font-size:26px;font-weight:400}
+  .note p{color:#4a443c;margin-top:6px;line-height:1.35}
+  .note dl{margin-top:10px;display:grid;grid-template-columns:62px 1fr;gap:6px 8px;font-size:14px;line-height:1.35}
+  .note dt{font-weight:800}
+  .sw{display:flex;flex-wrap:wrap;gap:4px 8px}
+  .sw span{display:inline-flex;align-items:center;gap:4px}
+  .sw i{width:13px;height:13px;border-radius:4px;border:2px solid var(--ink);display:inline-block}
+  .label{padding:14px 18px 6px;font-weight:800;letter-spacing:2px;font-size:13px;color:var(--dim)}
+  .screen{position:relative;width:390px;height:780px;overflow:hidden;background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+  .lawn{height:150px;position:relative;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink)}
+  .lawn::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 34px,#ffffffb0 34px 37px);opacity:.55}
+  .board{position:absolute;left:50%;top:22px;transform:translateX(-50%) rotate(-1.5deg);background:var(--chalk);border:3px solid var(--ink);border-radius:14px;padding:8px 18px 6px;text-align:center;box-shadow:0 6px 0 var(--ink)}
+  .board .t{font-family:var(--disp);font-size:30px;letter-spacing:.5px;line-height:1}
+  .board .s{font-weight:600;font-size:13px;color:var(--dim);margin-top:2px}
+  .bibs{position:absolute;bottom:-26px;left:0;right:0;display:flex;justify-content:center;gap:8px}
+  .bib{width:58px;height:50px;background:var(--chalk);border:3px solid var(--ink);border-radius:8px;display:grid;place-items:center;position:relative;color:var(--dim);box-shadow:0 4px 0 var(--ink)}
+  .bib::before,.bib::after{content:"";position:absolute;top:5px;width:5px;height:5px;border-radius:50%;background:var(--ink)}
+  .bib::before{left:6px}.bib::after{right:6px}
+  .bib.on{background:var(--stop);color:var(--chalk);transform:translateY(-6px)}
+  .bib.on svg{stroke:var(--chalk)}
+  svg.mk{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .game{margin:52px 16px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:22px;padding:18px;box-shadow:0 7px 0 var(--ink)}
+  .gh{display:flex;align-items:center;gap:10px}
+  .chip{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:3px solid var(--ink);color:var(--chalk)}
+  .chip svg{stroke:var(--chalk)}
+  .gh .n{font-family:var(--disp);font-size:30px;line-height:1}
+  .gh .g{margin-left:auto;font-weight:800;font-size:14px;background:var(--paper);border:2px solid var(--ink);border-radius:99px;padding:4px 10px}
+  .how{color:#4a443c;margin-top:8px;font-size:16px}
+  .lane{position:relative;height:150px;margin:22px 0 8px;border-radius:16px;background:#c8643b;border:3px solid var(--ink);overflow:hidden}
+  .lane::before{content:"";position:absolute;left:0;right:0;top:40px;height:3px;background:#fff;box-shadow:0 64px 0 #fff}
+  .tape{position:absolute;top:0;bottom:0;left:64%;width:16px;background:repeating-linear-gradient(0deg,#fff 0 12px,var(--stop) 12px 24px);border-left:3px solid var(--ink);border-right:3px solid var(--ink)}
+  .runner{position:absolute;top:56px;left:38%;width:36px;height:36px;border-radius:50%;background:var(--chalk);border:3px solid var(--ink);box-shadow:-14px 0 0 -6px #ffffff90,-26px 0 0 -10px #ffffff60}
+  .flag{position:absolute;top:10px;left:65%;font-weight:800;font-size:12px;color:#fff;background:var(--hit);border:2px solid var(--ink);border-radius:99px;padding:1px 7px}
+  .tries{display:flex;gap:8px}
+  .tries span{flex:1;text-align:center;border:3px solid var(--ink);border-radius:12px;padding:7px 0;font-weight:800;background:var(--paper);color:var(--dim)}
+  .tries span.done{background:var(--hit);color:#fff}
+  .pill{display:block;margin:18px 16px 0;text-align:center;padding:15px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:22px;background:var(--lawn);color:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  .pill.off{background:#e7dfd0;color:#a89f90;box-shadow:0 6px 0 #a89f90;border-color:#a89f90}
+  .h2{font-family:var(--disp);font-size:38px;text-align:center;margin-top:20px;line-height:1}
+  .lead{text-align:center;color:#4a443c;margin:6px 24px 0;font-size:17px}
+  .slots{margin:16px 16px 0}
+  .slot{display:flex;align-items:center;gap:10px;height:54px;margin-bottom:8px;border:3px dashed #b7ad9c;border-radius:16px;padding:0 10px}
+  .slot .pos{font-family:var(--disp);font-size:16px;width:56px;height:38px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--paper);border:3px solid var(--ink);position:relative}
+  .slot .pos::after{content:"";position:absolute;bottom:-11px;left:12px;border:8px solid transparent;border-top:9px solid var(--ink);border-bottom:0}
+  .slot.fill{border:3px solid var(--ink);background:var(--chalk);box-shadow:0 4px 0 var(--ink)}
+  .slot .nm{font-family:var(--disp);font-size:21px}
+  .slot .rs{margin-left:auto;font-weight:600;color:var(--dim)}
+  .slot em{margin-left:auto;font-style:normal;font-weight:800;font-size:12px;letter-spacing:1px;color:#a89f90}
+  .tray{display:flex;gap:10px;margin:14px 16px 0}
+  .bibcard{flex:1;background:var(--chalk);border:3px solid var(--ink);border-radius:14px;padding:12px 10px 10px;box-shadow:0 5px 0 var(--ink);position:relative}
+  .bibcard::before,.bibcard::after{content:"";position:absolute;top:6px;width:6px;height:6px;border-radius:50%;background:var(--ink)}
+  .bibcard::before{left:8px}.bibcard::after{right:8px}
+  .bibcard .nm{display:flex;align-items:center;gap:6px;font-family:var(--disp);font-size:20px}
+  .bibcard .rs{font-weight:600;color:var(--dim);font-size:14px}
+  .bibcard.lift{transform:translateY(-8px) rotate(2deg);box-shadow:0 12px 0 var(--ink)}
+  .sheet{margin:18px 14px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:18px;padding:16px 14px 12px;position:relative;box-shadow:0 7px 0 var(--ink)}
+  .clip{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:110px;height:26px;border-radius:8px;background:#9aa0a6;border:3px solid var(--ink)}
+  .big{font-family:var(--disp);font-size:27px;line-height:1.05;text-align:center}
+  .meta{text-align:center;color:var(--dim);font-weight:600;font-size:13px;margin-top:6px}
+  .row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:2px dashed #e2d9c8;font-size:15px}
+  .row .chip{width:32px;height:32px;border-radius:9px;border-width:2px}
+  .row .chip svg{width:18px;height:18px}
+  .row .nm{font-weight:800;width:62px}
+  .row .raw{color:var(--dim);width:88px}
+  .row .pc{font-weight:800;width:62px}
+  .row .call{margin-left:auto;font-weight:800;display:flex;align-items:center;gap:4px}
+  .sq{width:16px;height:16px;border-radius:4px;border:2px solid var(--ink);display:inline-block}
+  .sq.hit{background:var(--hit)} .sq.near{background:linear-gradient(90deg,var(--near) 50%,var(--chalk) 50%)} .sq.miss{background:var(--chalk)}
+  .two{display:flex;gap:8px;margin-top:10px}
+  .two div{flex:1;background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:7px 9px;font-size:13px;color:var(--dim);font-weight:600}
+  .two b{display:block;color:var(--ink);font-size:15px}
+  .foot{display:flex;justify-content:space-between;margin:12px 18px 0;font-weight:600;font-size:13px;color:var(--dim)}
+  .share{margin:16px;background:var(--ink);color:var(--chalk);border-radius:16px;padding:14px 16px;white-space:pre;font-size:17px;line-height:1.35;font-weight:600}
+  .share h3{font-size:12px;letter-spacing:2px;color:#b7ad9c;margin-bottom:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="m-stop" viewBox="0 0 24 24"><path d="M2 15h20M12 5v16"/></symbol>
+  <symbol id="m-count" viewBox="0 0 24 24"><circle cx="6" cy="16" r="2.2" fill="currentColor"/><circle cx="12" cy="8" r="2.2" fill="currentColor"/><circle cx="18" cy="16" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="m-repeat" viewBox="0 0 24 24"><path d="M19 9a7 7 0 1 0 1 6"/><path d="M20 3v6h-6"/></symbol>
+  <symbol id="m-pair" viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></symbol>
+  <symbol id="m-sort" viewBox="0 0 24 24"><path d="M5 20v-5M12 20v-9M19 20V5"/></symbol>
+</svg>
+
+<section class="note">
+  <h1>B · Sports day</h1>
+  <p>"The field" is everyone who ran today, and a sports day is five short events with ribbons at the end. You wear a bib for each event, then hand out your own five ribbons before the results go up on the board.</p>
+  <dl>
+    <dt>Palette</dt><dd class="sw"><span><i style="background:#f6f0e4"></i>Paper #f6f0e4</span><span><i style="background:#22201c"></i>Ink #22201c</span><span><i style="background:#4f8f4a"></i>Lawn #4f8f4a</span><span><i style="background:#c8643b"></i>Track #c8643b</span><span><i style="background:#fffdf7"></i>Chalk #fffdf7</span></dd>
+    <dt>Games</dt><dd class="sw"><span><i style="background:#e5484d"></i>Stop</span><span><i style="background:#3b82f6"></i>Count</span><span><i style="background:#8b5cf6"></i>Repeat</span><span><i style="background:#ec4899"></i>Pair</span><span><i style="background:#f97316"></i>Sort</span></dd>
+    <dt>Type</dt><dd>Bowlby One for names and numbers; Outfit for everything else</dd>
+    <dt>Marks</dt><dd>Hit: filled green square #1fa85a. Near: half yellow #f5c518. Miss: empty square. Par ▲ ● ▼ in ink. Share: 🟩 🟨 ⬜ and ▲ ● ▼.</dd>
+    <dt>From</dt><dd>Guessdash's design language: warm paper, thick ink outlines, heavy rounded type, pill buttons with a hard bottom edge you want to press. The subject fact: a field of competitors, lanes, bibs and ribbons. Stop is drawn as breaking the tape.</dd>
+  </dl>
+</section>
+
+<div class="label">1 · STOP, MID-PLAY</div>
+<section class="screen">
+  <div class="lawn">
+    <div class="board"><div class="t">FIELDCARD</div><div class="s">Card #41 · Wed 25 Nov</div></div>
+    <div class="bibs">
+      <div class="bib on"><svg class="mk"><use href="#m-stop"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-count"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-repeat"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-pair"/></svg></div>
+      <div class="bib"><svg class="mk"><use href="#m-sort"/></svg></div>
+    </div>
+  </div>
+  <div class="game">
+    <div class="gh"><div class="chip" style="background:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg></div><div class="n">Stop</div><div class="g">Go 2 of 3</div></div>
+    <div class="how">Stop the marker on the notch. Three goes.</div>
+    <div class="lane"><div class="tape"></div><div class="flag">1.2% off</div><div class="runner"></div></div>
+    <div class="tries"><span class="done">1.2% off</span><span>Go 2</span><span>Go 3</span></div>
+  </div>
+  <div style="text-align:center;font-family:var(--disp);font-size:22px;margin-top:26px">Tap anywhere to stop</div>
+</section>
+
+<div class="label">2 · THE CALL</div>
+<section class="screen">
+  <div class="h2">The call</div>
+  <div class="lead">Where did you beat the field most? Order your five.</div>
+  <div class="slots">
+    <div class="slot fill"><div class="pos">1st</div><div class="chip" style="background:var(--stop);width:34px;height:34px;border-radius:9px"><svg class="mk" style="width:18px;height:18px"><use href="#m-stop"/></svg></div><span class="nm">Stop</span><span class="rs">1.8% off</span></div>
+    <div class="slot fill"><div class="pos">2nd</div><div class="chip" style="background:var(--pair);width:34px;height:34px;border-radius:9px"><svg class="mk" style="width:18px;height:18px"><use href="#m-pair"/></svg></div><span class="nm">Pair</span><span class="rs">6.4 s</span></div>
+    <div class="slot fill"><div class="pos">3rd</div><div class="chip" style="background:var(--repeat);width:34px;height:34px;border-radius:9px"><svg class="mk" style="width:18px;height:18px"><use href="#m-repeat"/></svg></div><span class="nm">Repeat</span><span class="rs">7 long</span></div>
+    <div class="slot"><div class="pos">4th</div><em></em></div>
+    <div class="slot"><div class="pos">5th</div><em>BEAT LEAST</em></div>
+  </div>
+  <div class="tray">
+    <div class="bibcard lift"><div class="nm" style="color:var(--count)"><svg class="mk"><use href="#m-count"/></svg><span style="color:var(--ink)">Count</span></div><div class="rs">12% off</div></div>
+    <div class="bibcard"><div class="nm" style="color:var(--sort)"><svg class="mk"><use href="#m-sort"/></svg><span style="color:var(--ink)">Sort</span></div><div class="rs">1 pair wrong</div></div>
+  </div>
+  <div class="pill off" style="margin-top:22px">Lock</div>
+  <div style="text-align:center;color:var(--dim);font-weight:600;font-size:14px;margin-top:12px">1st is where you beat the field most.</div>
+</section>
+
+<div class="label">3 · SCORECARD, WITH THE SHARE TEXT</div>
+<section class="screen" style="height:auto;padding:14px 0 4px">
+  <div class="sheet">
+    <div class="clip"></div>
+    <div class="big">Called 3 of 5 · beat the field on 3</div>
+    <div class="meta">Card #41 · Wed 25 Nov · against 1,204 players</div>
+    <div style="margin-top:10px">
+      <div class="row"><div class="chip" style="background:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg></div><span class="nm">Stop</span><span class="raw">1.8% off</span><span class="pc">81% ▲</span><span class="call"><span class="sq hit"></span>1st→1st</span></div>
+      <div class="row"><div class="chip" style="background:var(--count)"><svg class="mk"><use href="#m-count"/></svg></div><span class="nm">Count</span><span class="raw">12% off</span><span class="pc">34% ▼</span><span class="call"><span class="sq hit"></span>5th→5th</span></div>
+      <div class="row"><div class="chip" style="background:var(--repeat)"><svg class="mk"><use href="#m-repeat"/></svg></div><span class="nm">Repeat</span><span class="raw">7 long</span><span class="pc">66% ▲</span><span class="call"><span class="sq near"></span>3rd→2nd</span></div>
+      <div class="row"><div class="chip" style="background:var(--pair)"><svg class="mk"><use href="#m-pair"/></svg></div><span class="nm">Pair</span><span class="raw">6.4 s</span><span class="pc">58% ▲</span><span class="call"><span class="sq near"></span>2nd→3rd</span></div>
+      <div class="row" style="border:0"><div class="chip" style="background:var(--sort)"><svg class="mk"><use href="#m-sort"/></svg></div><span class="nm">Sort</span><span class="raw">1 pair wrong</span><span class="pc">47% ▼</span><span class="call"><span class="sq hit"></span>4th→4th</span></div>
+    </div>
+    <div class="two"><div>Play<b>You beat 57% of the field.</b></div><div>Call<b>Your call beat 70% of callers.</b></div></div>
+  </div>
+  <div class="pill">Share</div>
+  <div class="foot"><span>Day 12 in a row · best 12</span><span>Next card in 7 h 12 m</span></div>
+  <div class="share"><h3>SHARE TEXT</h3>Fieldcard #41
+Called 3/5 🟩🟨🟨🟩🟩
+Beat the field ▲▼▲▲▼</div>
+</section>
+</body>
+</html>

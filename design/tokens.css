@@ -1,0 +1,117 @@
+/* Fieldcard design tokens. Sports day, picked 25 Nov 2026 (design/PICK.md).
+   The only place a colour, typeface, size, radius, spacing, shadow, line or duration value may appear.
+   Build code uses var(--...) only; scripts/design-check.sh enforces it from G-01.
+   The mock-up directions/b-final-run.html loads this file and may also write values literally.
+   Every colour it uses is listed here; its sizes, radii and line widths round to the nearest
+   token in the build, a value exactly halfway rounding up (DESIGN.md). */
+
+:root {
+  /* surfaces and ink */
+  --paper: #f6f0e4;          /* page */
+  --chalk: #fffdf7;          /* cards, boards, buttons at rest */
+  --ink: #22201c;            /* text, outlines, hard shadows */
+  --ink-soft: #4a443c;       /* body text on paper */
+  --dim: #7a7064;            /* labels, captions */
+  --ghost: #b7ad9c;          /* where everyone planted; dashed starting guess */
+  --rule: #d8cfbe;           /* dashed separators */
+  --bead-empty: #e2d9c8;     /* beads before the reveal */
+  --white: #ffffff;
+  --white-60: #ffffff60;     /* runner trail */
+  --white-70: #ffffff70;     /* step bar, not yet */
+  --white-90: #ffffff90;     /* runner trail */
+  --tap-ring: #22201c22;     /* where the finger is */
+
+  /* the field */
+  --lawn: #4f8f4a;           /* header band, primary button */
+  --lawn-2: #5e9e56;         /* lawn stripe */
+  --track: #c8643b;          /* running track */
+  --wood: #8b5a3c;           /* doors, photo tiers; Spot it */
+  --wood-dark: #6b4029;      /* door panel */
+  --door-open: #2b1a10;      /* inside an open door */
+  --sky: #cfe3f5;            /* photo sky */
+  --rope: #c9a26b;           /* Mirror Duel rope */
+  --rope-2: #a9824e;         /* rope twist */
+
+  /* the five events: one each, never used for a state */
+  --stop: #e5484d;
+  --count: #3b82f6;
+  --repeat: #8b5cf6;
+  --pair: #ec4899;
+  --sort: #f97316;
+
+  /* states and people */
+  --right: #1fa85a;          /* right, made it, where your read matched the crowd */
+  --wrong: #b42318;          /* wrong, fell short; always with the ✗ mark */
+  --you: #f5c518;            /* you, always; your flag */
+  --flag: var(--you);
+  --crowd: #4f6d8f;          /* everyone else in a reveal */
+  --crowd-fill: #4f6d8fcc;   /* the crowd's sand */
+  --figure: #efe6d4;         /* everyone in the class photo */
+  --sand: #e9c98f;           /* Read of the day: its weekday strip and the sand you pour */
+  --sand-2: #c99a52;
+  --hunch-bg: #e4f5ea;
+  --flag-bg: #fde3e1;
+
+  /* medals */
+  --gold: #e8b100;
+  --silver: #a9b1bb;
+  --bronze: #c27c4a;
+
+  /* teams (each team gets one colour; these two are the mock-up's) */
+  --team-a: #1e3a8a;
+  --team-b: #4aa3d8;
+  --team-b-text: #2b7fb0;    /* team-b on chalk, for contrast */
+
+  /* type */
+  --font-display: "Bowlby One", "Arial Black", sans-serif;
+  --font-body: "Outfit", sans-serif;
+  --w-regular: 400;
+  --w-semi: 600;
+  --w-bold: 800;             /* Outfit is loaded at 400, 600, 800; no 700 */
+  --size-xs: 11px;
+  --size-s: 13px;
+  --size-m: 15px;
+  --size-l: 18px;
+  --size-xl: 22px;
+  --size-title: 27px;
+  --size-big: 40px;
+  --size-score: 44px;
+  --lh-tight: 1.05;
+  --lh-body: 1.35;
+  --tracking-label: 2px;
+  --tracking-sign: 1px;
+
+  /* shape */
+  --line: 3px;               /* cards, buttons, boards, doors, chips */
+  --line-thin: 2px;          /* beads, bib dots, small marks */
+  --r-xs: 4px;
+  --r-s: 8px;
+  --r-m: 12px;
+  --r-l: 16px;
+  --r-card: 20px;
+  --r-pill: 99px;
+  --r-round: 50%;
+  --r-door: 60px 60px 10px 10px;
+  --r-pile: 40px 40px 8px 8px;
+  --r-panel: 46px 46px 6px 6px;  /* door panel */
+  --r-slot: 0 0 12px 12px;       /* sand box */
+  --shadow-s: 0 4px 0 var(--ink);
+  --shadow-m: 0 6px 0 var(--ink);
+  --shadow-l: 0 10px 0 var(--ink);
+  --ring-you: 0 0 0 4px var(--you);
+
+  /* space */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 18px;           /* screen side margin */
+  --space-6: 24px;
+  --space-8: 48px;
+
+  /* motion: set by the agent (the mock-ups are still); checked at the G-02 phone step */
+  --dur-tap: 120ms;
+  --dur-reveal: 600ms;       /* doors open, sand pours, beads drop */
+  --dur-step: 400ms;         /* between reveal items */
+  --ease-drop: cubic-bezier(.2, .9, .3, 1.2);
+}

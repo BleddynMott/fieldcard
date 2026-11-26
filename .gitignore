@@ -1,0 +1,14 @@
+.method/raw/
+.claude/settings.local.json
+node_modules/
+dist/
+.DS_Store
+.env
+.env.*
+.claude/logs/
+*.pem
+*.key
+credentials.json
+# kept on the Mac, not published (G-01 R5): third-party screenshots and review diffs with local paths
+design/references/*.png
+tasks/*.diff

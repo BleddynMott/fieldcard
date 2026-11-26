@@ -1,0 +1,137 @@
+{
+ "hooks": {
+  "SessionStart": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py SessionStart",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "SessionEnd": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py SessionEnd",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "UserPromptSubmit": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py UserPromptSubmit",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "Stop": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py Stop",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "StopFailure": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py StopFailure",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "PostToolUseFailure": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py PostToolUseFailure",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "PermissionDenied": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py PermissionDenied",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "PostCompact": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py PostCompact",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "ConfigChange": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py ConfigChange",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "PreToolUse": [
+   {
+    "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit",
+    "hooks": [
+     {
+      "type": "command",
+      "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-secrets.sh",
+      "timeout": 10,
+      "onFailure": "block"
+     }
+    ]
+   }
+  ],
+  "InstructionsLoaded": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.method/bin/capture.py InstructionsLoaded",
+      "timeout": 5
+     }
+    ]
+   }
+  ]
+ },
+ "permissions": {
+  "ask": [
+   "Edit(.claude/hooks/**)",
+   "Write(.claude/hooks/**)",
+   "Edit(.githooks/**)",
+   "Write(.githooks/**)",
+   "Edit(.claude/settings.json)",
+   "Write(.claude/settings.json)"
+  ]
+ }
+}

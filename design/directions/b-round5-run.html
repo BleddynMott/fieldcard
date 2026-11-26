@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · Sports day · round 5: one whole run after the events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e4; --ink:#22201c; --lawn:#4f8f4a; --lawn2:#5e9e56; --chalk:#fffdf7; --dim:#7a7064; --track:#c8643b;
+    --stop:#e5484d; --count:#3b82f6; --repeat:#8b5cf6; --pair:#ec4899; --sort:#f97316;
+    --hit:#1fa85a; --near:#f5c518; --crowd:#3b82f6; --ghost:#b7ad9c; --oxf:#1e3a8a; --cam:#7cc3e8;
+    --disp:"Bowlby One","Arial Black",sans-serif; --body:"Outfit",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px}
+  .intro{padding:18px;background:var(--chalk);border-bottom:3px solid var(--ink)}
+  .intro h1{font-family:var(--disp);font-size:24px;font-weight:400;line-height:1.1}
+  .intro p{margin-top:8px;line-height:1.4;color:#4a443c;font-size:15px}
+  .flow{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-weight:800;font-size:13px}
+  .flow span{border:2px solid var(--ink);border-radius:99px;padding:3px 10px;background:var(--paper)}
+  .flow i{font-style:normal;color:var(--dim)}
+  .step{padding:20px 18px 10px;border-top:3px solid var(--ink);background:var(--chalk)}
+  .step .tag{display:inline-block;font-weight:800;font-size:12px;letter-spacing:2px;border:2px solid var(--ink);border-radius:99px;padding:2px 10px;background:var(--near)}
+  .step h2{font-family:var(--disp);font-size:26px;font-weight:400;margin-top:8px;line-height:1}
+  .step p{margin-top:8px;line-height:1.4;font-size:15px;color:#4a443c}
+  .step p b{color:var(--ink)}
+  .cap{padding:14px 18px 6px;font-weight:800;letter-spacing:2px;font-size:12px;color:var(--dim)}
+  .screen{position:relative;width:390px;overflow:hidden;background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);padding-bottom:20px}
+  .bar{height:56px;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+  .bar .t{font-family:var(--disp);color:var(--chalk);font-size:15px;letter-spacing:1px;text-shadow:0 2px 0 var(--ink)}
+  .bar .steps{display:flex;gap:5px}
+  .bar .steps i{width:22px;height:8px;border-radius:9px;background:#ffffff70;border:2px solid var(--ink)}
+  .bar .steps i.on{background:var(--near)} .bar .steps i.done{background:var(--chalk)}
+  .ask{font-family:var(--disp);font-size:25px;line-height:1.05;margin:16px 18px 0}
+  .sub{margin:6px 18px 0;color:#4a443c;font-size:14.5px;line-height:1.35}
+  .card{margin:14px 18px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:20px;padding:14px;box-shadow:0 6px 0 var(--ink)}
+  .legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:12px;font-weight:700;color:var(--dim)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:-2px;border:2px solid var(--ink)}
+  .legend i.ln{width:16px;height:4px;border-radius:2px;border:0}
+  .fact{margin:14px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);font-size:15px;line-height:1.3}
+  .fact b{font-family:var(--disp);font-weight:400;font-size:19px;display:block;line-height:1.1;margin-bottom:4px}
+  .verdict{display:flex;align-items:center;gap:10px;margin:12px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--hit);color:#fff;font-weight:800;font-size:16px;box-shadow:0 5px 0 var(--ink)}
+  .verdict.bad{background:var(--stop)}
+  .verdict .pts{margin-left:auto;font-family:var(--disp);font-size:22px}
+  .pill{display:block;margin:16px 18px 0;text-align:center;padding:14px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:19px;background:var(--lawn);color:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  /* spot it */
+  .three{display:flex;flex-direction:column;gap:10px}
+  .opt3{display:flex;align-items:center;gap:12px;border:3px solid var(--ink);border-radius:16px;background:var(--paper);padding:10px 12px;position:relative}
+  .opt3 .w{font-family:var(--disp);font-size:18px;width:86px;line-height:1}
+  .opt3 svg{flex:1}
+  .opt3.real{background:#e4f5ea;border-color:var(--hit)}
+  .opt3.pick{box-shadow:0 0 0 3px var(--near)}
+  .opt3 .v{position:absolute;right:10px;top:-11px;font-size:11px;font-weight:800;background:var(--chalk);border:2px solid var(--ink);border-radius:99px;padding:0 7px}
+  /* claim */
+  .stake{display:flex;gap:8px;margin-top:10px}
+  .stake div{flex:1;border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700;color:var(--dim);background:var(--paper)}
+  .stake b{display:block;font-family:var(--disp);font-weight:400;font-size:22px;color:var(--ink)}
+  .stake .win b{color:var(--hit)} .stake .lose b{color:var(--stop)}
+  /* scorecard */
+  .head1{font-family:var(--disp);font-size:28px;line-height:1.05;margin:18px 18px 0}
+  .meta{margin:6px 18px 0;font-weight:600;font-size:13px;color:var(--dim)}
+  .tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 18px 0}
+  .tile{border:3px solid var(--ink);border-radius:14px;background:var(--chalk);padding:10px 8px;box-shadow:0 4px 0 var(--ink)}
+  .tile small{display:block;font-weight:800;font-size:11px;letter-spacing:1px;color:var(--dim)}
+  .tile b{display:block;font-family:var(--disp);font-weight:400;font-size:22px;line-height:1.1;margin-top:2px}
+  .tile span{font-size:12px;font-weight:600;color:var(--dim)}
+  .rope{position:relative;height:64px;margin-top:10px}
+  .rope .r{position:absolute;left:0;right:0;top:27px;height:10px;border-radius:9px;background:repeating-linear-gradient(60deg,#c9a26b 0 6px,#a9824e 6px 12px);border:2px solid var(--ink)}
+  .rope .mid{position:absolute;left:50%;top:12px;width:3px;height:40px;background:var(--ink)}
+  .rope .knot{position:absolute;top:19px;width:16px;height:26px;margin-left:-8px;background:var(--stop);border:2.5px solid var(--ink);border-radius:4px}
+  .teams{display:flex;justify-content:space-between;align-items:flex-end}
+  .teams div{font-family:var(--disp);font-size:18px;line-height:1}
+  .teams small{display:block;font-family:var(--body);font-weight:700;font-size:12px;color:var(--dim);margin-top:3px}
+  .share{margin:12px 18px 0;background:var(--ink);color:var(--chalk);border-radius:14px;padding:10px 14px;white-space:pre;font-size:15px;line-height:1.4;font-weight:600}
+  .share h3{font-size:10.5px;letter-spacing:2px;color:#b7ad9c;margin-bottom:3px}
+  /* week */
+  .persona{margin:16px 18px 0;border:3px solid var(--ink);border-radius:22px;background:var(--near);padding:18px 16px;box-shadow:0 7px 0 var(--ink);position:relative;overflow:hidden}
+  .persona::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;border:3px dashed #22201c40}
+  .persona small{font-weight:800;letter-spacing:2px;font-size:11px}
+  .persona h3{font-family:var(--disp);font-weight:400;font-size:32px;line-height:1;margin-top:6px}
+  .persona p{margin-top:8px;font-size:15px;line-height:1.35;font-weight:600}
+  .axes{margin:12px 18px 0;display:grid;grid-template-columns:1fr;gap:10px}
+  .axis{background:var(--chalk);border:3px solid var(--ink);border-radius:14px;padding:10px 12px}
+  .axis .ends{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:1px}
+  .axis .line{position:relative;height:18px;margin-top:6px;border-radius:9px;background:#e7dfd0;border:2px solid var(--ink)}
+  .axis .dot{position:absolute;top:-6px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:var(--near);border:3px solid var(--ink)}
+  .axis .fd{position:absolute;top:2px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--ghost)}
+  .report{margin:12px 18px 0;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);padding:12px 14px}
+  .report h4{font-family:var(--disp);font-weight:400;font-size:18px}
+  .report li{margin:6px 0 0 18px;font-size:14px;line-height:1.35}
+  .rules{padding:18px;background:var(--chalk);border-top:3px solid var(--ink);font-size:14px;line-height:1.45;color:#4a443c}
+  .rules h2{font-family:var(--disp);font-weight:400;font-size:20px;color:var(--ink);margin:14px 0 6px}
+  .rules h2:first-child{margin-top:0}
+  .rules table{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}
+  .rules td,.rules th{border:2px solid var(--ink);padding:5px 6px;text-align:left;vertical-align:top}
+  .rules th{background:var(--paper)}
+</style>
+</head>
+<body>
+
+<section class="intro">
+  <h1>Round 5 · one whole run, after the five events</h1>
+  <p>Your keeps, put in order. Every piece appears once. Card #41; you played the five events and said 15 on Count.</p>
+  <div class="flow"><span>5 events</span><i>→</i><span>Spot it</span><i>→</i><span>Draw it</span><i>→</i><span>Claim it</span><i>→</i><span>Scorecard + rope</span><i>…</i><span>Sunday: your week</span></div>
+</section>
+
+<!-- SPOT -->
+<section class="step"><span class="tag">1 · SPOT IT · WARM-UP, 5 SECONDS</span><h2>Early, on it, or late?</h2>
+<p>The simpler Spot the real crowd: three pictures, words on each, one tap. Today it's on Stop. <b>1 point.</b></p></section>
+<div class="cap">ASK, THEN REVEAL</div>
+<section class="screen">
+  <div class="bar"><span class="t">SPOT IT</span><span class="steps"><i class="on"></i><i></i><i></i><i></i></span></div>
+  <div class="ask">Where did the crowd stop?</div>
+  <div class="sub">Everyone had the same sweep as you. Tap the picture of where they stopped.</div>
+  <div class="card"><div class="three" id="spot"></div></div>
+  <div class="fact"><b>61% stopped late.</b>Most readers said "on it". People wait for the marker to arrive, and it's already gone.</div>
+  <div class="verdict">You spotted it · 29% of readers did<span class="pts">+1</span></div>
+</section>
+
+<!-- DRAW -->
+<section class="step"><span class="tag">2 · DRAW IT · THE MAIN READ, 15 SECONDS</span><h2>Draw the crowd</h2>
+<p>Kept as you liked it: one stroke, then three layers: the real crowd, everyone else's drawings, yours. <b>Your drawing is also your team's vote:</b> your team's average drawing is what plays today's fixture. <b>0 to 10 points</b>, from the overlap.</p></section>
+<div class="cap">THE REVEAL</div>
+<section class="screen">
+  <div class="bar"><span class="t">DRAW IT · COUNT</span><span class="steps"><i class="done"></i><i class="on"></i><i></i><i></i></span></div>
+  <div class="ask">How did the crowd guess?</div>
+  <div class="card"><svg id="draw" width="322" height="214"></svg>
+  <div class="legend"><span><i style="background:var(--crowd)"></i>the real crowd</span><span><i class="ln" style="background:var(--ink)"></i>you</span><span><i class="ln" style="background:var(--ghost)"></i>everyone else</span><span><i class="ln" style="background:var(--oxf)"></i>Oxford</span></div></div>
+  <div class="fact"><b>Readers drew it centred on 17. The crowd sat at 16.</b>Oxford's average drawing leaned low, like the crowd did.</div>
+  <div class="verdict" style="background:var(--near);color:var(--ink)">78% overlap<span class="pts">+8</span></div>
+</section>
+
+<!-- CLAIM -->
+<section class="step"><span class="tag">3 · CLAIM IT · THE BOLD FINAL</span><h2>Claim your place</h2>
+<p>Before any result shows, plant your flag where you think you finished in the whole field. <b>Make it, and you bank your claim. Fall short, and you lose double the gap.</b> Claim high and land it: big score. Claim high and miss: it hurts. Above the track, everyone's claims; below, where they really finished.</p></section>
+<div class="cap">PLANT YOUR FLAG</div>
+<section class="screen">
+  <div class="bar"><span class="t">CLAIM IT</span><span class="steps"><i class="done"></i><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="ask">Where did you finish?</div>
+  <div class="sub">All 1,204 players, worst to best on today's five events. Drag your flag.</div>
+  <div class="card"><svg id="claimIn" width="322" height="200"></svg>
+    <div class="stake"><div class="win">If you made it<b>+70</b></div><div class="lose">If you fell short<b>−2 a point</b></div></div></div>
+  <div class="pill">Plant it</div>
+</section>
+<div class="cap">THE FIELD RUNS IN</div>
+<section class="screen">
+  <div class="bar"><span class="t">CLAIM IT</span><span class="steps"><i class="done"></i><i class="done"></i><i class="on"></i><i></i></span></div>
+  <div class="card" style="margin-top:18px"><svg id="claimOut" width="322" height="320"></svg>
+  <div class="legend"><span><i style="background:var(--chalk);border-color:var(--ghost)"></i>where people claimed</span><span><i style="background:var(--crowd)"></i>where they finished</span><span><i style="background:var(--near)"></i>your flag</span><span><i style="background:var(--hit)"></i>you</span></div></div>
+  <div class="fact"><b>76% claimed a place above the middle.</b>Only half can be. You claimed 70%; you beat 57%.</div>
+  <div class="verdict bad">13 points short · lose double<span class="pts">−26</span></div>
+</section>
+
+<!-- SCORECARD -->
+<section class="step"><span class="tag">4 · SCORECARD</span><h2>Three numbers and a rope</h2>
+<p>Played, read, claimed: kept apart so a slow player can still top the readers. The rope is the team fixture: your team's average drawing against the rival's, and whichever is closer to the real crowd pulls.</p></section>
+<div class="cap">THE SCORECARD</div>
+<section class="screen">
+  <div class="bar"><span class="t">SCORECARD #41</span><span class="steps"><i class="done"></i><i class="done"></i><i class="done"></i><i class="on"></i></span></div>
+  <div class="head1">Read 9 · claimed −26 · beat 57%</div>
+  <div class="meta">Wed 25 Nov · against 1,204 players</div>
+  <div class="tiles">
+    <div class="tile"><small>PLAYED</small><b>57%</b><span>of the field beaten</span></div>
+    <div class="tile"><small>READ</small><b>9</b><span>of 11 · Reader #212</span></div>
+    <div class="tile" style="background:#fde3e1"><small>CLAIMED</small><b>−26</b><span>too proud by 13</span></div>
+  </div>
+  <div class="card">
+    <div class="teams"><div style="color:var(--oxf)">Oxford<small>84% read · 212 drew</small></div><div style="color:#2b7fb0;text-align:right">Cambridge<small>79% read · 188 drew</small></div></div>
+    <div class="rope"><div class="r"></div><div class="mid"></div><div class="knot" style="left:39%"></div></div>
+    <div style="font-weight:800;font-size:14px">Oxford pull it today. Week: Oxford 3 · Cambridge 1</div>
+  </div>
+  <div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · Oxford 🪢
+👀 read 9/11
+🚩 claimed 70 · made 57 · −26</div>
+</section>
+
+<!-- WEEK -->
+<section class="step"><span class="tag">5 · SUNDAY · YOUR WEEK</span><h2>Your week, and the experiment</h2>
+<p>Once a week the game tells you how you behaved, and what the whole field did. Two scales, from your claims and your drawings, give one of nine sporting characters. The field report is the social experiment: what people did, in numbers.</p></section>
+<div class="cap">SUNDAY'S CARD</div>
+<section class="screen">
+  <div class="bar"><span class="t">YOUR WEEK · 23–29 NOV</span><span class="steps"></span></div>
+  <div class="persona"><small>THIS WEEK YOU WERE</small><h3>The Show-off Scout</h3><p>You claimed 11 points higher than you finished, on 5 days of 6. But you read the crowd against the grain, and you were right more often than not.</p></div>
+  <div class="axes">
+    <div class="axis"><div class="ends"><span>DARK HORSE</span><span>STRAIGHT</span><span>SHOW-OFF</span></div><div class="line" id="ax1"></div></div>
+    <div class="axis"><div class="ends"><span>FOLLOWS READERS</span><span>MIXED</span><span>SCOUT</span></div><div class="line" id="ax2"></div></div>
+    <div style="font-size:12px;font-weight:700;color:var(--dim)">Grey dots: where the rest of Oxford sat.</div>
+  </div>
+  <div class="report"><h4>The field this week</h4><ul>
+    <li>74% claimed above the middle on most days. 9% were Dark Horses.</li>
+    <li>The crowd undercounted on Count 6 days of 6. Readers expected it on 1.</li>
+    <li>Most honest team: Cambridge. Boldest: Leeds.</li>
+  </ul></div>
+  <div class="share"><h3>SHARE TEXT</h3>Fieldcard week 48 · The Show-off Scout
+read 52/66 · claimed −64 · Oxford 5–2</div>
+</section>
+
+<section class="rules">
+  <h2>The rules behind it</h2>
+  <p><b>Claim it.</b> You claim a place c (you beat c% of the field). Your real place is p. If p ≥ c you score +c. If p &lt; c you score −2 × (c − p). So a claim of 90 that lands pays 90, and the same claim at 80 costs 20. The best claim is a little under where you really expect to be, and it pays more the better you know yourself.</p>
+  <table><tr><th>claim</th><th>you beat 57%</th><th>you beat 85%</th></tr>
+  <tr><td>50</td><td>+50</td><td>+50</td></tr><tr><td>70</td><td>−26</td><td>+70</td></tr><tr><td>90</td><td>−66</td><td>−10</td></tr></table>
+  <p><b>Personal record:</b> claim points add up over the week; the best week is your record. <b>Team:</b> members' claim points add to a weekly "nerve" table alongside the reading fixtures.</p>
+  <h2>The character</h2>
+  <p>Over at least four days in a week. <b>Nerve:</b> your average claim minus your average place. More than 8 above is Show-off, more than 8 below is Dark Horse, otherwise Straight. <b>Reading:</b> is your drawing nearer to the other readers' average or to the real crowd? Nearer the readers: Follower. Away from the readers and nearer the crowd: Scout. Otherwise Mixed. That gives 3 × 3 = 9 characters.</p>
+  <h2>Length</h2>
+  <p>The events take about 2 minutes; Spot it, Draw it and Claim it about 30 seconds together; the Scorecard 15. About 3 minutes in all. Spot it is the one to cut if a run feels long.</p>
+</section>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const C={ink:'#22201c',crowd:'#3b82f6',ghost:'#b7ad9c',near:'#f5c518',hit:'#1fa85a',dim:'#7a7064',stop:'#e5484d',oxf:'#1e3a8a',track:'#c8643b',chalk:'#fffdf7',paper:'#f6f0e4'};
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,o={}){const t=el('text',Object.assign({x,y,'font-size':11,'font-weight':800,fill:C.dim,'font-family':'Outfit'},o),p);t.textContent=s;return t}
+function smooth(pts){let d='M'+pts[0].join(' ');for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i];const cx=(x0+x1)/2;d+=` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`}return d}
+// SPOT: three pictures of a track with a heat lump
+(function(){const host=document.getElementById('spot');[['Early',0.30,false,18],['On it',0.52,false,53],['Late',0.70,true,29]].forEach(([w,c,real,pct])=>{
+  const d=document.createElement('div');d.className='opt3'+(real?' real pick':'');d.innerHTML=`<span class="w">${w}</span><span class="v">${pct}% of readers</span>`;
+  const s=document.createElementNS(NS,'svg');s.setAttribute('width','200');s.setAttribute('height','50');
+  el('rect',{x:0,y:34,width:200,height:12,rx:4,fill:C.track,stroke:C.ink,'stroke-width':2},s);
+  el('rect',{x:102,y:28,width:5,height:22,fill:C.stop,stroke:C.ink,'stroke-width':1.5},s);
+  const pts=[];for(let i=0;i<=40;i++){const x=i/40;pts.push([x*200,32-26*Math.exp(-Math.pow((x-c)/0.09,2))])}
+  el('path',{d:smooth(pts)+` L 200 32 L 0 32 Z`,fill:real?C.crowd:'#cfc6b6',stroke:C.ink,'stroke-width':2},s);
+  d.appendChild(s);host.appendChild(d)})})();
+// DRAW
+(function(){const BINS=[12,13,14,15,16,17,18,19,20,21,22],CROWD=[2,4,9,16,20,18,13,8,5,3,2],YOU=[1,2,4,8,14,24,20,13,7,4,3],READ=[2,3,6,10,15,20,17,12,7,5,3],OXF=[2,4,8,14,19,19,14,9,6,3,2];
+  const svg=document.getElementById('draw'),W=322,bw=W/11,base=184,h=170,max=26;
+  el('line',{x1:0,y1:base,x2:W,y2:base,stroke:C.ink,'stroke-width':3},svg);
+  CROWD.forEach((v,i)=>{const bh=v/max*h;el('rect',{x:i*bw+3,y:base-bh,width:bw-6,height:bh,rx:5,fill:C.crowd,stroke:C.ink,'stroke-width':2.5},svg)});
+  [[READ,C.ghost,5,''],[OXF,C.oxf,3.5,''],[YOU,C.ink,4,'9 6']].forEach(([d,c,w,da])=>el('path',{d:smooth(d.map((v,i)=>[(i+.5)*bw,base-v/max*h])),fill:'none',stroke:c,'stroke-width':w,'stroke-dasharray':da,'stroke-linecap':'round'},svg));
+  const x=(5+.5)*bw;el('line',{x1:x,y1:6,x2:x,y2:base,stroke:C.stop,'stroke-width':3,'stroke-dasharray':'2 5','stroke-linecap':'round'},svg);txt(svg,x+5,16,'truth 17',{fill:C.stop});
+  BINS.forEach((b,i)=>txt(svg,(i+.5)*bw,base+18,b,{'text-anchor':'middle'}))})();
+// CLAIM: mirror of people-dots. Top: claims (hollow). Bottom: real finishes (filled). x = round score, 10 bins.
+const REAL=[1,1,2,5,8,10,10,7,4,2], CLAIM=[0,1,1,2,3,6,9,12,10,6];
+function claim(id,reveal){const svg=document.getElementById(id),W=322,bw=W/10,mid=reveal?160:108,r=5,gap=11;
+  el('rect',{x:0,y:mid-9,width:W,height:18,rx:6,fill:C.track,stroke:C.ink,'stroke-width':3},svg);
+  for(let i=1;i<10;i++) el('line',{x1:i*bw,y1:mid-6,x2:i*bw,y2:mid+6,stroke:'#fff','stroke-width':2},svg);
+  function stack(arr,dir,fill,stroke){arr.forEach((n,i)=>{for(let k=0;k<n;k++){const col=k%2,row=Math.floor(k/2);el('circle',{cx:i*bw+bw/2+(col?6:-6),cy:mid+dir*(18+row*gap),r,fill,stroke,'stroke-width':1.8},svg)}})}
+  if(reveal){stack(CLAIM,-1,C.chalk,C.ghost);stack(REAL,1,C.crowd,C.ink);
+    txt(svg,4,14,'WHERE PEOPLE CLAIMED',{'letter-spacing':1});txt(svg,4,314,'WHERE THEY FINISHED',{'letter-spacing':1});}
+  else{ for(let i=0;i<10;i++){el('circle',{cx:i*bw+bw/2,cy:mid+26,r:4,fill:'#e2d9c8'},svg)} txt(svg,4,mid+52,'the field fills in after you plant',{});}
+  ['worst','middle','best'].forEach((t,i)=>txt(svg,[2,W/2,W-2][i],reveal?mid+5:mid+5,t,{'text-anchor':['start','middle','end'][i],fill:'#fff','font-size':10}));
+  // your flag at claim 70% (score bin ~ 6.84), real at 57% (~6.16)
+  const fx=6.84*bw, rx=6.16*bw;
+  const ph=reveal?112:60;
+  el('line',{x1:fx,y1:mid-9,x2:fx,y2:mid-ph,stroke:C.ink,'stroke-width':3},svg);
+  el('path',{d:`M${fx} ${mid-ph} L${fx+24} ${mid-ph+8} L${fx} ${mid-ph+16} Z`,fill:C.near,stroke:C.ink,'stroke-width':2.5},svg);
+  txt(svg,fx-6,mid-ph+12,reveal?'your flag: 70%':'your flag: beat 70%',{fill:C.ink,'text-anchor':'end'});
+  if(reveal){el('path',{d:`M${rx} ${mid} L${fx} ${mid}`,stroke:C.stop,'stroke-width':6,'stroke-linecap':'round'},svg);
+    el('circle',{cx:rx,cy:mid,r:9,fill:C.hit,stroke:C.ink,'stroke-width':2.5},svg);
+    el('line',{x1:rx,y1:mid+10,x2:rx,y2:mid+128,stroke:C.hit,'stroke-width':2,'stroke-dasharray':'3 3'},svg);
+    txt(svg,rx-4,mid+140,'you: 57%',{fill:C.hit,'text-anchor':'end'});
+    txt(svg,(rx+fx)/2,mid-14,'13 short',{fill:C.stop,'text-anchor':'middle','font-size':10});}
+}
+claim('claimIn',false);claim('claimOut',true);
+// week axes
+(function(){function ax(id,me,others){const l=document.getElementById(id);others.forEach(o=>{const d=document.createElement('span');d.className='fd';d.style.left=o+'%';l.appendChild(d)});const m=document.createElement('span');m.className='dot';m.style.left=me+'%';l.appendChild(m)}
+  ax('ax1',82,[30,44,52,55,60,62,66,70,74,78,58,48]);ax('ax2',78,[20,28,33,36,40,45,50,52,58,64,30,42])})();
+</script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · Sports day · round 4: six ways to read the crowd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e4; --ink:#22201c; --lawn:#4f8f4a; --lawn2:#5e9e56; --chalk:#fffdf7; --dim:#7a7064; --track:#c8643b;
+    --stop:#e5484d; --count:#3b82f6; --repeat:#8b5cf6; --pair:#ec4899; --sort:#f97316;
+    --hit:#1fa85a; --near:#f5c518; --crowd:#3b82f6; --readers:#b7ad9c;
+    --disp:"Bowlby One","Arial Black",sans-serif; --body:"Outfit",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px}
+  .intro{padding:18px;background:var(--chalk);border-bottom:3px solid var(--ink)}
+  .intro h1{font-family:var(--disp);font-size:24px;font-weight:400;line-height:1.1}
+  .intro p{margin-top:8px;line-height:1.4;color:#4a443c;font-size:15px}
+  .intro .data{margin-top:10px;font-size:13px;line-height:1.45;background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:8px 10px}
+  .toc{margin-top:10px;font-size:14px;line-height:1.6;font-weight:600}
+  .opt{padding:22px 18px 12px;border-top:3px solid var(--ink);background:var(--chalk)}
+  .tag{display:inline-block;font-weight:800;font-size:12px;letter-spacing:2px;border:2px solid var(--ink);border-radius:99px;padding:2px 10px;background:var(--paper)}
+  .tag.wide{background:var(--near)}
+  .opt h2{font-family:var(--disp);font-size:28px;font-weight:400;margin-top:8px;line-height:1}
+  .opt .rule{margin-top:8px;line-height:1.4;font-size:15.5px}
+  .opt dl{margin-top:8px;display:grid;grid-template-columns:70px 1fr;gap:4px 8px;font-size:13.5px;line-height:1.4;color:#4a443c}
+  .opt dt{font-weight:800;color:var(--ink)}
+  .cap{padding:14px 18px 6px;font-weight:800;letter-spacing:2px;font-size:12px;color:var(--dim)}
+  .screen{position:relative;width:390px;overflow:hidden;background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);padding-bottom:20px}
+  .mini-lawn{height:56px;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:center;gap:10px}
+  .mini-lawn .t{font-family:var(--disp);color:var(--chalk);font-size:15px;letter-spacing:1px;text-shadow:0 2px 0 var(--ink)}
+  .mini-lawn .badge{background:var(--chalk);border:3px solid var(--ink);border-radius:99px;padding:3px 12px;font-weight:800;font-size:13px;box-shadow:0 3px 0 var(--ink)}
+  svg.mk{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .head{display:flex;align-items:center;gap:10px;margin:16px 18px 0}
+  .chip{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;border:3px solid var(--ink);color:var(--chalk);flex:none;background:var(--count)}
+  .head .n{font-weight:800;font-size:14px;color:var(--dim);line-height:1.2}
+  .head .n b{display:block;color:var(--ink);font-size:16px}
+  .ask{font-family:var(--disp);font-size:25px;line-height:1.05;margin:14px 18px 0}
+  .sub{margin:6px 18px 0;color:#4a443c;font-size:14.5px;line-height:1.35}
+  .card{margin:14px 18px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:20px;padding:14px 14px 10px;box-shadow:0 6px 0 var(--ink)}
+  .legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:12px;font-weight:700;color:var(--dim)}
+  .legend i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+  .fact{margin:14px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);font-size:15px;line-height:1.3}
+  .fact b{font-family:var(--disp);font-weight:400;font-size:19px;display:block;line-height:1.1;margin-bottom:4px}
+  .verdict{display:flex;align-items:center;gap:10px;margin:12px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--hit);color:#fff;font-weight:800;font-size:16px;box-shadow:0 5px 0 var(--ink)}
+  .verdict.meh{background:var(--near);color:var(--ink)}
+  .verdict .pts{margin-left:auto;font-family:var(--disp);font-size:21px}
+  .pill{display:block;margin:16px 18px 0;text-align:center;padding:14px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:19px;background:var(--lawn);color:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  .share{margin:12px 18px 0;background:var(--ink);color:var(--chalk);border-radius:14px;padding:10px 14px;white-space:pre;font-size:15px;line-height:1.4;font-weight:600}
+  .share h3{font-size:10.5px;letter-spacing:2px;color:#b7ad9c;margin-bottom:3px}
+  .teamfit{margin:12px 18px 0;font-size:13px;font-weight:700;color:var(--dim)}
+  /* stands */
+  .stand{display:flex;gap:5px;align-items:flex-end;height:190px;padding:0 2px}
+  .sec{flex:1;display:flex;flex-direction:column-reverse;align-items:center;gap:4px;height:100%;border-bottom:4px solid var(--ink);position:relative}
+  .seat{width:30px;height:24px;border-radius:12px 12px 6px 6px;border:2.5px solid var(--ink)}
+  .seat.mine{background:var(--near)}
+  .seat.crowd{background:var(--crowd)}
+  .seat.both{background:var(--hit)}
+  .seat.empty{background:transparent;border-style:dashed;border-color:#c7bdab}
+  .seclabels{display:flex;gap:5px;margin-top:6px;padding:0 2px}
+  .seclabels span{flex:1;text-align:center;font-size:10.5px;font-weight:800;color:var(--dim);line-height:1.1}
+  .tray{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;font-weight:700;color:var(--dim)}
+  .tray .seat{width:22px;height:18px}
+  /* placing */
+  .rope{position:relative;height:70px;margin:8px 4px 0}
+  .rope .r{position:absolute;left:0;right:0;top:30px;height:10px;border-radius:9px;background:repeating-linear-gradient(60deg,#c9a26b 0 6px,#a9824e 6px 12px);border:2px solid var(--ink)}
+  .rope .mid{position:absolute;left:50%;top:14px;width:3px;height:42px;background:var(--ink)}
+  .rope .knot{position:absolute;top:22px;width:16px;height:26px;margin-left:-8px;border:2.5px solid var(--ink);border-radius:4px}
+  .rope .lab{position:absolute;top:0;font-size:11px;font-weight:800;transform:translateX(-50%);white-space:nowrap}
+  .ends{display:flex;justify-content:space-between;font-family:var(--disp);font-size:16px;margin-top:2px}
+  .shapes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .shape{border:3px solid var(--ink);border-radius:14px;background:var(--paper);padding:8px 8px 4px;position:relative}
+  .shape .l{position:absolute;top:6px;left:8px;font-family:var(--disp);font-size:16px}
+  .shape.real{background:#e4f5ea;border-color:var(--hit)}
+  .shape.pick{box-shadow:0 0 0 3px var(--near)}
+  .shape .v{position:absolute;top:6px;right:8px;font-size:12px;font-weight:800;color:var(--dim)}
+  .slider{position:relative;height:56px;margin:6px 6px 0}
+  .slider .bar{position:absolute;left:0;right:0;top:24px;height:8px;border-radius:9px;background:#e7dfd0;border:2px solid var(--ink)}
+  .slider .thumb{position:absolute;top:10px;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:var(--near);border:3px solid var(--ink);box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;font-weight:800;font-size:12px}
+  .ticks{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--dim);margin:0 6px}
+  .also{padding:18px;background:var(--chalk);border-top:3px solid var(--ink);font-size:14px;line-height:1.45;color:#4a443c}
+  .also h2{font-family:var(--disp);font-weight:400;font-size:20px;color:var(--ink);margin-bottom:6px}
+  .also p{margin-top:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="m-count" viewBox="0 0 24 24"><circle cx="6" cy="16" r="2.2" fill="currentColor"/><circle cx="12" cy="8" r="2.2" fill="currentColor"/><circle cx="18" cy="16" r="2.2" fill="currentColor"/></symbol>
+</svg>
+
+<section class="intro">
+  <h1>Round 4 · six ways to read the crowd</h1>
+  <p>The one read of the day, after the round. Same look, same event, same crowd numbers in every option, so you compare the idea, not the drawing. Any of them can feed your team's flag except where it says so.</p>
+  <div class="data"><b>The made-up day used throughout:</b> Count on card #41. The true count was <b>17</b>; you said <b>15</b>. The crowd's guesses ran from 12 to 22. Most people said 16, half undercounted, and only 18% were spot on.</div>
+  <div class="toc">1 · Fill the stands<br>2 · Draw the crowd, Extraplot-style<br>3 · Where do you stand?<br>4 · The crowd's middle<br>5 · Tug of war: too few v too many <span class="tag wide" style="font-size:10px">WIDER</span><br>6 · Spot the real crowd <span class="tag wide" style="font-size:10px">WIDER</span></div>
+</section>
+
+<!-- 1 -->
+<section class="opt">
+  <span class="tag">1</span>
+  <h2>Fill the stands</h2>
+  <p class="rule">You have ten spectators, each standing for 10% of today's players. Seat them in the stand where you think the crowd's guesses landed. The real crowd pours in. Score: how many of your ten found a seat.</p>
+  <dl><dt>Input</dt><dd>10 taps on 7 sections</dd><dt>Score</dt><dd>0 to 10, read at a glance</dd><dt>For</dt><dd>Usable with a thumb; the theme is the input</dd><dt>Against</dt><dd>Coarse: 7 sections hide the detail</dd></dl>
+</section>
+<div class="cap">SEAT YOUR TEN</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="ask">Where did the crowd's guesses land?</div>
+  <div class="sub">The answer was 17. Seat your ten spectators.</div>
+  <div class="card"><div class="stand" id="s1in"></div><div class="seclabels" id="s1lab"></div>
+  <div class="tray"><span class="seat mine"></span>yours: 10 of 10 seated</div></div>
+  <div class="pill">Let the crowd in</div>
+</section>
+<div class="cap">THE CROWD POURS IN</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="card" style="margin-top:18px"><div class="stand" id="s1out"></div><div class="seclabels" id="s1lab2"></div>
+  <div class="legend"><span><i style="background:var(--hit)"></i>yours, seated</span><span><i style="background:var(--near)"></i>yours, no seat</span><span><i style="background:var(--crowd)"></i>the crowd</span></div></div>
+  <div class="fact"><b>Half the crowd undercounted.</b>Most said 16. Only 18% got 17.</div>
+  <div class="verdict">7 of your 10 found a seat<span class="pts">7/10</span></div>
+  <div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · read the crowd 7/10
+🟩🟩🟩🟩🟩🟩🟩⬜⬜⬜</div>
+</section>
+
+<!-- 2 -->
+<section class="opt">
+  <span class="tag">2</span>
+  <h2>Draw the crowd</h2>
+  <p class="rule">Like Extraplot: drag your finger across the chart to draw how the crowd's guesses spread. Reveal in three layers: the real crowd as bars, <b>everyone else's drawings</b> as a faint line, and yours dashed. Score: how much of your shape overlaps the real one.</p>
+  <dl><dt>Input</dt><dd>One stroke</dd><dt>Score</dt><dd>Overlap %, and where you sit among the readers</dd><dt>For</dt><dd>The richest reveal; you see the crowd and the crowd's idea of itself</dd><dt>Against</dt><dd>Drawing takes a second go to get the hang of</dd></dl>
+</section>
+<div class="cap">DRAW IT</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="ask">Draw how the crowd guessed.</div>
+  <div class="sub">One stroke, left to right. Higher means more people said that number.</div>
+  <div class="card"><svg id="c2in" width="322" height="220"></svg></div>
+  <div class="pill">Show me</div>
+</section>
+<div class="cap">YOU, EVERYONE ELSE, AND THE TRUTH</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="card" style="margin-top:18px"><svg id="c2out" width="322" height="220"></svg>
+  <div class="legend"><span><i style="background:var(--crowd)"></i>the real crowd</span><span><i style="background:var(--ink);height:3px"></i>you</span><span><i style="background:var(--readers);height:3px"></i>everyone else's drawings</span></div></div>
+  <div class="fact"><b>Almost everyone drew it centred on 17.</b>The crowd sat a step lower: people undercount a moving crowd.</div>
+  <div class="verdict meh">78% overlap · readers averaged 85%<span class="pts">78</span></div>
+  <div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · read the crowd 78%
+▁▂▄▇█▆▄▂▁ me
+▁▂▅██▆▃▂▁ them</div>
+</section>
+
+<!-- 3 -->
+<section class="opt">
+  <span class="tag">3</span>
+  <h2>Where do you stand?</h2>
+  <p class="rule">Before your Scorecard shows, the whole field lines up along the track, from worst to best on today's round, but blank. Drag your runner to where you think you finished. Then the field fills in, everyone's guesses about <i>themselves</i> appear, and you snap to your real place.</p>
+  <dl><dt>Input</dt><dd>One drag</dd><dt>Score</dt><dd>How close you placed yourself</dd><dt>For</dt><dd>The reveal is a famous slip: most people put themselves above the middle</dd><dt>Against</dt><dd>It's about you, not the crowd; and it can't feed a team</dd></dl>
+</section>
+<div class="cap">PLACE YOURSELF</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">THE WHOLE ROUND</span><span class="badge">1,204 players</span></div>
+  <div class="ask">Where did you finish in the field?</div>
+  <div class="sub">Everyone who played today, lined up worst to best on all five events.</div>
+  <div class="card"><svg id="c3in" width="322" height="200"></svg></div>
+  <div class="pill">Lock my place</div>
+</section>
+<div class="cap">THE FIELD FILLS IN</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">THE WHOLE ROUND</span><span class="badge">1,204 players</span></div>
+  <div class="card" style="margin-top:18px"><svg id="c3out" width="322" height="200"></svg>
+  <div class="legend"><span><i style="background:var(--crowd)"></i>where people really finished</span><span><i style="background:var(--readers)"></i>where they thought they finished</span></div></div>
+  <div class="fact"><b>71% thought they beat most of the field.</b>Only half the field can be above the middle. You thought 70%; you beat 57%.</div>
+  <div class="verdict meh">13 points too proud<span class="pts">−13</span></div>
+  <div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · beat 57% · thought 70%
+13 points too proud</div>
+</section>
+
+<!-- 4 -->
+<section class="opt">
+  <span class="tag">4</span>
+  <h2>The crowd's middle</h2>
+  <p class="rule">Wisdom of the crowd, one number: slide to what you think the <i>middle</i> guess was. Reveal the full spread, the truth, your marker, and a strip of every other reader's marker.</p>
+  <dl><dt>Input</dt><dd>One slide</dd><dt>Score</dt><dd>Distance from the crowd's middle</dd><dt>For</dt><dd>The simplest; the reveal still shows the whole curve</dd><dt>Against</dt><dd>One number gives little to talk about on most days</dd></dl>
+</section>
+<div class="cap">SLIDE TO THE MIDDLE</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="ask">What did the middle of the crowd say?</div>
+  <div class="sub">Half said less, half said more. The truth was 17.</div>
+  <div class="card"><div class="slider"><div class="bar"></div><div class="thumb" style="left:55%">17½</div></div><div class="ticks"><span>12</span><span>14</span><span>16</span><span>18</span><span>20</span><span>22</span></div></div>
+  <div class="pill">Lock it</div>
+</section>
+<div class="cap">THE SPREAD, THE TRUTH, AND EVERY READER</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="card" style="margin-top:18px"><svg id="c4out" width="322" height="240"></svg>
+  <div class="legend"><span><i style="background:var(--crowd)"></i>the crowd's guesses</span><span><i style="background:var(--ink);height:3px"></i>the middle</span><span><i style="background:var(--near)"></i>you</span><span><i style="background:var(--readers)"></i>other readers</span></div></div>
+  <div class="fact"><b>Only 9% of readers saw the undercount coming.</b>The middle was 16, a whole step under the truth.</div>
+  <div class="verdict meh">1½ off the middle<span class="pts">6/10</span></div>
+</section>
+
+<!-- 5 -->
+<section class="opt">
+  <span class="tag wide">5 · WIDER</span>
+  <h2>Tug of war</h2>
+  <p class="rule">Two teams pull: the <b>undercounters</b> and the <b>overcounters</b>. Drag the knot to where you think the rope settled. Then the rope moves to the real split, and a ghost knot shows where readers on average put it. It's sports day in one gesture.</p>
+  <dl><dt>Input</dt><dd>One drag</dd><dt>Score</dt><dd>How close your knot was</dd><dt>For</dt><dd>Readable from across a room; works on every event (early v late on Stop, too short v too long on Repeat)</dd><dt>Against</dt><dd>Only one split a day; the "spot on" people sit out</dd></dl>
+</section>
+<div class="cap">SET THE KNOT, THEN THE PULL</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="ask">Too few or too many: who pulled harder?</div>
+  <div class="card">
+    <div class="ends"><span style="color:var(--count)">Too few</span><span style="color:var(--stop)">Too many</span></div>
+    <div class="rope"><div class="r"></div><div class="mid"></div>
+      <div class="knot" style="left:44%;background:var(--near)"></div><span class="lab" style="left:44%">you: 56 v 44</span></div>
+    <div style="font-size:12px;font-weight:700;color:var(--dim)">The 18% who were spot on sit this one out.</div>
+  </div>
+  <div class="card">
+    <div class="ends"><span style="color:var(--count)">Too few</span><span style="color:var(--stop)">Too many</span></div>
+    <div class="rope"><div class="r"></div><div class="mid"></div>
+      <div class="knot" style="left:51%;background:var(--readers)"></div><span class="lab" style="left:51%;color:var(--dim)">readers: 49 v 51</span>
+      <div class="knot" style="left:44%;background:var(--near)"></div>
+      <div class="knot" style="left:38%;background:var(--hit)"></div><span class="lab" style="left:31%;top:52px;color:var(--hit)">real: 62 v 38</span></div>
+  </div>
+  <div class="verdict">You pulled the right way, 6 short<span class="pts">8/10</span></div>
+</section>
+
+<!-- 6 -->
+<section class="opt">
+  <span class="tag wide">6 · WIDER</span>
+  <h2>Spot the real crowd</h2>
+  <p class="rule">Four charts of how the crowd guessed. Three are fakes, each wrong in one believable way. Tap the real one. Then see how many readers picked each.</p>
+  <dl><dt>Input</dt><dd>One tap</dd><dt>Score</dt><dd>Right or wrong, plus how rare your right answer was</dd><dt>For</dt><dd>The fastest; very easy to start; the fakes can teach (too centred, too spread, the wrong way)</dd><dt>Against</dt><dd>Thinner skill: a 1-in-4 guess hits a quarter of the time</dd></dl>
+</section>
+<div class="cap">WHICH IS THE REAL CROWD?</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="ask">Which one is how the crowd really guessed?</div>
+  <div class="card"><div class="shapes" id="c6in"></div></div>
+</section>
+<div class="cap">THE REVEAL</div>
+<section class="screen">
+  <div class="mini-lawn"><span class="t">TODAY'S READ</span><span class="badge">Count · you said 15</span></div>
+  <div class="card" style="margin-top:18px"><div class="shapes" id="c6out"></div></div>
+  <div class="fact"><b>Most readers picked B, the tidy one.</b>The real crowd leaned low: it was A.</div>
+  <div class="verdict">You spotted it · only 22% did<span class="pts">✓</span></div>
+</section>
+
+<section class="also">
+  <h2>How they could combine</h2>
+  <p><b>1, 2, 4 and 5 can feed the team flag:</b> each read averages across a team, so the team whose average is closest wins the fixture. <b>3</b> is about you, so it fits better as the last beat before the Scorecard than as the team read. <b>6</b> could be a quick warm-up in place of the trap question.</p>
+  <p>Nothing here is chosen. Tell me which to keep, cut or combine, and I'll put the survivors into one full run.</p>
+</section>
+
+<script>
+// One made-up day: Count, truth 17. Bins 12..22.
+const BINS=[12,13,14,15,16,17,18,19,20,21,22];
+const CROWD=[2,4,9,16,20,18,13,8,5,3,2];          // real share of players per guess
+const YOU2=[1,2,4,8,14,24,20,13,7,4,3];           // your drawing
+const READERS=[2,3,6,10,15,20,17,12,7,5,3];       // average of everyone else's drawings
+const C={ink:'#22201c',crowd:'#3b82f6',readers:'#b7ad9c',near:'#f5c518',hit:'#1fa85a',paper:'#f6f0e4',dim:'#7a7064',stop:'#e5484d'};
+const NS='http://www.w3.org/2000/svg';
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function chart(svg,{bars,lines=[],truth=true,axis=true,max=26,h=180,ghost=false}){
+  const W=+svg.getAttribute('width'), bw=W/BINS.length, base=h;
+  el('line',{x1:0,y1:base,x2:W,y2:base,stroke:C.ink,'stroke-width':3},svg);
+  if(bars) bars.forEach((v,i)=>{const bh=v/max*(h-20);el('rect',{x:i*bw+3,y:base-bh,width:bw-6,height:bh,rx:5,fill:ghost?'none':C.crowd,stroke:ghost?'#c7bdab':C.ink,'stroke-width':ghost?2:2.5,'stroke-dasharray':ghost?'5 4':''},svg)});
+  lines.forEach(L=>{const pts=L.data.map((v,i)=>[(i+.5)*bw, base-v/max*(h-20)]);let d='M'+pts[0].join(' ');for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i];const cx=(x0+x1)/2;d+=` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`}
+    el('path',{d,fill:'none',stroke:L.color,'stroke-width':L.w||4,'stroke-dasharray':L.dash||'','stroke-linecap':'round'},svg)});
+  if(truth){const x=(BINS.indexOf(17)+.5)*bw;el('line',{x1:x,y1:8,x2:x,y2:base,stroke:C.stop,'stroke-width':3,'stroke-dasharray':'2 5','stroke-linecap':'round'},svg);const t=el('text',{x:x+5,y:18,'font-size':11,'font-weight':800,fill:C.stop,'font-family':'Outfit'},svg);t.textContent='truth 17'}
+  if(axis) BINS.forEach((b,i)=>{const t=el('text',{x:(i+.5)*bw,y:base+18,'text-anchor':'middle','font-size':11,'font-weight':800,fill:C.dim,'font-family':'Outfit'},svg);t.textContent=b});
+}
+// 1 stands
+const SECS=['≤14','15','16','17','18','19','≥20'], SUB=['3+ under','2 under','1 under','spot on','1 over','2 over','3+ over'];
+const REAL10=[1,2,2,2,1,1,1], MINE10=[0,1,2,4,2,1,0];
+function stand(id,mode){const s=document.getElementById(id);SECS.forEach((_,i)=>{const sec=document.createElement('div');sec.className='sec';
+  const n=Math.max(REAL10[i],MINE10[i],mode==='in'?0:0);const cap=5;
+  for(let k=0;k<cap;k++){const seat=document.createElement('span');let c='seat empty';
+    if(mode==='in'){ if(k<MINE10[i]) c='seat mine'; }
+    else { const both=Math.min(REAL10[i],MINE10[i]); if(k<both) c='seat both'; else if(k<REAL10[i]) c='seat crowd'; else if(k<REAL10[i]+ (MINE10[i]-both)) c='seat mine'; }
+    seat.className=c;sec.appendChild(seat)}
+  s.appendChild(sec)})}
+function labs(id){const l=document.getElementById(id);SECS.forEach((x,i)=>{const sp=document.createElement('span');sp.innerHTML=`${x}<br><span style="font-weight:600">${SUB[i]}</span>`;l.appendChild(sp)})}
+stand('s1in','in');stand('s1out','out');labs('s1lab');labs('s1lab2');
+// 2 draw
+chart(document.getElementById('c2in'),{bars:CROWD,ghost:true,lines:[{data:YOU2.slice(0,7),color:C.ink,dash:'9 6'}]});
+(function(){const svg=document.getElementById('c2in');const bw=322/11;const v=YOU2[6];const x=(6+.5)*bw,y=180-v/26*160;el('circle',{cx:x,cy:y,r:12,fill:C.near,stroke:C.ink,'stroke-width':3},svg);const t=el('text',{x:x+16,y:y-8,'font-size':12,'font-weight':800,fill:C.ink,'font-family':'Outfit'},svg);t.textContent='drawing…'})();
+chart(document.getElementById('c2out'),{bars:CROWD,lines:[{data:READERS,color:C.readers,w:5},{data:YOU2,color:C.ink,dash:'9 6'}]});
+// 3 place yourself: field percentile 0..100, bins of 10
+(function(){const REALF=[4,7,10,12,14,14,13,11,9,6];const THOUGHT=[1,2,3,5,8,12,18,21,18,12];
+  function f(svg,reveal){const W=322,bw=W/10,base=150,h=150,max=24;
+    el('rect',{x:0,y:base,width:W,height:22,rx:6,fill:'#c8643b',stroke:C.ink,'stroke-width':3},svg);
+    for(let i=1;i<10;i++) el('line',{x1:i*bw,y1:base+3,x2:i*bw,y2:base+19,stroke:'#fff','stroke-width':2},svg);
+    ['worst','middle','best'].forEach((t,i)=>{const tt=el('text',{x:[4,W/2,W-4][i],y:base+40,'text-anchor':['start','middle','end'][i],'font-size':11,'font-weight':800,fill:C.dim,'font-family':'Outfit'},svg);tt.textContent=t});
+    if(reveal){REALF.forEach((v,i)=>{const bh=v/max*(h-20);el('rect',{x:i*bw+3,y:base-bh,width:bw-6,height:bh,rx:5,fill:C.crowd,stroke:C.ink,'stroke-width':2.5},svg)});
+      const pts=THOUGHT.map((v,i)=>[(i+.5)*bw,base-v/max*(h-20)]);let d='M'+pts[0].join(' ');for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i];const cx=(x0+x1)/2;d+=` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`}
+      el('path',{d,fill:'none',stroke:C.readers,'stroke-width':5,'stroke-linecap':'round'},svg);
+      const xr=W*.57;el('line',{x1:xr,y1:20,x2:xr,y2:base,stroke:C.hit,'stroke-width':3},svg);const t1=el('text',{x:xr-4,y:16,'text-anchor':'end','font-size':11,'font-weight':800,fill:C.hit,'font-family':'Outfit'},svg);t1.textContent='you: 57%';}
+    const xg=W*.70;el('circle',{cx:xg,cy:base-14,r:13,fill:C.near,stroke:C.ink,'stroke-width':3},svg);const t2=el('text',{x:xg,y:base-32,'text-anchor':'middle','font-size':11,'font-weight':800,fill:C.ink,'font-family':'Outfit'},svg);t2.textContent=reveal?'you thought 70%':'you: 70%?';}
+  f(document.getElementById('c3in'),false);f(document.getElementById('c3out'),true)})();
+// 4 middle
+(function(){const svg=document.getElementById('c4out');chart(svg,{bars:CROWD,h:170});const bw=322/11;
+  const mid=(BINS.indexOf(16)+.5)*bw;el('line',{x1:mid,y1:10,x2:mid,y2:170,stroke:C.ink,'stroke-width':4},svg);const t=el('text',{x:mid-5,y:22,'text-anchor':'end','font-size':11,'font-weight':800,fill:C.ink,'font-family':'Outfit'},svg);t.textContent='middle 16';
+  // readers strip
+  const ry=212;el('line',{x1:0,y1:ry,x2:322,y2:ry,stroke:'#d8cfbe','stroke-width':2},svg);
+  const R=[16.2,16.8,17,17,17.1,17.2,17.3,17.5,17.6,17.8,18,18.2,16.5,17.4,17.9,15.8,17,17.6,18.4,16.9,17.2];
+  R.forEach((v,i)=>el('circle',{cx:(v-12+.5)*bw,cy:ry+((i%3)-1)*7,r:5,fill:C.readers,stroke:C.ink,'stroke-width':1.2},svg));
+  el('circle',{cx:(17.5-12+.5)*bw,cy:ry,r:9,fill:C.near,stroke:C.ink,'stroke-width':3},svg);
+  const tt=el('text',{x:4,y:ry+26,'font-size':10.5,'font-weight':800,fill:C.dim,'font-family':'Outfit'},svg);tt.textContent='every other reader\'s marker';})();
+// 6 four shapes
+(function(){const SH={A:CROWD,B:[1,3,6,11,17,24,17,11,6,3,1],C:[1,2,4,7,11,16,20,18,12,6,3],D:[5,7,9,10,11,12,11,10,9,8,8]};const PCT={A:22,B:46,C:21,D:11};
+  function draw(id,reveal){const host=document.getElementById(id);Object.keys(SH).forEach(k=>{const box=document.createElement('div');box.className='shape'+(reveal&&k==='A'?' real':'')+(k==='A'?' pick':'');
+    box.innerHTML=`<span class="l">${k}</span>`+(reveal?`<span class="v">${PCT[k]}% picked</span>`:'');const svg=document.createElementNS(NS,'svg');svg.setAttribute('width','140');svg.setAttribute('height','96');
+    const bw=140/11;SH[k].forEach((v,i)=>{const bh=v/26*66;el('rect',{x:i*bw+1.5,y:90-bh,width:bw-3,height:bh,rx:2.5,fill:reveal&&k!=='A'?'#cfc6b6':C.crowd,stroke:C.ink,'stroke-width':1.5},svg)});
+    box.appendChild(svg);host.appendChild(box)})}
+  draw('c6in',false);draw('c6out',true)})();
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · Sports day · round 3: read the crowd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e4; --ink:#22201c; --lawn:#4f8f4a; --lawn2:#5e9e56; --chalk:#fffdf7; --dim:#7a7064; --track:#c8643b;
+    --stop:#e5484d; --count:#3b82f6; --repeat:#8b5cf6; --pair:#ec4899; --sort:#f97316;
+    --hit:#1fa85a; --near:#f5c518; --heat:#ff5a36;
+    --red-h:#e5484d; --blue-h:#3b82f6; --yel-h:#f5c518; --grn-h:#1fa85a;
+    --disp:"Bowlby One","Arial Black",sans-serif; --body:"Outfit",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px}
+  .intro{padding:18px;background:var(--chalk);border-bottom:3px solid var(--ink)}
+  .intro h1{font-family:var(--disp);font-size:24px;font-weight:400;line-height:1.1}
+  .intro p{margin-top:8px;line-height:1.4;color:#4a443c;font-size:15px}
+  .opt{padding:22px 18px 12px;border-top:3px solid var(--ink);background:var(--chalk)}
+  .tag{display:inline-block;font-weight:800;font-size:12px;letter-spacing:2px;border:2px solid var(--ink);border-radius:99px;padding:2px 10px;background:var(--paper)}
+  .tag.rec{background:var(--lawn);color:var(--chalk)}
+  .opt h2{font-family:var(--disp);font-size:30px;font-weight:400;margin-top:8px;line-height:1}
+  .opt .rule{margin-top:8px;line-height:1.4;font-size:15.5px}
+  .opt ul{margin:8px 0 0 18px;font-size:14px;line-height:1.45;color:#4a443c}
+  .opt ul b{color:var(--ink)}
+  .cap{padding:14px 18px 6px;font-weight:800;letter-spacing:2px;font-size:12px;color:var(--dim)}
+  .screen{position:relative;width:390px;height:700px;overflow:hidden;background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+  .mini-lawn{height:64px;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:center;gap:6px}
+  .bib{width:44px;height:38px;background:var(--chalk);border:3px solid var(--ink);border-radius:7px;display:grid;place-items:center;color:var(--dim);box-shadow:0 3px 0 var(--ink);position:relative}
+  .bib.done{background:#e9e2d3}
+  .bib.on{transform:translateY(-4px);color:var(--chalk)}
+  .bib .r{position:absolute;bottom:-9px;right:-7px;min-width:20px;height:18px;border-radius:9px;border:2px solid var(--ink);font-size:10px;display:grid;place-items:center;font-weight:800;color:var(--ink);padding:0 3px}
+  svg.mk{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .head{display:flex;align-items:center;gap:10px;margin:18px 18px 0}
+  .chip{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:3px solid var(--ink);color:var(--chalk);flex:none}
+  .head .n{font-family:var(--disp);font-size:26px;line-height:1}
+  .head .s{margin-left:auto;font-weight:800;font-size:12px;border:2px solid var(--ink);border-radius:99px;padding:4px 10px;background:var(--lawn);color:var(--chalk)}
+  .ask{font-family:var(--disp);font-size:27px;line-height:1.05;margin:16px 18px 0}
+  .sub{margin:6px 18px 0;color:#4a443c;font-size:15px;line-height:1.35}
+  .board{margin:16px 18px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:20px;padding:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;box-shadow:0 6px 0 var(--ink)}
+  .cell{position:relative;height:66px;border-radius:12px;border:2px solid #e2d9c8;display:grid;place-items:center;background:var(--paper)}
+  .cell svg{width:40px;height:40px}
+  .cell.pair{border:3px solid var(--hit)}
+  .cell.pair::after{content:"the pair";position:absolute;bottom:-9px;font-size:10px;font-weight:800;background:var(--hit);color:#fff;border-radius:99px;padding:0 6px}
+  .cell.pick{border:3px solid var(--ink);box-shadow:0 0 0 3px var(--near)}
+  .cell .pct{position:absolute;top:-9px;right:-8px;font-weight:800;font-size:12px;color:#fff;border:2px solid var(--ink);border-radius:99px;padding:1px 6px}
+  .cell.heat{background:radial-gradient(circle,#ff5a3660 0%,#ff5a3610 70%)}
+  .cell.heat2{background:radial-gradient(circle,#ff5a3635 0%,transparent 70%)}
+  .fact{margin:18px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);font-size:16px;line-height:1.3}
+  .fact b{font-family:var(--disp);font-weight:400;font-size:20px;display:block;line-height:1.1;margin-bottom:4px}
+  .verdict{display:flex;align-items:center;gap:10px;margin:12px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--hit);color:#fff;font-weight:800;font-size:17px;box-shadow:0 5px 0 var(--ink)}
+  .verdict .pts{margin-left:auto;font-family:var(--disp);font-size:22px}
+  .pill{display:block;margin:18px 18px 0;text-align:center;padding:15px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:20px;background:var(--lawn);color:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  .total{position:absolute;left:18px;right:18px;bottom:16px;display:flex;justify-content:space-between;font-weight:800;font-size:14px;color:var(--dim);border-top:2px dashed #d8cfbe;padding-top:10px}
+  .total b{color:var(--ink)}
+  /* draw the crowd */
+  .field{position:relative;margin:16px 18px 0;height:300px;background:var(--chalk);border:3px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);overflow:hidden}
+  .lane{position:absolute;left:14px;right:14px;bottom:40px;height:26px;background:var(--track);border:3px solid var(--ink);border-radius:8px}
+  .notch{position:absolute;bottom:30px;left:52%;width:6px;height:46px;background:var(--stop);border:2px solid var(--ink);border-radius:3px}
+  .axis{position:absolute;left:14px;right:14px;bottom:10px;display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--dim)}
+  .hill{position:absolute;left:0;top:0;width:100%;height:100%}
+  .people{position:absolute;left:14px;right:14px;bottom:72px;height:200px;display:flex;align-items:flex-end;justify-content:space-between}
+  .col{width:24px;display:flex;flex-direction:column-reverse;align-items:center;gap:2px}
+  .p{width:16px;height:16px;border-radius:50% 50% 30% 30%;background:var(--count);border:2px solid var(--ink)}
+  .p.me{background:var(--near)}
+  .tug{margin:16px 18px 0;background:var(--chalk);border:3px solid var(--ink);border-radius:20px;padding:16px 14px;box-shadow:0 6px 0 var(--ink)}
+  .tug .teams{display:flex;justify-content:space-between;font-family:var(--disp);font-size:18px}
+  .rope{position:relative;height:40px;margin-top:12px}
+  .rope .r{position:absolute;left:0;right:0;top:17px;height:8px;border-radius:9px;background:repeating-linear-gradient(60deg,#c9a26b 0 6px,#a9824e 6px 12px);border:2px solid var(--ink)}
+  .rope .mid{position:absolute;left:50%;top:4px;width:3px;height:34px;background:var(--ink)}
+  .rope .flag{position:absolute;top:-6px;width:0;height:0;border-left:16px solid var(--near);border-top:8px solid transparent;border-bottom:8px solid transparent}
+  .rope .tie{position:absolute;top:9px;width:14px;height:24px;background:var(--stop);border:2px solid var(--ink);border-radius:3px}
+  .share{margin:14px 18px 18px;background:var(--ink);color:var(--chalk);border-radius:16px;padding:12px 16px;white-space:pre;font-size:16px;line-height:1.4;font-weight:600}
+  .share h3{font-size:11px;letter-spacing:2px;color:#b7ad9c;margin-bottom:4px}
+  .boards{margin:0 18px 18px;display:flex;gap:10px}
+  .boards div{flex:1;background:var(--chalk);border:3px solid var(--ink);border-radius:14px;padding:10px;font-size:13px;color:var(--dim);font-weight:600}
+  .boards b{display:block;font-family:var(--disp);font-weight:400;font-size:22px;color:var(--ink)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="m-stop" viewBox="0 0 24 24"><path d="M2 15h20M12 5v16"/></symbol>
+  <symbol id="m-count" viewBox="0 0 24 24"><circle cx="6" cy="16" r="2.2" fill="currentColor"/><circle cx="12" cy="8" r="2.2" fill="currentColor"/><circle cx="18" cy="16" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="m-repeat" viewBox="0 0 24 24"><path d="M19 9a7 7 0 1 0 1 6"/><path d="M20 3v6h-6"/></symbol>
+  <symbol id="m-pair" viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></symbol>
+  <symbol id="m-sort" viewBox="0 0 24 24"><path d="M5 20v-5M12 20v-9M19 20V5"/></symbol>
+  <!-- pair shapes -->
+  <symbol id="s-tri" viewBox="0 0 40 40"><path d="M20 5 L36 34 H4 Z" stroke="#22201c" stroke-width="3" stroke-linejoin="round"/></symbol>
+  <symbol id="s-sq" viewBox="0 0 40 40"><rect x="6" y="6" width="28" height="28" rx="4" stroke="#22201c" stroke-width="3"/></symbol>
+  <symbol id="s-ci" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" stroke="#22201c" stroke-width="3"/></symbol>
+  <symbol id="s-di" viewBox="0 0 40 40"><path d="M20 4 L36 20 L20 36 L4 20 Z" stroke="#22201c" stroke-width="3" stroke-linejoin="round"/></symbol>
+</svg>
+
+<section class="intro">
+  <h1>Round 3 · read the crowd</h1>
+  <p>You play each event, then you read everyone else on it. Not "how well will I do", but "how did the world do, and where did it slip". Same Sports day look, same five events, card #41. Six workers came up with 72 ideas; these are the two strongest, plus a weekly layer. The full shortlist is in the run folder, <i>3b-call-shortlist.md</i>.</p>
+</section>
+
+<section class="opt">
+  <span class="tag rec">R1 · RECOMMENDED</span>
+  <h2>Where did they go wrong?</h2>
+  <p class="rule">After each event, the board you just played comes back. One tap: where the crowd went wrong. Then the board lights up with everyone's taps. Crowd's top spot scores 2, runner-up 1. Out of 10.</p>
+  <ul>
+    <li><b>Per event:</b> Stop, where most people stopped · Count, the crowd's favourite wrong number · Repeat, the square where most people broke · Pair, the shape that fooled most people · Sort, the two blobs most people swapped.</li>
+    <li><b>Why "wow":</b> every reveal is a small, true fact about how people see ("41% fell for this one, including you"). That's what people screenshot and pass on.</li>
+    <li><b>Why anyone can top it:</b> knowing people beats fast hands. A slow player who understands the crowd's habits tops the Readers board. People's slips repeat from day to day, so readers improve, and that improvement is the reason to come back.</li>
+    <li><b>Came from:</b> four of the six workers reached it independently.</li>
+  </ul>
+</section>
+<div class="cap">AFTER PAIR · READ THE CROWD</div>
+<section class="screen">
+  <div class="mini-lawn">
+    <div class="bib done" style="color:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg><span class="r" style="background:var(--hit);color:#fff">2</span></div>
+    <div class="bib done" style="color:var(--count)"><svg class="mk"><use href="#m-count"/></svg><span class="r" style="background:var(--near)">1</span></div>
+    <div class="bib done" style="color:var(--repeat)"><svg class="mk"><use href="#m-repeat"/></svg><span class="r" style="background:var(--chalk)">0</span></div>
+    <div class="bib on" style="background:var(--pair)"><svg class="mk"><use href="#m-pair"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-sort"/></svg></div>
+  </div>
+  <div class="head"><div class="chip" style="background:var(--pair)"><svg class="mk"><use href="#m-pair"/></svg></div><div class="n">Pair · 6.4 s</div><div class="s">READ THE CROWD</div></div>
+  <div class="ask">Which shape fooled the most people?</div>
+  <div class="sub">Tap the one most players wrongly tapped first.</div>
+  <div class="board">
+    <div class="cell"><svg fill="#ec4899"><use href="#s-tri"/></svg></div>
+    <div class="cell pair"><svg fill="#3b82f6"><use href="#s-sq"/></svg></div>
+    <div class="cell"><svg fill="none"><use href="#s-ci"/></svg></div>
+    <div class="cell"><svg fill="#f5c518"><use href="#s-di"/></svg></div>
+    <div class="cell"><svg fill="#3b82f6"><use href="#s-ci"/></svg></div>
+    <div class="cell"><svg fill="none"><use href="#s-tri"/></svg></div>
+    <div class="cell pick"><svg fill="#3b82f6" style="transform:rotate(8deg)"><use href="#s-sq"/></svg></div>
+    <div class="cell"><svg fill="#ec4899"><use href="#s-di"/></svg></div>
+    <div class="cell"><svg fill="#f5c518"><use href="#s-sq"/></svg></div>
+    <div class="cell pair"><svg fill="#3b82f6"><use href="#s-sq"/></svg></div>
+    <div class="cell"><svg fill="none"><use href="#s-sq"/></svg></div>
+    <div class="cell"><svg fill="#ec4899"><use href="#s-ci"/></svg></div>
+  </div>
+  <div class="pill">Lock my read</div>
+  <div class="total"><span>Reading so far</span><b>3 of 6</b></div>
+</section>
+<div class="cap">THE REVEAL</div>
+<section class="screen">
+  <div class="mini-lawn">
+    <div class="bib done" style="color:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg><span class="r" style="background:var(--hit);color:#fff">2</span></div>
+    <div class="bib done" style="color:var(--count)"><svg class="mk"><use href="#m-count"/></svg><span class="r" style="background:var(--near)">1</span></div>
+    <div class="bib done" style="color:var(--repeat)"><svg class="mk"><use href="#m-repeat"/></svg><span class="r" style="background:var(--chalk)">0</span></div>
+    <div class="bib done" style="color:var(--pair)"><svg class="mk"><use href="#m-pair"/></svg><span class="r" style="background:var(--hit);color:#fff">2</span></div>
+    <div class="bib"><svg class="mk"><use href="#m-sort"/></svg></div>
+  </div>
+  <div class="board" style="margin-top:20px">
+    <div class="cell"><svg fill="#ec4899"><use href="#s-tri"/></svg></div>
+    <div class="cell pair"><svg fill="#3b82f6"><use href="#s-sq"/></svg></div>
+    <div class="cell"><svg fill="none"><use href="#s-ci"/></svg></div>
+    <div class="cell"><svg fill="#f5c518"><use href="#s-di"/></svg></div>
+    <div class="cell heat2"><svg fill="#3b82f6"><use href="#s-ci"/></svg><span class="pct" style="background:#f08a5d">17%</span></div>
+    <div class="cell"><svg fill="none"><use href="#s-tri"/></svg></div>
+    <div class="cell pick heat"><svg fill="#3b82f6" style="transform:rotate(8deg)"><use href="#s-sq"/></svg><span class="pct" style="background:var(--heat)">41%</span></div>
+    <div class="cell"><svg fill="#ec4899"><use href="#s-di"/></svg></div>
+    <div class="cell"><svg fill="#f5c518"><use href="#s-sq"/></svg></div>
+    <div class="cell pair"><svg fill="#3b82f6"><use href="#s-sq"/></svg></div>
+    <div class="cell heat2"><svg fill="none"><use href="#s-sq"/></svg><span class="pct" style="background:#f08a5d">12%</span></div>
+    <div class="cell"><svg fill="#ec4899"><use href="#s-ci"/></svg></div>
+  </div>
+  <div class="fact"><b>41% fell for the tilted square.</b>Including you, on your first tap. Most people match colour before they check the angle.</div>
+  <div class="verdict">✓ You read the crowd<span class="pts">+2</span></div>
+  <div class="total"><span>Reading so far</span><b>5 of 8</b></div>
+</section>
+<div class="cap">END OF THE RUN · TWO BOARDS, AND THE SHARE TEXT</div>
+<div class="boards"><div>Player<b>beat 57%</b>of the field</div><div style="border-color:var(--lawn)">Reader<b>#212</b>of 1,204 today</div></div>
+<div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · read the crowd 7/10
+🟩🟨⬜🟩🟩</div>
+
+<section class="opt">
+  <span class="tag">R2</span>
+  <h2>Draw the crowd</h2>
+  <p class="rule">After each event, drag a hill along the track: where you think everyone landed. Then the real crowd runs in as little figures and stacks up where they truly finished. You score the overlap.</p>
+  <ul>
+    <li><b>Why:</b> your bell-curve hunch, made into something you can touch. The crowd literally runs onto the track.</li>
+    <li><b>Against:</b> drawing a spread with a thumb is the least familiar thing in the set, and five draws make the run long. I'd use it for one event a day, not all five.</li>
+  </ul>
+</section>
+<div class="cap">AFTER STOP · YOUR HILL, THEN THE CROWD RUNS IN</div>
+<section class="screen" style="height:auto;padding-bottom:20px">
+  <div class="head"><div class="chip" style="background:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg></div><div class="n">Stop</div><div class="s">READ THE CROWD</div></div>
+  <div class="ask">Where did everyone stop?</div>
+  <div class="sub">Your dashed hill, then the real crowd. One figure is 2% of players; the yellow one is you.</div>
+  <div class="field">
+    <div class="people">
+      <div class="col"><span class="p"></span></div>
+      <div class="col"><span class="p"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span><span class="p"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p me"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span><span class="p"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span><span class="p"></span></div>
+      <div class="col"><span class="p"></span><span class="p"></span></div>
+      <div class="col"><span class="p"></span></div>
+    </div>
+    <svg class="hill" viewBox="0 0 348 300" preserveAspectRatio="none"><path d="M14 226 C 80 222, 110 120, 165 96 S 260 210, 334 226" fill="none" stroke="#22201c" stroke-width="3" stroke-dasharray="7 6"/></svg>
+    <div class="notch"></div>
+    <div class="lane"></div>
+    <div class="axis"><span>early</span><span>notch</span><span>late</span></div>
+  </div>
+  <div class="fact"><b>Most people stopped late.</b>Your hill sat on the notch; the crowd's peak was two steps past it. 72% overlap.</div>
+</section>
+<div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · read the crowd 72%
+▂▅█▆▃</div>
+
+<section class="opt">
+  <span class="tag">R3 · WEEKLY LAYER, WORKS WITH R1 OR R2</span>
+  <h2>House cup</h2>
+  <p class="rule">Everyone is in one of four houses. Each card ends with one tug of war between two houses on one event: plant your flag where you think the rope lands. The house table runs Monday to Sunday. It replaces The column as the weekly layer.</p>
+</section>
+<div class="tug">
+  <div class="teams"><span style="color:var(--blue-h)">Blue house</span><span style="color:var(--red-h)">Red house</span></div>
+  <div style="font-size:13px;color:var(--dim);font-weight:600;margin-top:2px">Today on Repeat: who went further?</div>
+  <div class="rope"><div class="r"></div><div class="mid"></div><div class="flag" style="left:38%"></div><div class="tie" style="left:41%"></div></div>
+  <div style="font-size:14px;font-weight:800;margin-top:8px">Your flag: Blue by a bit. The rope: Blue by a bit. ✓</div>
+</div>
+<div style="height:24px"></div>
+</body>
+</html>

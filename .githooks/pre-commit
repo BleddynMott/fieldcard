@@ -1,0 +1,76 @@
+#!/usr/bin/env sh
+# Pre-commit hook: refuse a commit whose INDEX holds an ignored path or a credential-shaped string.
+#
+# Lineage. Inherited from rapid-triage `.githooks/pre-commit`: this hook reads the index, not the
+# command string, so the spelling of the `git add` that filled it is irrelevant; NUL-separated
+# paths (git C-quotes non-ASCII names); a case-insensitive match because macOS filesystems are.
+# Generalised: rapid-triage protected one ignored directory; this refuses any ignored path that
+# reached the index (only `git add -f` can put one there) and scans staged content with the
+# shapes in `.claude/hooks/secret-patterns` [A6; §4.1 row 30]. Both fail closed.
+#
+# Enabled per clone: `git config core.hooksPath .githooks` (the template CLAUDE.md's setup line).
+
+root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+patterns="$root/.claude/hooks/secret-patterns"
+if [ ! -f "$patterns" ]; then
+  echo "pre-commit: $patterns is missing; refusing to commit unchecked." >&2
+  exit 1
+fi
+rule () { grep -E "^$1\|" "$patterns" | cut -d'|' -f2-; }
+allow () { r=$(rule "$1" | paste -sd'|' -); printf '%s' "${r:-^\\b\\B}"; }  # empty allowlist → a pattern that matches nothing
+
+staged_z=$(git diff --cached --name-only -z --diff-filter=ACMR | tr '\0' '\n')
+[ -z "$staged_z" ] && exit 0
+
+# ---- rule 1: an ignored path reached the index ----
+ignored=$(printf '%s\n' "$staged_z" | git check-ignore --no-index --stdin 2>/dev/null)
+if [ -n "$ignored" ]; then
+  echo "Blocked: this commit stages paths that .gitignore excludes (they can only be here via git add -f):" >&2
+  printf '%s\n' "$ignored" | sed 's/^/    /' >&2
+  echo "Unstage them:  git restore --staged <path>" >&2
+  exit 1
+fi
+
+# ---- rule 2: credential-shaped content in the staged blobs ----
+token_re=$(rule token | paste -sd'|' -)
+allow_token=$(allow allow-token)
+jwt_re=$(rule jwt | head -1)
+label_re=$(rule label | head -1)
+pair_re=$(rule pair | head -1)
+allow_label=$(allow allow-label)
+allow_pair=$(allow allow-pair)
+
+printf '%s\n' "$staged_z" | while IFS= read -r path; do
+  [ -z "$path" ] && continue
+  blob=$(git show ":$path" 2>/dev/null) || continue
+  m=$(printf '%s' "$blob" | grep -oiE -e "$token_re" | grep -viE -e "$allow_token" | head -1)
+  if [ -n "$m" ]; then
+    echo "Blocked: $path contains a credential-shaped string ($(printf '%s' "$m" | cut -c1-12)…). Move it to the environment or secret store; if it is real, rotate it today." >&2
+    exit 1
+  fi
+  for j in $(printf '%s' "$blob" | grep -oiE -e "$jwt_re"); do
+    seg=$(printf '%s' "$j" | cut -d. -f2 | tr '_-' '/+')
+    while [ $(( ${#seg} % 4 )) -ne 0 ]; do seg="$seg="; done
+    if printf '%s' "$seg" | base64 -d 2>/dev/null | grep -q '"role" *: *"service_role"'; then
+      echo "Blocked: $path contains a JWT whose payload carries role service_role. The secret key never enters the repository." >&2
+      exit 1
+    fi
+  done
+  case "$path" in
+    docs/*|*/docs/*|*.md|*.markdown|*.html|*.htm|*.txt|*.csv|*.rtf)
+      printf '%s' "$blob" | grep -oiE -e "$label_re" | while IFS= read -r lm; do
+        value=$(printf '%s' "$lm" | sed -E 's/^.*(:|=|<[^>]*>)[[:space:]]*\**[[:space:]]*["'"'"'>]?//')
+        if ! printf '%s' "$value" | grep -qiE -e "$allow_label"; then
+          echo "Blocked: $path has a credential label followed by a value ($(printf '%s' "$lm" | cut -c1-24)…). A handout with a working sign-in is how the last leak happened." >&2
+          exit 1
+        fi
+      done || exit 1
+      pm=$(printf '%s' "$blob" | tr '\n' ' ' | grep -oiE -e "$pair_re" | grep -viE -e "$allow_pair" | head -1)
+      if [ -n "$pm" ]; then
+        echo "Blocked: $path places an email address next to a password label (a complete sign-in path)." >&2
+        exit 1
+      fi ;;
+  esac
+done || exit 1
+
+exit 0

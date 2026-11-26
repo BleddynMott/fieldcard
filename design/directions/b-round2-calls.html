@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Fieldcard · Sports day · round 2: three ways to make the call</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e4; --ink:#22201c; --lawn:#4f8f4a; --lawn2:#5e9e56; --chalk:#fffdf7; --dim:#7a7064; --track:#c8643b;
+    --stop:#e5484d; --count:#3b82f6; --repeat:#8b5cf6; --pair:#ec4899; --sort:#f97316;
+    --hit:#1fa85a; --near:#f5c518; --gold:#e8b100; --silver:#a9b1bb; --bronze:#c27c4a;
+    --disp:"Bowlby One","Arial Black",sans-serif; --body:"Outfit",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:390px;margin:0 auto;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px}
+  .intro{padding:18px;background:var(--chalk);border-bottom:3px solid var(--ink)}
+  .intro h1{font-family:var(--disp);font-size:24px;font-weight:400;line-height:1.1}
+  .intro p{margin-top:8px;line-height:1.4;color:#4a443c;font-size:15px}
+  .opt{padding:22px 18px 8px;border-top:3px solid var(--ink);background:var(--chalk)}
+  .opt .tag{display:inline-block;font-weight:800;font-size:12px;letter-spacing:2px;border:2px solid var(--ink);border-radius:99px;padding:2px 10px;background:var(--paper)}
+  .opt .tag.rec{background:var(--lawn);color:var(--chalk)}
+  .opt h2{font-family:var(--disp);font-size:30px;font-weight:400;margin-top:8px;line-height:1}
+  .opt .rule{margin-top:8px;line-height:1.4;font-size:15.5px}
+  .opt ul{margin:8px 0 0 18px;font-size:14px;line-height:1.45;color:#4a443c}
+  .opt ul b{color:var(--ink)}
+  .cap{padding:14px 18px 6px;font-weight:800;letter-spacing:2px;font-size:12px;color:var(--dim)}
+  .screen{position:relative;width:390px;height:640px;overflow:hidden;background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+  .mini-lawn{height:64px;position:relative;background:repeating-linear-gradient(90deg,var(--lawn) 0 39px,var(--lawn2) 39px 78px);border-bottom:3px solid var(--ink);display:flex;align-items:center;justify-content:center;gap:6px}
+  .mini-lawn .bib{width:44px;height:38px;background:var(--chalk);border:3px solid var(--ink);border-radius:7px;display:grid;place-items:center;color:var(--dim);box-shadow:0 3px 0 var(--ink);position:relative}
+  .mini-lawn .bib.done{background:#e9e2d3}
+  .mini-lawn .bib.on{transform:translateY(-4px);color:var(--chalk)}
+  .mini-lawn .bib .r{position:absolute;bottom:-9px;right:-7px;width:18px;height:18px;border-radius:50%;border:2px solid var(--ink);font-size:10px;display:grid;place-items:center;font-weight:800;color:var(--ink)}
+  svg.mk{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .head{display:flex;align-items:center;gap:10px;margin:20px 18px 0}
+  .chip{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;border:3px solid var(--ink);color:var(--chalk);flex:none}
+  .head .n{font-family:var(--disp);font-size:30px;line-height:1}
+  .head .s{margin-left:auto;font-weight:800;font-size:13px;border:2px solid var(--ink);border-radius:99px;padding:4px 10px;background:var(--chalk)}
+  .ask{font-family:var(--disp);font-size:24px;line-height:1.1;margin:18px 18px 0}
+  .sub{margin:6px 18px 0;color:#4a443c;font-size:15px}
+  .total{position:absolute;left:18px;right:18px;bottom:18px;display:flex;justify-content:space-between;font-weight:800;font-size:14px;color:var(--dim);border-top:2px dashed #d8cfbe;padding-top:10px}
+  .total b{color:var(--ink)}
+  /* high jump */
+  .jump{position:relative;margin:16px 18px 0;height:300px}
+  .stand{position:absolute;bottom:0;width:14px;height:290px;background:var(--chalk);border:3px solid var(--ink);border-radius:6px;background-image:repeating-linear-gradient(0deg,transparent 0 22px,#22201c30 22px 24px)}
+  .stand.l{left:6px}.stand.r{right:6px}
+  .bar{position:absolute;left:0;right:0;height:62px;display:flex;align-items:center;gap:10px;padding:0 30px;border:3px solid var(--ink);border-radius:99px;background:var(--chalk);box-shadow:0 5px 0 var(--ink)}
+  .bar .md{width:30px;height:30px;border-radius:50%;border:3px solid var(--ink);flex:none}
+  .bar .t{font-weight:800;font-size:17px;line-height:1.1}
+  .bar .t small{display:block;font-weight:600;color:var(--dim);font-size:13px}
+  .bar .p{margin-left:auto;font-family:var(--disp);font-size:20px}
+  .bar.sel{background:var(--ink);color:var(--chalk);box-shadow:0 5px 0 var(--lawn)}
+  .bar.sel small{color:#cfc6b6}
+  .landing{position:absolute;left:0;right:0;bottom:0;height:20px;background:#3b6fb8;border:3px solid var(--ink);border-radius:8px}
+  .big{font-family:var(--disp);font-size:46px;line-height:1;margin:22px 18px 0}
+  .big small{display:block;font-family:var(--body);font-weight:600;font-size:16px;color:var(--dim);margin-top:4px}
+  .scene{position:relative;margin:18px 18px 0;height:190px;border:3px solid var(--ink);border-radius:18px;background:linear-gradient(#cfe3f5 0 62%, var(--lawn) 62%);overflow:hidden}
+  .scene .st{position:absolute;bottom:26px;width:12px;height:120px;background:var(--chalk);border:3px solid var(--ink);border-radius:5px}
+  .scene .fallen{position:absolute;left:70px;bottom:20px;width:230px;height:14px;background:var(--chalk);border:3px solid var(--ink);border-radius:99px;transform:rotate(9deg)}
+  .scene .set{position:absolute;left:60px;right:60px;height:14px;background:var(--chalk);border:3px solid var(--ink);border-radius:99px}
+  .scene .mat{position:absolute;left:40px;right:40px;bottom:6px;height:22px;background:#3b6fb8;border:3px solid var(--ink);border-radius:8px}
+  .verdict{display:flex;align-items:center;gap:10px;margin:16px 18px 0;padding:12px 14px;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);font-weight:800;font-size:17px}
+  .verdict .pts{margin-left:auto;font-family:var(--disp);font-size:22px}
+  .ok{color:var(--hit)} .no{color:var(--stop)}
+  /* two buttons */
+  .duo{display:flex;flex-direction:column;gap:14px;margin:26px 18px 0}
+  .pill{display:flex;align-items:center;justify-content:center;gap:10px;padding:20px;border-radius:99px;border:3px solid var(--ink);font-family:var(--disp);font-size:24px;background:var(--chalk);box-shadow:0 6px 0 var(--ink)}
+  .pill.go{background:var(--lawn);color:var(--chalk)}
+  .par{margin:18px 18px 0;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);padding:14px}
+  .par .line{position:relative;height:56px;margin-top:8px}
+  .par .axis{position:absolute;left:0;right:0;top:26px;height:6px;border-radius:9px;background:#e7dfd0;border:2px solid var(--ink)}
+  .par .med{position:absolute;left:50%;top:6px;width:4px;height:46px;background:var(--ink)}
+  .par .you{position:absolute;top:14px;width:26px;height:26px;border-radius:50%;border:3px solid var(--ink)}
+  .par .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--dim)}
+  /* ribbons */
+  .events{margin:14px 18px 0}
+  .ev{display:flex;align-items:center;gap:10px;height:56px;margin-bottom:8px;border:3px solid var(--ink);border-radius:16px;background:var(--chalk);padding:0 10px;box-shadow:0 4px 0 var(--ink)}
+  .ev .chip{width:34px;height:34px;border-radius:9px}
+  .ev .chip svg{width:18px;height:18px}
+  .ev .nm{font-family:var(--disp);font-size:19px}
+  .ev .rs{color:var(--dim);font-weight:600;font-size:14px}
+  .ev .pin{margin-left:auto;width:40px;height:40px;border:3px dashed #b7ad9c;border-radius:50%}
+  .ros{width:40px;height:40px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-family:var(--disp);font-size:16px;position:relative;margin-left:auto}
+  .ros::after{content:"";position:absolute;bottom:-12px;left:9px;width:16px;height:14px;background:inherit;border:3px solid var(--ink);border-top:0;clip-path:polygon(0 0,100% 0,100% 100%,50% 70%,0 100%)}
+  .ribbons{display:flex;gap:16px;justify-content:center;margin:16px 0 0}
+  .ribbons .ros{margin:0;width:52px;height:52px;font-size:20px}
+  .share{margin:14px 18px 18px;background:var(--ink);color:var(--chalk);border-radius:16px;padding:12px 16px;white-space:pre;font-size:16px;line-height:1.4;font-weight:600}
+  .share h3{font-size:11px;letter-spacing:2px;color:#b7ad9c;margin-bottom:4px}
+  .also{padding:18px;background:var(--chalk);border-top:3px solid var(--ink);font-size:14px;line-height:1.45;color:#4a443c}
+  .also h2{font-family:var(--disp);font-weight:400;font-size:20px;color:var(--ink);margin-bottom:6px}
+  .also p{margin-top:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="m-stop" viewBox="0 0 24 24"><path d="M2 15h20M12 5v16"/></symbol>
+  <symbol id="m-count" viewBox="0 0 24 24"><circle cx="6" cy="16" r="2.2" fill="currentColor"/><circle cx="12" cy="8" r="2.2" fill="currentColor"/><circle cx="18" cy="16" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="m-repeat" viewBox="0 0 24 24"><path d="M19 9a7 7 0 1 0 1 6"/><path d="M20 3v6h-6"/></symbol>
+  <symbol id="m-pair" viewBox="0 0 24 24"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></symbol>
+  <symbol id="m-sort" viewBox="0 0 24 24"><path d="M5 20v-5M12 20v-9M19 20V5"/></symbol>
+</svg>
+
+<section class="intro">
+  <h1>Round 2 · three ways to make the call</h1>
+  <p>Same Sports day look, same five events, same card #41. Only the call changes. In all three, it's how well you know your own game against everyone else's, so you get better at it over the days. No other daily found so far does this.</p>
+</section>
+
+<!-- OPTION 1 -->
+<section class="opt">
+  <span class="tag rec">OPTION 1 · RECOMMENDED</span>
+  <h2>Set the bar</h2>
+  <p class="rule">Before each event, set your own bar like a high jumper: beat <b>half</b> the field (1 pt), <b>three in four</b> (2 pts) or <b>nine in ten</b> (4 pts). Play. Clear the bar and you score it; knock it and you score nothing. Most points out of 20.</p>
+  <ul>
+    <li><b>Why:</b> every event has a decision, stakes and a reveal, five times a run. The bar is the theme and the scoring at once. Going for gold on your best event is the story people tell.</li>
+    <li><b>Draws on:</b> Field par (a call before each hole) and The deal (stakes you choose).</li>
+    <li><b>Risk:</b> one choice of three before each game adds about 3 seconds an event.</li>
+  </ul>
+</section>
+<div class="cap">BEFORE COUNT · SET YOUR BAR</div>
+<section class="screen">
+  <div class="mini-lawn">
+    <div class="bib done" style="color:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg><span class="r" style="background:var(--gold)">✓</span></div>
+    <div class="bib on" style="background:var(--count)"><svg class="mk"><use href="#m-count"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-repeat"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-pair"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-sort"/></svg></div>
+  </div>
+  <div class="head"><div class="chip" style="background:var(--count)"><svg class="mk"><use href="#m-count"/></svg></div><div class="n">Count</div><div class="s">Event 2 of 5</div></div>
+  <div class="ask">Set your bar.</div>
+  <div class="sub">How much of the field will you beat at Count?</div>
+  <div class="jump">
+    <div class="stand l"></div><div class="stand r"></div>
+    <div class="bar" style="top:0"><span class="md" style="background:var(--gold)"></span><span class="t">Nine in ten<small>beat 90% of the field</small></span><span class="p">4</span></div>
+    <div class="bar" style="top:84px"><span class="md" style="background:var(--silver)"></span><span class="t">Three in four<small>beat 75%</small></span><span class="p">2</span></div>
+    <div class="bar sel" style="top:168px"><span class="md" style="background:var(--bronze)"></span><span class="t">Half<small>beat 50%</small></span><span class="p">1</span></div>
+    <div class="landing"></div>
+  </div>
+  <div class="total"><span>Stop: went for gold, cleared</span><b>4 pts</b></div>
+</section>
+<div class="cap">AFTER COUNT · THE BAR FALLS</div>
+<section class="screen">
+  <div class="mini-lawn">
+    <div class="bib done" style="color:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg><span class="r" style="background:var(--gold)">✓</span></div>
+    <div class="bib done" style="color:var(--count)"><svg class="mk"><use href="#m-count"/></svg><span class="r" style="background:var(--chalk)">✕</span></div>
+    <div class="bib"><svg class="mk"><use href="#m-repeat"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-pair"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-sort"/></svg></div>
+  </div>
+  <div class="big">You beat 34%<small>Count · 12% off · bar was half (50%)</small></div>
+  <div class="scene"><div class="st" style="left:44px"></div><div class="st" style="right:44px"></div><div class="fallen"></div><div class="mat"></div></div>
+  <div class="verdict"><span class="no">✕ Knocked it</span><span class="pts">+0</span></div>
+  <div class="total"><span>After 2 events</span><b>4 pts</b></div>
+</section>
+<div class="cap">SHARE TEXT, END OF THE RUN</div>
+<div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · 6 pts
+🥇✅ 🥉❌ 🥉✅ 🥉✅ 🥈❌</div>
+
+<!-- OPTION 2 -->
+<section class="opt">
+  <span class="tag">OPTION 2</span>
+  <h2>Over or under par</h2>
+  <p class="rule">Before each event: <b>Beat the field</b> or <b>Not today</b>. Play. Par is the field's middle score. Called right scores 1. Out of 5.</p>
+  <ul>
+    <li><b>Why:</b> the simplest call possible: one tap, readable by anyone. The golf "par" idea you liked in C, kept in words.</li>
+    <li><b>Draws on:</b> Field par, as shortlisted.</li>
+    <li><b>Risk:</b> a yes/no call has no risk to weigh, so strong players just say "beat it" every time. It can go flat by the second week.</li>
+  </ul>
+</section>
+<div class="cap">BEFORE COUNT · MAKE THE CALL</div>
+<section class="screen">
+  <div class="mini-lawn">
+    <div class="bib done" style="color:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg><span class="r" style="background:var(--hit);color:#fff">✓</span></div>
+    <div class="bib on" style="background:var(--count)"><svg class="mk"><use href="#m-count"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-repeat"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-pair"/></svg></div>
+    <div class="bib"><svg class="mk"><use href="#m-sort"/></svg></div>
+  </div>
+  <div class="head"><div class="chip" style="background:var(--count)"><svg class="mk"><use href="#m-count"/></svg></div><div class="n">Count</div><div class="s">Event 2 of 5</div></div>
+  <div class="ask">Will you beat the field?</div>
+  <div class="sub">Par is the middle score of everyone who has played today.</div>
+  <div class="duo"><div class="pill go">▲ Beat the field</div><div class="pill">▼ Not today</div></div>
+  <div class="total"><span>Calls right so far</span><b>1 of 1</b></div>
+</section>
+<div class="cap">AFTER COUNT · AGAINST PAR</div>
+<section class="screen" style="height:470px">
+  <div class="big">Under par<small>Count · 12% off · you beat 34%</small></div>
+  <div class="par"><div class="lab"><span>worst</span><span>par</span><span>best</span></div><div class="line"><div class="axis"></div><div class="med"></div><div class="you" style="left:31%;background:var(--count)"></div></div></div>
+  <div class="verdict"><span class="no">✕ You called "beat it"</span><span class="pts">1 of 2</span></div>
+</section>
+<div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · called 3/5
+▲✅ ▲❌ ▲✅ ▼❌ ▼✅</div>
+
+<!-- OPTION 3 -->
+<section class="opt">
+  <span class="tag">OPTION 3</span>
+  <h2>Pin your ribbons</h2>
+  <p class="rule">Play all five. Before any results go up, pin a <b>gold</b> (3), <b>silver</b> (2) and <b>bronze</b> (1) ribbon on three events. A ribbon pays if you beat par there. Out of 6.</p>
+  <ul>
+    <li><b>Why:</b> keeps one step at the end, like the ordering, but with stakes, and only three things to place, not five.</li>
+    <li><b>Draws on:</b> The deal, as shortlisted.</li>
+    <li><b>Risk:</b> it is still a step after the fun part, the kind of final stage you found unclear in the Lovable version.</li>
+  </ul>
+</section>
+<div class="cap">AFTER THE FIFTH EVENT · PIN YOUR RIBBONS</div>
+<section class="screen">
+  <div class="ask" style="margin-top:22px">Pin your ribbons.</div>
+  <div class="sub">Each pays if you beat par on that event.</div>
+  <div class="events">
+    <div class="ev"><div class="chip" style="background:var(--stop)"><svg class="mk"><use href="#m-stop"/></svg></div><div><div class="nm">Stop</div><div class="rs">1.8% off</div></div><div class="ros" style="background:var(--gold)">3</div></div>
+    <div class="ev"><div class="chip" style="background:var(--count)"><svg class="mk"><use href="#m-count"/></svg></div><div><div class="nm">Count</div><div class="rs">12% off</div></div><div class="pin"></div></div>
+    <div class="ev"><div class="chip" style="background:var(--repeat)"><svg class="mk"><use href="#m-repeat"/></svg></div><div><div class="nm">Repeat</div><div class="rs">7 long</div></div><div class="ros" style="background:var(--silver)">2</div></div>
+    <div class="ev"><div class="chip" style="background:var(--pair)"><svg class="mk"><use href="#m-pair"/></svg></div><div><div class="nm">Pair</div><div class="rs">6.4 s</div></div><div class="pin"></div></div>
+    <div class="ev"><div class="chip" style="background:var(--sort)"><svg class="mk"><use href="#m-sort"/></svg></div><div><div class="nm">Sort</div><div class="rs">1 pair wrong</div></div><div class="pin"></div></div>
+  </div>
+  <div class="ribbons"><div class="ros" style="background:var(--bronze)">1</div></div>
+  <div class="total"><span>One ribbon left to pin</span><b>Lock</b></div>
+</section>
+<div class="share"><h3>SHARE TEXT</h3>Fieldcard #41 · 5 of 6
+🥇✅ 🥈✅ 🥉❌</div>
+
+<section class="also">
+  <h2>Looked at and not shown</h2>
+  <p><b>Guess your place after each event</b> (candidate M09): slide a marker to the share of the field you think you beat. It's tactile, but it's a guess with nothing at risk, and it sits closest to Perceptle, which shows that number straight away.</p>
+  <p><b>Bet chips at live odds</b> (E05) and <b>knock the holder off a throne</b> (E10) change the game's spine and need a live crowd from day one. They're for later, if at all.</p>
+  <p><b>Ordering</b> (round 1) is out, on your call.</p>
+</section>
+</body>
+</html>
