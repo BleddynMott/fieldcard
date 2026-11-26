@@ -79,6 +79,7 @@ Each is a test a design can be checked against.
 9. The first build he plays contains at least the first three parts of section 1, even if crude.
 10. ~~The 24 Nov hand test with a real group.~~ Struck by his ruling.
 11. **Richest-version test.** For each idea that is kept, the built form is at least as rich as the richest form he approved in the rounds (section 2). Any layer removed is named, with the reason, and he signs the removal.
+12. **Grounds test** (added 26 Nov, G-00b round 2, from his words on the Heat: "how wouold I possilby be abel to guess who is doing better before seeing it"). Every read can be answered from what the player has at that moment: the same event just played, or what they are shown of the others. A guess with nothing to go on fails.
 
 ## 6. The method
 
