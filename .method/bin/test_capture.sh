@@ -18,7 +18,7 @@ run ''; ok "$rc" 0 "empty stdin: exit 0"; ok "$out" "" "empty stdin: silent"
 run 'not json {'; ok "$rc" 0 "non-JSON: exit 0"; ok "$out" "" "non-JSON: silent"
 ok "$(wc -l < "$log" | tr -d ' ')" 3 "three lines after three events"
 # 4 secrets are masked before writing
-# (the fixtures are assembled from parts so this file passes the repository's own secret scan)
+# (the fixtures are assembled from parts so a repository's own secret scan accepts this file; 26 Nov 2026)
 PGURL="postgres""://bob:""hunter2""@db.example.com:5432/x"; JWT="eyJhbGciOiJIUzI1NiJ9"".""eyJyb2xlIjoic2VydmljZV9yb2xlIn0"".abcdefghijk"
 run '{"hook_event_name":"UserPromptSubmit","session_id":"s1","prompt":"use '"$PGURL"' and '"$JWT"'"}'
 ok "$(grep -c 'hunter2' "$log")" 0 "database password not written"
