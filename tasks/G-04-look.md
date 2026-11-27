@@ -10,7 +10,11 @@
 
 **Round 4, his words, 27 Nov:** "Yeah the slight old mechanical theatre vibe is nice. I stil think crowd needs work 2H is so flat and bright and doesn't look great, , 2J is bit better but stil something wrong I don't know what. Interesting for 2K about them from the back holding a card up to signify, but the persepctive is a bit weird so doesn't really link them to the notch too well1E is still best as 1h has weird brightness over it, and seating looks weird and a biot sparse. Idea of 3H is sdecent showing people, but I think a fresh set of idas is needed to really think how to portray this. Give 5 posisble design directinos"
 
-**Open now:** `design/directions/look-g04-r5.html`. Five ways to show the crowd, all on the Stop screen in the studio look: C1 Lamp board, C2 Tin figures, C3 Shadow house, C4 Boxes, C5 Cards up. Type `C1` to `C5`, a mix in your words, or `none` and what is wrong. My recommendation: C2. Settled so far: the studio look with an old mechanical theatre feel; 1E as home.
+**Round 5, his words, 27 Nov:** "Can't make a decision until you gt me a few more screens, fully drafted"
+
+**Open now:** `design/directions/look-g04-r6.html`. The five crowd directions (C1 Lamp board, C2 Tin figures, C3 Shadow house, C4 Boxes, C5 Cards up), each on four screens: Stop, Count's keep-or-switch, Hold your day, the Stop reveal. Type `C1` to `C5`, a mix in your words, or `none` and what is wrong. My recommendation: C2.
+
+**Round 5 page:** `design/directions/look-g04-r5.html`. Five ways to show the crowd, all on the Stop screen in the studio look: C1 Lamp board, C2 Tin figures, C3 Shadow house, C4 Boxes, C5 Cards up. Type `C1` to `C5`, a mix in your words, or `none` and what is wrong. My recommendation: C2. Settled so far: the studio look with an old mechanical theatre feel; 1E as home.
 
 **Round 4 page:** `design/directions/look-g04-r4.html`. E's studio, kept. Three ways to show people in cinema seats on Stop (2H from the stage with only players seated, 2J a full house with a searching spotlight, 2K from your own seat), a home with searching spotlights (1H) and big lamps for Hold your day (3H). Type the ids you want, e.g. `2H, 1H, 3H`, or `none` and what is wrong. My recommendation: `2H, 1H, 3H`.
 
@@ -173,6 +177,7 @@ Each line is checkable on a drawn screen.
 - 27 Nov, round 3. His words on round 2 are in the Summary. Drew `design/directions/look-g04-r3.html`: G, the studio with drawn people. Home: the stands are full and face out, and you are a person in the spot. Stop: only players sit in the stands, each above the bulb they stopped on. Hold your day: a lit staircase; whoever let go stays on their step. Checked by rendering each row and reading the screenshots; fixed the people standing in front of the wrong step's number.
 - 27 Nov, round 4. His words on round 3 are in the Summary. E is the look; G's ink-outlined people are dropped. Drew `design/directions/look-g04-r4.html`: people as lit head-and-shoulders in red cinema seats, drawn without outlines in the studio's light; a player is someone holding a lit teal card. Checked by rendering each row and reading the screenshots.
 - 27 Nov, round 5. His words on round 4 are in the Summary. Took from them: the look is settled as the studio with an "old mechanical theatre" feel; 1E stays as home; the open question is only how one player is shown. Drew five answers on the Stop screen in `design/directions/look-g04-r5.html`. All are dark with the light from the stage, since 2H failed as "flat and bright". Checked by rendering the page and reading the screenshot; fixed C5's cards sitting off their bulbs.
+- 27 Nov, round 6. His words on round 5 are in the Summary. Drew `design/directions/look-g04-r6.html`: each crowd direction is one small kit (board, one player, you, a row) used on four screens, 20 phones. Rendered rows 2, 3 and 4 and read the screenshots; row 1 is round 5's Stop screen redrawn from the kit and was not looked at again.
 
 ## Rulings
 
@@ -197,3 +202,5 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 17. **The searching spotlight is drawn still** (2J, 1H). He called it a future avenue; no motion is specified here.
 18. **"Five design directions" is read as five ways to portray the crowd,** drawn on one screen (Stop), not five whole new looks. He said the theatre vibe is nice and 1E is best in the same message.
 19. **C1 has no people in it.** It is on the page because it is the same language as the big yellow lights he liked; whether the crowd must be people is his call.
+20. **The three added screens are Count's keep-or-switch, Hold your day and the Stop reveal,** because the crowd is on all three. Double-or-bank, the graph read and the scorecard wait for the pick.
+21. **The reveal's numbers are for the look only:** a crowd that leans late, you on the notch's near edge for +5, a "late" mark under the late bulbs. The counts are not from play data.
