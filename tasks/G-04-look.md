@@ -2,11 +2,11 @@
 
 ## Summary (read this first)
 
-### Restart point for a fresh chat (27 Nov, after round 12)
+### Restart point for a fresh chat (27 Nov, after round 13)
 
 **Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd, 4b (the dimmer rail) for Count's number, and round 10's full run: "All looks good". The full run is `design/directions/look-g04-r10.html` (24 screens). Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged.
 
-**Open now, waiting for his line:** `design/directions/look-g04-r12.html`, four ways to do Find yourself (F1 Said and did, F2 The meter, F3 The stairs, F4 Front of stage), each in play and reveal. He types `F1` to `F4`, a mix, or `none`. The peek (2p, 2q in `look-g04-r11.html`) he called "Fine"; its rule (free or not, which game) is still his to give.
+**Open now, waiting for his line:** `design/directions/look-g04-r13.html`: Find yourself on the meter (his pick, F2), with the reveal two ways, `M1` (one dial, two needles) or `M2` (two dials). The peek is settled: free, on Stop's open track (2p, 2q in `look-g04-r11.html`). Still open: where the open track sits on the card.
 
 **Round 10, his words, 27 Nov:** "All looks good, but the19 and 19b are only ones that are a bit underwhelming. Also perhaps for one of the games would be interesting to ask if they want to see yesterdays answer distribution? Like a dare, as it could mess up their game or it coudl help them but mostly will just make them overthink it"
 
@@ -297,6 +297,10 @@ Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework 
     - **F4 Front of stage.** Best at the front in the light, last at the back in the dark; on the reveal everyone stands where they said, so the front is packed.
   - Rendered both rows and read them. **Not run:** no K05 review; these are options for him to pick from.
   - My recommendation: F1 for what it tells you, F4 for how it feels. A mix is possible: F4's stage for play, F1's two pairs for the reveal's numbers.
+- 27 Nov, round 13. **His words:** "I like the speed dial meter, as long as the reveal makes a bit more sense. I like hte meter fallingback and leaving a ghost, just need to make sure the the speedometer for the other people make senses. Currently lsighlty confused as to what is the people voting vs their actual scores. Which is clearer with teh column of lamps. Peek's rule is free, keep on the game it is".
+  - **Picked:** F2, the meter, for Find yourself; the needle falling back and leaving a ghost stays. **Ruled by him:** the peek is free and stays on Stop's open track (ruling 38 is settled on those two points).
+  - Drew `design/directions/look-g04-r13.html`, three screens: play (unchanged) and the reveal two ways. The loose cards round the rim are gone. The crowd now reads the same way you do: a dashed ghost marked SAID, and a needle where it really came. M1 is one dial with two rings and two needles (you outer in yellow, everyone inner in teal). M2 is two dials, yours above and everyone's below. Each has one sentence per needle: "You said 70, came 57." "Everyone said 66, came 50."
+  - Rendered and read. Known: the line under the title repeats "You said 70 ... beat 57"; one of the two goes when he picks. **Not run:** no K05 review.
 
 ## Rulings
 
@@ -341,3 +345,4 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 37. **Every number on round 10's screens is for the look only,** except the rules they follow (1 to 5 on the open track, averaged; +2 for keeping when closer; a wrong double costs the base). Reveals say "simulated crowd".
 38. **The peek is a new rule, not only a screen,** and it is not in G-02b. As drawn: offered once before Stop's first go, free, and yesterday's field stays up dim for all three goes. Whether it costs anything, whether peeking shows on the reveal ("6 in 10 peeked; they scored less"), and which game carries it are his to rule, then for the rules task.
 39. **Withdrawn in the second pass (the tower replaces it).** Find yourself turns the house round: it is seen from the stage, with faces, where every other crowd screen is seen from your seat. That is deliberate, so it is not the eighth copy of the same picture.
+40. **His ruling, 27 Nov:** the peek is free and stays on Stop's open track. Whether the reveal says how peekers did is still open.
