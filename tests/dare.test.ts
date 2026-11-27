@@ -8,6 +8,7 @@ import {
   dareStopParams,
   doubleOrBank,
   longJumpScore,
+  openStopPoints,
   openStopPrice,
   repeatPoints,
   repeatPrices,
@@ -183,8 +184,8 @@ describe('V4 hold your day (the signed median rule, kept for comparison)', () =>
 
 describe('V4 hold your day: R-13, the load rule (the default)', () => {
   const L: RulesParams['rope'] = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above', snapRule: 'load', capacity: 1.5, ceilingShare: 0.1 };
-  it('is the default, at capacity 1.5 with a ceiling at the bravest tenth', () => {
-    expect(rules().rope).toMatchObject({ snapRule: 'load', capacity: 1.5, ceilingShare: 0.1 });
+  it('is the default switch (its numbers are his to tune, so not pinned here)', () => {
+    expect(rules().rope.snapRule).toBe('load');
   });
   it('the rope holds capacity / multiple of the field, at most all of it', () => {
     expect(ropeHolds(1.5, L)).toBe(1);
@@ -213,7 +214,7 @@ describe('V4 hold your day: R-13, the load rule (the default)', () => {
   it('medianPlus: one rung past the lower median', () => {
     expect(snapPoint([3, 1.2, 2, 1.5], { ...L, snapRule: 'medianPlus' })).toBe(2);
   });
-  it('undercutting the crowd does not drive the load rule to the bottom; it does the median rule', () => {
+  it('everyone undercutting by a rung: the load rule settles one rung above where the median rule falls', () => {
     const run = (q: RulesParams['rope']) => {
       let field: number[] = Array(500).fill(2.5);
       let night = snapPoint(field, q);
@@ -235,7 +236,9 @@ describe('V4 hold your day: R-13, the load rule (the default)', () => {
     expect(Math.min(...run(L))).toBeGreaterThanOrEqual(2);
     expect(Math.max(...run({ ...L, snapRule: 'median' }))).toBeLessThanOrEqual(1.5);
   });
-  it('no choice wins every time under the load rule: x1 beats x2 on a bold day and loses on an early one', () => {
+  // Not "no choice wins every time": at capacity 1.5, x1.5 can only snap via the ceiling, so it
+  // beats x1 on almost every field (K05 round 3, 5 and 6). That hole is open, in the task file.
+  it('x1 against x2 only: x1 wins on a bold day and loses on an early one', () => {
     const bold = snapPoint([1, 1, 2, 2, 2, 3, 3, 3, 4, 5], L);
     const early = snapPoint([1, 1, 1, 1, 1.5, 1.5, 2, 2, 3, 3], L);
     expect(ropePoints(100, 1, bold, L)).toBeGreaterThan(ropePoints(100, 2, bold, L));
@@ -266,6 +269,24 @@ describe("Dare's Stop: R-14 the 12% notch, R-15 his open track", () => {
     // from crowded to rare: 1 + 4 x 0.4 = 2.6, rounded to 3. (Off the window's edges on purpose.)
     const even = Array.from({ length: 100 }, (_, i) => (i + 0.5) / 100);
     expect(openStopPrice(0.5, even)).toBe(3);
+  });
+  it('open: a stop exactly 3% away counts the same anywhere on the track (K05 round 3, 20)', () => {
+    const crowd = Array(10).fill(0);
+    for (const at of [0.1, 0.3, 0.5, 0.7]) {
+      const c = crowd.map(() => at);
+      expect(openStopPrice(at + 0.03, c)).toBe(openStopPrice(0.13, crowd.map(() => 0.1)));
+    }
+  });
+  it('open: the points are the average of the three go prices, to 0.1 (R-15b)', () => {
+    const crowd = Array(100).fill(0.5);
+    // prices 1, 5, 5: average 3.7 (11 / 3 = 3.67)
+    expect(openStopPoints([0.5, 0.9, 0.1], [crowd, crowd, crowd])).toBe(3.7);
+    expect(() => openStopPoints([0.5], [crowd, crowd])).toThrow();
+    expect(() => openStopPoints([], [])).toThrow();
+  });
+  it('the dare card carries the mode', () => {
+    expect(dareStopCard(1).mode).toBe(rules().dareStop.mode);
+    expect(dareStopCard(1, { ...rules().dareStop, mode: 'open' }).mode).toBe('open');
   });
   it('open: a place off the track throws', () => {
     expect(() => openStopPrice(-0.01, [])).toThrow();

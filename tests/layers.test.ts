@@ -1,6 +1,6 @@
 // G-02b: the field and the layers (Z1, Z2, Z4), by hand from tasks/G-02b.md "Rules".
 import { describe, expect, it } from 'vitest';
-import { stopParams } from '../src/lib/config';
+import { config, stopParams } from '../src/lib/config';
 import { mulberry32 } from '../src/lib/rng';
 import { carryOver, fromHabits, modelledShare, rollingField, values } from '../src/lib/rules/field';
 import { crowdTwin, isTrap, mostPickedWrong, notchFromYesterday, personality, trapFor } from '../src/lib/rules/layers';
@@ -41,6 +41,13 @@ describe('config', () => {
     const { badNumbers } = await import('../src/lib/rules/params');
     expect(badNumbers()).toEqual([]);
     expect(badNumbers({ a: 1, b: { c: Number.NaN } })).toEqual(['rules.b.c']);
+    const { badChoices, rules: r } = await import('../src/lib/rules/params');
+    expect(badChoices()).toEqual([]);
+    const R = r();
+    const typo = { ...R, rope: { ...R.rope, snapRule: 'Median' as never, ceilingShare: -0.1 }, dareStop: { ...R.dareStop, mode: 'opne' as never } };
+    expect(badChoices(typo)).toEqual(['rope.snapRule', 'rope.ceilingShare', 'dareStop.mode']);
+    const { snapPoint } = await import('../src/lib/rules/dare');
+    expect(() => snapPoint([2], typo.rope)).toThrow();
   });
 });
 
@@ -172,10 +179,10 @@ describe('the simulated fields (until G-03)', () => {
       expect(snap).toBeGreaterThan(1);
       // R-13: "never snaps" is one step past the top, so letting go at the top banks it
       expect(snap).toBeLessThanOrEqual(ladder[ladder.length - 1] + rules().rope.step);
-      expect(f.stop.notchHalf).toBe(6); // R-14: Dare's 12% notch
+      expect(f.stop.notchHalf).toBeCloseTo((rules().dareStop.notchWidth * 100) / 2, 9); // R-14
       expect(f.openStop.places.length).toBe(3); // R-15: one field per go
       for (const go of f.openStop.places) {
-        expect(go.length).toBe(400);
+        expect(go.length).toBe(config.crowd.size);
         expect(go.every((e) => e.modelled && e.value >= 0 && e.value <= 1)).toBe(true);
         const price = openStopPrice(0.5, v(go));
         expect(price >= 1 && price <= 5).toBe(true);

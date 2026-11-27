@@ -6,6 +6,8 @@ import { rules } from './params';
 
 // ---- V1, Stop: the field's stops set the price ---------------------------------------------
 
+const EDGE = 1e-9; // floating-point slack, % of the track; not a game number
+
 /**
  * Price of a stop, 0 or 1 to 5. you and field are signed offsets from the notch's centre, in % of
  * the track (as stopResult's offs); notchHalf is half the notch's width in the same unit.
@@ -21,7 +23,9 @@ export function stopPrice(you: number, notchHalf: number, field: number[], p = r
   const w = p.window * 2 * notchHalf;
   const lo = Math.max(-notchHalf, you - w);
   const hi = Math.min(notchHalf, you + w);
-  const near = inside.filter((f) => f >= lo && f <= hi).length;
+  // a hair of slack at the window's edges, so a stop exactly window away counts the same wherever
+  // it is on the track (K05 round 3, 20: (0.53 - 0.5) x 100 is 3.0000000000000027)
+  const near = inside.filter((f) => f >= lo - EDGE && f <= hi + EDGE).length;
   const expected = (inside.length * (hi - lo)) / (2 * notchHalf);
   const ratio = near / expected;
   if (ratio <= p.rareRatio) return p.maxPrice;
@@ -36,9 +40,21 @@ export function dareStopParams(sp = stopParams(), p = rules().dareStop): StopPar
   return { ...sp, notchWidthMonday: p.notchWidth, notchWidthStepPerDay: 0 };
 }
 
-/** Dare's Stop card: Stop's goes with the dare's notch width (R-14). */
-export function dareStopCard(card: number, p = rules().dareStop): StopCard {
-  return generateStop(card, dareStopParams(stopParams(), p));
+export type DareStopCard = StopCard & { mode: 'notch' | 'open' };
+
+/** Dare's Stop card: Stop's goes with the dare's notch width (R-14), and the mode. In 'open' mode
+ *  there is no notch: the screen draws none and ignores notch and notchWidth. */
+export function dareStopCard(card: number, p = rules().dareStop): DareStopCard {
+  return { ...generateStop(card, dareStopParams(stopParams(), p)), mode: p.mode };
+}
+
+/** R-15b (revised, K05 round 3, 18): open Stop's points are the average of the three go prices,
+ *  to 0.1, so both modes run on the same 1-to-5 scale. places[i] is your stop on go i, fields[i]
+ *  that go's field. */
+export function openStopPoints(places: number[], fields: number[][], p = rules().dareStop): number {
+  if (places.length === 0 || places.length !== fields.length) throw new Error('openStopPoints: one field per go');
+  const sum = places.reduce((s, x, i) => s + openStopPrice(x, fields[i], p), 0);
+  return round(sum / places.length, 1);
 }
 
 /**
@@ -116,7 +132,7 @@ export function ropeLadder(p = rules().rope): number[] {
 }
 
 /** How many of the field the rope holds at multiple m, as a share: capacity / m, at most 1
- *  (R-13: with capacity 1, at x2 it holds half the field, at x3 a third). */
+ *  (R-13: at capacity 1.5 it holds all of it to x1.5, 3 in 4 at x2, half at x3). */
 export function ropeHolds(m: number, p = rules().rope): number {
   return Math.min(1, p.capacity / m);
 }
@@ -129,12 +145,14 @@ export function stillOn(m: number, fieldRecords: number[]): number {
 
 /**
  * The snap. Field entries are ropeRecord values. R-3: an empty field snaps at emptySnap.
- * - 'load' (R-13, his "rethink rope", 28 Nov): the first rung above x1 where more of the field is
- *   still on than the rope holds there. If no rung is overloaded, it never snaps: the snap is one
- *   step past max, so letting go at max banks it. An early crowd lifts the snap, so undercutting
- *   the crowd stops being safe.
+ * - 'load' (R-13, his "rethink rope", 28 Nov; NOT SOUND, K05 round 3): the first rung above x1
+ *   where more of the field is still on than the rope holds there, or the ceiling: one rung past
+ *   the record where the bravest ceilingShare start (the 90th percentile at 0.1), whichever is
+ *   lower. With no ceiling (0) and no rung overloaded, it never snaps: the snap is one step past
+ *   max, so letting go at max banks it.
  * - 'median' (the signed V4 wording): the multiple by which half the field had let go, the lower
- *   median. Kept for comparison: it slides when players undercut it (probe A).
+ *   median. It slides when players undercut it (probe A).
+ * - 'medianPlus': one rung past the median. Steady, but the same best release every day (A3).
  */
 export function snapPoint(fieldRecords: number[], p = rules().rope): number {
   if (fieldRecords.length === 0) return p.emptySnap;
@@ -142,6 +160,7 @@ export function snapPoint(fieldRecords: number[], p = rules().rope): number {
   const median = s[Math.ceil(s.length / 2) - 1];
   if (p.snapRule === 'median') return median;
   if (p.snapRule === 'medianPlus') return Math.min(round(median + p.step, p.decimals), round(p.max + p.step, p.decimals));
+  if (p.snapRule !== 'load') throw new Error(`snapPoint: unknown snapRule ${String(p.snapRule)}`);
   // 'load', with a ceiling one step past where all but ceilingShare had let go (0: no ceiling)
   const top = p.ceilingShare > 0 ? round(s[Math.max(0, Math.ceil(s.length * (1 - p.ceilingShare)) - 1)] + p.step, p.decimals) : Infinity;
   for (const m of ropeLadder(p)) {

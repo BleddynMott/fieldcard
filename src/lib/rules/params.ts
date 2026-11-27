@@ -47,6 +47,22 @@ export type SelectRecipe = 'tidy' | 'spread' | 'shift' | 'skew';
 
 export const rules = (): RulesParams => (config as unknown as { rules: RulesParams }).rules;
 
+/** The switches and the numbers with limits are valid (K05 round 3, 19 and 25): a typo in a switch
+ *  or a negative ceiling would otherwise run silently as something else. */
+export function badChoices(r: RulesParams = rules()): string[] {
+  const bad: string[] = [];
+  if (!['load', 'median', 'medianPlus'].includes(r.rope.snapRule)) bad.push('rope.snapRule');
+  if (!['at', 'above'].includes(r.rope.snapped)) bad.push('rope.snapped');
+  if (!(r.rope.capacity > 0)) bad.push('rope.capacity');
+  if (!(r.rope.ceilingShare >= 0 && r.rope.ceilingShare < 1)) bad.push('rope.ceilingShare');
+  if (!['notch', 'open'].includes(r.dareStop.mode)) bad.push('dareStop.mode');
+  if (!(r.dareStop.notchWidth > 0 && r.dareStop.notchWidth < 1)) bad.push('dareStop.notchWidth');
+  if (!(r.dareStop.openWindow > 0 && r.dareStop.openWindow < 0.5)) bad.push('dareStop.openWindow');
+  const shares = r.sim.openStop.mix.reduce((s, m) => s + m.share, 0);
+  if (Math.abs(shares - 1) > 1e-9 || r.sim.openStop.mix.some((m) => !(m.share >= 0))) bad.push('sim.openStop.mix shares');
+  return bad;
+}
+
 /** Every number in rules is finite (K05 23): a missing or mistyped key would otherwise run as NaN. */
 export function badNumbers(node: unknown = rules(), path = 'rules'): string[] {
   if (typeof node === 'number') return Number.isFinite(node) ? [] : [path];

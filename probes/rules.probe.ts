@@ -127,9 +127,14 @@ describe('probe A3: the rope with a mixed crowd of learners', () => {
       { snapRule: 'medianPlus' as const, capacity: 1, ceilingShare: 0 },
       ...[1.25, 1.5, 1.75].map((capacity) => ({ snapRule: 'load' as const, capacity, ceilingShare: 0.1 })),
     ];
-    for (const run of runs) {
+    // K05 round 3 (findings 1, 2, 32): also each fixed release's average over the run, the share of
+    // players whose snap the ceiling set, and three seeds.
+    for (const run of runs) for (const seed of [99, 7, 2024]) {
       const P = { ...base, ...run };
-      const rng = mulberry32(99);
+      const rng = mulberry32(seed);
+      const runFixed = fixed.map(() => 0);
+      let byCeiling = 0;
+      let faced = 0;
       const gut = () => onLadder(Math.max(1.1, 2.2 + 0.6 * dgauss(rng)));
       let field: number[] = Array.from({ length: 500 }, gut);
       const nights: { snap: number; best: number }[] = [{ snap: snapPoint(field, P), best: 2 }];
@@ -139,7 +144,10 @@ describe('probe A3: the rope with a mixed crowd of learners', () => {
         const fixedPay = fixed.map(() => 0);
         const today: number[] = [];
         for (let k = 0; k < 2000; k++) {
-          const snap = snapPoint(values(rollingField(today, field, 500)), P);
+          const fv = values(rollingField(today, field, 500));
+          const snap = snapPoint(fv, P);
+          if (P.snapRule === 'load' && snap !== snapPoint(fv, { ...P, ceilingShare: 0 })) byCeiling++;
+          faced++;
           const night = nights[Math.max(0, nights.length - 1 - Math.floor(rng() * 3))];
           const kind = rng() < learn ? (['undercut', 'copy', 'safe'] as const)[Math.floor(rng() * 3)] : 'gut';
           const top = Math.min(P.max, night.snap);
@@ -151,12 +159,15 @@ describe('probe A3: the rope with a mixed crowd of learners', () => {
           today.push(ropeRecord(release, snap, P));
         }
         field = today.slice(-500);
+        fixedPay.forEach((v, i) => (runFixed[i] += v));
         nights.push({ snap: snapPoint(field, P), best: fixed[fixedPay.indexOf(Math.max(...fixedPay))] });
       }
-      const label = run.snapRule === 'load' ? `load cap ${run.capacity} ceil ${run.ceilingShare}` : 'medianPlus';
-      log(`A3. ${label.padEnd(22)} night snaps ${nights.slice(1).map((n) => 'x' + n.snap).join(' ')}`);
-      log(`A3. ${''.padEnd(22)} best fixed  ${nights.slice(1).map((n) => 'x' + n.best).join(' ')}`);
-      log(`A3. ${''.padEnd(22)} earned per 100: ${Object.entries(earned).map(([k, [s, n]]) => `${k} ${n ? Math.round(s / n) : '-'}`).join(', ')}`);
+      const label = `${run.snapRule === 'load' ? `load cap ${run.capacity} ceil ${run.ceilingShare}` : 'medianPlus'} seed ${seed}`;
+      if (seed === 99) {
+        log(`A3. ${label.padEnd(30)} night snaps ${nights.slice(1).map((n) => 'x' + n.snap).join(' ')}`);
+        log(`A3. ${''.padEnd(30)} best fixed  ${nights.slice(1).map((n) => 'x' + n.best).join(' ')}`);
+      }
+      log(`A3. ${label.padEnd(30)} earned per 100: ${Object.entries(earned).map(([k, [s, n]]) => `${k} ${n ? Math.round(s / n) : '-'}`).join(', ')} | always ${fixed.map((r, i) => `x${r} ${Math.round(runFixed[i] / 56000)}`).join(', ')} | ceiling set the snap for ${Math.round((100 * byCeiling) / faced)}%`);
     }
   });
 });

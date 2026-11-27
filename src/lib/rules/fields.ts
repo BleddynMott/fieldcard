@@ -67,22 +67,28 @@ function build(card: number): Fields {
   const seeks = fromHabits(weights, n, rng).map((i) => jitter(playground[i]));
 
   // R-15: open Stop's habits are made up (config rules.sim.openStop). A stop lands at the aim plus
-  // noise that grows with the marker's speed there on that go (fast through the middle).
+  // noise that grows with the marker's speed there on that go (fast through the middle). Ends
+  // reflect, as in probe E, so there is no false pile at 0 or 1 (K05 round 3, 24). Known
+  // simplification (23): the speed is shape's slope in time, read at the place, and ignores
+  // the go's sweep time; it's a made-up field either way.
   const O = S.openStop;
+  const reflect = (x: number) => clamp(x < 0 ? -x : x > 1 ? 2 - x : x, 0, 1);
   const habitAim = () => {
     let r = rng();
     for (const m of O.mix) {
-      if (r < m.share) return clamp((m.mean + m.sd * dgauss(rng)) / 100, 0, 1);
+      if (r < m.share) return reflect((m.mean + m.sd * dgauss(rng)) / 100);
       r -= m.share;
     }
-    return 0.5;
+    return O.mix[O.mix.length - 1].mean / 100; // only reached by rounding: badChoices checks the shares
   };
-  const places = dareStopCard(card).goes.map((go) =>
+  const dare = dareStopCard(card);
+  const places = dare.goes.map((go) =>
     asField(
       Array.from({ length: n }, () => {
         const aim = habitAim();
+        // d/df of shape(f, ease) = (1 - ease) + ease x 6f(1 - f), smoothstep's slope
         const speed = 1 - go.ease + 6 * go.ease * aim * (1 - aim);
-        return round(clamp(aim + O.sd * speed * dgauss(rng), 0, 1), 4);
+        return round(reflect(aim + O.sd * speed * dgauss(rng)), 4);
       }),
     ),
   );
@@ -90,7 +96,7 @@ function build(card: number): Fields {
   return {
     card,
     simulated: true,
-    stop: { notchHalf: (dareStopCard(card).notchWidth * 100) / 2, offs: asField(crowd.players.map((p) => middleOf(p.results.stop.offs))) },
+    stop: { notchHalf: (dare.notchWidth * 100) / 2, offs: asField(crowd.players.map((p) => middleOf(p.results.stop.offs))) },
     openStop: { places },
     count: { truth: generateCount(card).target, answers: asField(crowd.players.map((p) => p.results.count.guess)) },
     repeat: { longest: asField(crowd.players.map((p) => p.results.repeat.longest)) },
