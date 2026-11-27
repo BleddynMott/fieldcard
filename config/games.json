@@ -451,7 +451,8 @@
     },
     "dareStop": {
       "_about": "R-14 and R-15 (his reply, 28 Nov). mode 'notch': Stop's goes with a notch notchWidth of the track all week (plain Stop's is 7% narrowing to 2.8%). mode 'open': no notch; a stop anywhere pays by how few of the field stopped within openWindow of it, on the same go.",
-      "mode": "notch",
+      "_mode": "R-17 (28 Nov, his 'open track replaces the rope thing'): 'open' is the default; 'notch' (12%) stays as a switch.",
+      "mode": "open",
       "notchWidth": 0.12,
       "openWindow": 0.03
     },
@@ -473,7 +474,8 @@
       "decimals": 1,
       "snapped": "above",
       "_snapRule": "R-13 (his 'rethink rope', 28 Nov), OPEN: not sound yet (K05 round 3; probe A3: 'always x3' beats every crowd-reading strategy, x1.5 is risk-free). 'load': it snaps at the first rung where more of the field is still on than it holds there, min(1, capacity / multiple), or at the ceiling, one rung past the record where the bravest ceilingShare start, whichever is lower. 'median': the signed rule, which slides (probe A). 'medianPlus': one rung past the median; steady, but the same best release every day.",
-      "_rarest": "R-16, his rope (28 Nov, 'do mine'), the default: no snap; you're paid by how few of the field let go at your rung, x rarestScale per price point (1 to 5, as Stop's), so x0.5 to x2.5.",
+      "_replaced": "R-17 (28 Nov): the rope (V4) is off the card, replaced by the open track (dareStop.mode 'open'). Every rope rule below stays as a switch; none is sound against a crowd with fixed habits (G-02b, K05 rounds 3 and 4).",
+      "_rarest": "R-16, his rope (28 Nov, 'do mine'): no snap; you're paid by how few of the field let go at your rung, x rarestScale per price point (1 to 5, as Stop's), so x0.5 to x2.5.",
       "snapRule": "rarest",
       "rarestScale": 0.5,
       "capacity": 1.5,

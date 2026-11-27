@@ -99,7 +99,7 @@ const median = (xs: number[]) => {
 
 /** Bold/Careful (Dare) or Loner/Joiner (Read): your act rate against the field's median rate.
  *  R-12: for Dare, acts are every bold choice the card had (V1 the bare stretch or going on, V2
- *  doubles, V4 holding past the field's halfway point), summed by the caller. No word under
+ *  doubles), summed by the caller. V4's hold went with the rope (R-17, 28 Nov). No word under
  *  minChances, or with no field to compare with. */
 export function personality(kind: 'dare' | 'read', you: Tally, field: Tally[], p = rules().personality): Personality | null {
   if (you.chances < p.minChances) return null;
