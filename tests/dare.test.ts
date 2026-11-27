@@ -120,7 +120,7 @@ describe('V2 double or bank', () => {
 });
 
 describe('V4 hold your day (the signed median rule, kept for comparison)', () => {
-  const P = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above' as const, snapRule: 'median' as const, capacity: 1.5, ceilingShare: 0.1 };
+  const P = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above' as const, snapRule: 'median' as const, capacity: 1.5, ceilingShare: 0.1, rarestScale: 0.5 };
   const AT = { ...P, snapped: 'at' as const };
   it('the ladder climbs x1, x1.5, x2 and on, to x10, never past max', () => {
     const l = ropeLadder(P);
@@ -185,7 +185,7 @@ describe('V4 hold your day (the signed median rule, kept for comparison)', () =>
 });
 
 describe('V4 hold your day: R-13, the load rule (the default)', () => {
-  const L: RulesParams['rope'] = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above', snapRule: 'load', capacity: 1.5, ceilingShare: 0.1 };
+  const L: RulesParams['rope'] = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above', snapRule: 'load', capacity: 1.5, ceilingShare: 0.1, rarestScale: 0.5 };
   it('the rope holds capacity / multiple of the field, at most all of it', () => {
     expect(ropeHolds(1.5, L)).toBe(1);
     expect(ropeHolds(2, L)).toBe(0.75);
