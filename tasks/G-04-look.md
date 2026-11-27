@@ -8,7 +8,7 @@
 
 **His rulings in that line:** the Stop reveal says how peekers did ("Peekers scored 2.2 today. The rest, 3.0."); the open track sits at Stop's place on the card.
 
-**Named check 8 is met** (he picks, in his words). **Not done, and not this task:** `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged; no screen in `src/` has the look; `g02-card` (the rules code) is not merged into `g04-look`. Those are the next task. `Signed:` and `Merge:` are his.
+**Named check 8 is met** (he picks, in his words). **Not done, and not this task:** `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged; no screen in `src/` has the look; `g02-card` (the rules code) is not merged into `g04-look`. Those are the next task. Signed by him, 27 Nov. `Merge:` is still his.
 
 **Known and left for the next task** (from the round 10 review): no stake as a thing on five play screens; scores without a sentence; no marks or tokens for Long jump, Hide and Seek, Find yourself; Hide and Seek's scenery is the weakest drawing; the scorecard's numbers have no common unit; no twin or badge on the scorecard; no reveals for Sort, Pair, Repeat, Select, Adjust; the flag and the Sunday week are not drawn.
 
@@ -113,9 +113,9 @@ Named check, fixed before work:
 7. `bash scripts/ci-checks.sh` passes.
 8. He picks, in his words.
 
-Signed:
+Signed: him, 27 Nov ("signed"), on `2933fcf`: the picked set, `design/directions/look-g04-picked.html`.
 Merge:
-User can now: compare three looks for the dare game on one page and pick by id.
+User can now: see the picked look for every game and step on one page (`design/directions/look-g04-picked.html`). Nothing in the app has the look yet.
 
 ## 1. What the look must do for this game
 
@@ -308,6 +308,7 @@ Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework 
 - 27 Nov, round 13, second pass. **His words:** "actually yeah that was me being silly, as of course everyone came 50 which now might actually confuse. Adjust back to one dial, just ensuring we have clarity wiht the visual as well of how everyone voted". M1 and M2 are withdrawn. `look-g04-r13.html` now has play and one reveal: one dial; your needle falls back from its ghost ("SAID 70"); everyone else is shown only by what they said, one card a person standing on the rim where they claimed, with the HALF line running out through the cards; two sentences, "You said 70, came 57." and "Each card is someone's guess." The repeated line under the title is gone. Rendered and read. **Not run:** no K05 review.
 - 27 Nov. From the rules session (probe E2, a model with made-up habits, nothing coded): whether peeking helps depends on how many others peek. When 20% peek, following yesterday's gap pays more than not peeking; at 50% or more it ties or does worse. A reveal line such as "Peekers 2.2, others 3.0 today" would be true and would change day to day. His to rule.
 - 27 Nov. **Picked** (his words in the Summary). Built `design/directions/look-g04-picked.html`: one page of every passed screen, 27 in 9 rows. Changes from the round pages: Home added; 2p and 2q moved in beside Stop; 19a and 19b are the meter; Stop's reveal carries the peekers line in place of "Yesterday's empty spot was today's crowd". Rows 0, 1 and 8 (the changed ones) rendered and read; the other rows are round 10's, unchanged. `ci-checks: all passed`, `design-check: pass`. **Not run:** no K05 review of the assembled page.
+- 27 Nov. **Signed** by him ("signed"). `Merge:` is empty: he has not said where `g04-look` goes, and `g02-card` is ahead of it with the rules code.
 
 ## Rulings
 
