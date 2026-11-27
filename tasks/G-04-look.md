@@ -2,18 +2,17 @@
 
 ## Summary (read this first)
 
-### Restart point for a fresh chat (27 Nov, after round 8)
+### Restart point for a fresh chat (27 Nov, after round 9)
 
-**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd. Latest page: `design/directions/look-g04-r8.html`, eleven screens. Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged. No K05 review has been run since round 1.
+**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd. Latest page: `design/directions/look-g04-r9.html`, a test of five screens (4a, 4b, 4c for Count; 7a, 7b for Repeat). The last full run is `look-g04-r8.html`, eleven screens. Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged. No K05 review has been run since round 1.
 
-**His words on round 8, not yet acted on:** "Better, but you tried to correct the broken thing by just adding stuff. So put the lamp on a stand with wires, which isn't quite right For example, the plus and minus buttons on the counter are really flat. It's all about thinking what we were aiming for making the original ones, aiming for the same thing rather than making things in the same style. Also, the counter shouldn't be plus and minus because you might want to do a few, so to think of a thematically accurate one that would allow counting. I like the flip chart numbers, but just have to think how we can interface with it on the screen in a really cool way"
+**Open now, waiting for his line:** `design/directions/look-g04-r9.html`. He types an id for Count (`4a` flick the flaps, `4b` the dimmer, `4c` tap each one) and a word on Repeat, or ids and what to change, or `none` and what is wrong. My recommendation: `4b`, because bulbs clicking on as the number builds is the thing he named in round 3, and one slide covers "a few" at once.
 
-**My reading of the aim (mine, not his words; check it with him).** The screens he liked (1E's lamp, the bulbs under the crowd, the big yellow lights clicking on) share this: darkness first; light is the picture; one big thing you touch, and it behaves like a machine (clicks, flips, slides); the crowd is there in the dark; nothing on screen that is not used. Round 8 broke it by adding props (stands, wires, cabinets).
+**Round 8, his words, 27 Nov:** "Better, but you tried to correct the broken thing by just adding stuff. So put the lamp on a stand with wires, which isn't quite right For example, the plus and minus buttons on the counter are really flat. It's all about thinking what we were aiming for making the original ones, aiming for the same thing rather than making things in the same style. Also, the counter shouldn't be plus and minus because you might want to do a few, so to think of a thematically accurate one that would allow counting. I like the flip chart numbers, but just have to think how we can interface with it on the screen in a really cool way"
 
-**Next step, planned and not started.**
-1. Count: keep the flap numbers; replace plus and minus. Three inputs I meant to draw side by side: flick each flap digit up or down; a big dimmer lever sliding along a brass arc while the flaps flutter; tap each figure on stage to tally it.
-2. Repeat (7): drop the stands and wires. Five giant footlights set in the stage lip, the lit one washing a closed curtain with its colour.
-3. Then carry the same aim over 4, 6, 8, 9, 10, 11, and bring 2, 3 and 5 into line.
+**My reading of the aim (mine, not his words; it is printed at the top of the round 9 page for him to correct).** The screens he liked (1E's lamp, the bulbs under the crowd, the big yellow lights clicking on) share this: darkness first; light is the picture; one big thing you touch, and it behaves like a machine (clicks, flips, slides); the crowd is there in the dark; nothing on screen that is not used. Round 8 broke it by adding props (stands, wires, cabinets) inside a small stage box.
+
+**Next step, after his line.** Carry the aim over 6, 8, 9, 10, 11 with the Count input and the Repeat he picks, and bring 2, 3 and 5 into line. Then a K05 review of the full run before `go`.
 
 **How he works on this task.** He judges at a glance and answers in a line. Draw two or three screens to test an idea before a full set. One page, rows by screen, ids on everything. Screenshot with headless Chrome and read the result before showing him.
 
@@ -33,7 +32,7 @@
 
 **Round 7, his words, 27 Nov:** "yeah good, but starts getting a flat by the end. Remember the ethod, the design language, and how to continue that forwrd not just copying asset styls. Worst case is 7 where hte lights/buttons seem to just be stuck on"
 
-**Open now:** `design/directions/look-g04-r8.html`. Same eleven screens; 4 and 6 to 11 redrawn on a real stage (boarded floor, side curtains, pelmet, footlights). Every machine stands on the floor or hangs on chains, casts a shadow and lights what is near it. Type `go`, or ids and what to change, or `none` and what is wrong.
+**Round 8 page:** `design/directions/look-g04-r8.html`. Same eleven screens; 4 and 6 to 11 redrawn on a real stage (boarded floor, side curtains, pelmet, footlights). Every machine stands on the floor or hangs on chains, casts a shadow and lights what is near it.
 
 **Round 7 page:** `design/directions/look-g04-r7.html`. The full run in the studio look with C5's crowd, eleven screens (ids 1 to 11). Each game has its own machine and stage light; the crowd's cards do a different job on Stop, Count and Hold your day. Type `go` if this is the look, or ids and what to change, or `none` and what is wrong.
 
@@ -207,6 +206,7 @@ Each line is checkable on a drawn screen.
 - 27 Nov, round 6. His words on round 5 are in the Summary. Drew `design/directions/look-g04-r6.html`: each crowd direction is one small kit (board, one player, you, a row) used on four screens, 20 phones. Rendered rows 2, 3 and 4 and read the screenshots; row 1 is round 5's Stop screen redrawn from the kit and was not looked at again.
 - 27 Nov, round 7. His words on round 6 are in the Summary. Drew `design/directions/look-g04-r7.html`: eleven screens. New: Count (a troupe on stage, flap counter), Double or bank (two brass plates, one lamp or two), Repeat (five glass domes), Pair (a wall of shutters), Hold your day (lamps along the stage front; cards go down as people let go), the graph read (a paper roll), Scorecard (the sign, two dials, a flap row per game). Rendered groups 2, 3 and 4 and read the screenshots; group 1 reuses screens already seen.
 - 27 Nov, round 8. His words on round 7 are in the Summary. What went wrong, my reading: from screen 4 on I drew a coloured backdrop and placed lamps and plates on it, so the look's own rule (one lit place with depth) stopped being applied and only its parts were copied. Round 8 adds the stage itself as a shared piece and rebuilds 4 and 6 to 11 on it. Rendered groups 2, 3 and 4 and read the screenshots.
+- 27 Nov, round 9. His words on round 8 are in the Summary. Drew `design/directions/look-g04-r9.html`: five screens as a test, not a full set. Count three ways (4a each flap digit is a wheel you flick; 4b a lamp slid along a rail of 41 bulbs; 4c tap each figure and it lights as yours) and Repeat as five footlights in the stage front under a closed curtain, in two states (7a watch, 7b your turn). The phone is the whole theatre again: no proscenium box, stands, wires or cabinets; the machine is set into the stage front. Rendered both rows in headless Chrome and read the screenshots; fixed figures hidden behind the left curtain and too small, and 4a's neighbouring flaps too dark to read. **Not run:** no K05 review (a five-screen test he judges at a glance; one is planned on the full run).
 
 ## Rulings
 
@@ -238,3 +238,7 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 24. **Hold your day now shows the crowd as cards still up,** with cards going down as people let go. It replaces round 6's seats beside each step. It still carries ruling 11's open question (showing who has let go is a game rule).
 25. **The scorecard keeps Hands and Hunch** as two dials, per `DESIGN.md`; whether Dare shows Hunch is still his call (left open in round 1).
 26. **The design language, written down so later screens follow the rule and not the parts:** (a) you are in the house and the stage is ahead; (b) every new thing is a machine that stands on the stage floor or hangs in it, never a flat panel; (c) it casts a shadow and its light falls on the floor, the back cloth and its neighbours; (d) one stage-light colour per game; (e) yellow is you and what you have won, teal is the crowd's cards. This belongs in `DESIGN.md` when the look is picked.
+27. **Round 9 is a test of five screens, not a full set,** following his way of working (two or three screens first).
+28. **4c changes how Count plays, not only how it looks.** Tapping each figure makes the count exact if the troupe stays on stage, so it only works if Count is timed or the troupe moves. That is a rule for `../daily-game-rules`; his to rule on if he picks 4c.
+29. **Repeat's five lamps keep five colours** (rose, orange, green, blue, violet), none of them yellow or teal. The curtain on Repeat is grey so each colour reads true on it. The small bulbs that keep count are cream while you watch and yellow as you get each one right.
+30. **4b's rail runs 0 to 40.** The range is for the look only.
