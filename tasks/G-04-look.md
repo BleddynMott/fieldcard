@@ -184,7 +184,7 @@ Source: `../daily-game-rules/tasks/G-02b.md` at `e324b49`, G-00c C6 and G-00d Re
 | 2 | Stop, open track: play | yes | notch version only | redraw: no notch, no crowd, three goes |
 | 3 | Stop, open track: reveal | yes | notch version only | redraw: the field over the track, your three stops, the price |
 | 4 | Count: play | yes | yes (4b picked) | carry 4b into the full run |
-| 5 | Count: keep or switch | yes (R-7 open) | yes (5) | bring into line with the aim |
+| 5 | Count: keep or switch | yes (R-7 accepted, `3c54fe4`) | yes (5) | bring into line with the aim |
 | 6 | Double or bank (Count, Pair, Sort, Hide and Seek) | yes | round 8, cabinets | redraw |
 | 7 | Count: reveal | yes | no | new |
 | 8 | Repeat: watch, your turn | yes | round 9 (7a, 7b), "still needs work" | redo; he gave no detail |
@@ -201,7 +201,14 @@ Source: `../daily-game-rules/tasks/G-02b.md` at `e324b49`, G-00c C6 and G-00d Re
 | 19 | Find yourself (Read, daily) | yes | no | new |
 | 20 | The flag (Sundays) | old Claim screen | no | new |
 | 21 | Scorecard | adding points into Hands and Hunch not done | round 8, with the rope row | redraw without the rope; add the personality word, the twin, the badge |
-| 22 | Sunday: the week's personality, the heat | personality yes; the heat no | no | new, later |
+| 22 | Sunday: the week's personality, the heat | personality yes (Dare counts going on in Repeat and doubling only; the rope's hold axis is gone); the heat no | no | new, later |
+
+**From the rules session, 27 Nov (after `e324b49`; checked against `g02-card` at `3c54fe4`)**
+- **The open track, for the drawings** (`src/lib/rules/dare.ts`): three goes at plain Stop's marker speeds, no notch drawn. Each go pays 1 to 5 by how few of that go's field stopped within ±3% of the track of you; the event's points are the average of the three, to 0.1. The reveal's marks are the field's stops, your stop and the price (`DESIGN.md` Don't 2 allows four). A line the model supports: "Yesterday's empty spot was today's crowd."
+- **Only Dare's Stop changed.** Plain Stop, and Read's graph read on Stop's track, keep the notch. So screens 2 and 3 as drawn still stand for those.
+- **Simulated fields for real-looking reveals:** `fieldsFor(card)` in `src/lib/rules/fields.ts` (open track places per go, Count's answers, Repeat's longest, Hide and Seek, Long jump's take-offs, Find). A reveal drawn from them says "simulated crowd".
+- **`g04-look` has no `src/lib/rules/`.** It branched before `g02-card` got the rules, and it is not an ancestor of `g02-card`, so a real screen that imports the rules needs `g02-card` merged in first. Not done: the mock-ups do not need it, and a merge is his to grant.
+- **The open track plays like Hide** ("go where nobody else does"). A card with both may feel alike; say so when the card order is shown.
 
 Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework (8). 6 are drawn but out of date or built on round 8's props (2, 3, 6, 10, 16, 21). 12 have never been drawn (7, 9, 11 to 15, 17 to 20, 22).
 
