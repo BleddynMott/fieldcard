@@ -14,7 +14,11 @@
 
 **Round 6, his words, 27 Nov:** "i think c5 is best, but keep thinking in new screens how to keep design fresh. Also, there's a number of different games and stuff so ensure it doesn't all just look identical"
 
-**Open now:** `design/directions/look-g04-r7.html`. The full run in the studio look with C5's crowd, eleven screens (ids 1 to 11). Each game has its own machine and stage light; the crowd's cards do a different job on Stop, Count and Hold your day. Type `go` if this is the look, or ids and what to change, or `none` and what is wrong.
+**Round 7, his words, 27 Nov:** "yeah good, but starts getting a flat by the end. Remember the ethod, the design language, and how to continue that forwrd not just copying asset styls. Worst case is 7 where hte lights/buttons seem to just be stuck on"
+
+**Open now:** `design/directions/look-g04-r8.html`. Same eleven screens; 4 and 6 to 11 redrawn on a real stage (boarded floor, side curtains, pelmet, footlights). Every machine stands on the floor or hangs on chains, casts a shadow and lights what is near it. Type `go`, or ids and what to change, or `none` and what is wrong.
+
+**Round 7 page:** `design/directions/look-g04-r7.html`. The full run in the studio look with C5's crowd, eleven screens (ids 1 to 11). Each game has its own machine and stage light; the crowd's cards do a different job on Stop, Count and Hold your day. Type `go` if this is the look, or ids and what to change, or `none` and what is wrong.
 
 **Picked so far, in his words:** the studio (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 for the crowd.
 
@@ -185,6 +189,7 @@ Each line is checkable on a drawn screen.
 - 27 Nov, round 5. His words on round 4 are in the Summary. Took from them: the look is settled as the studio with an "old mechanical theatre" feel; 1E stays as home; the open question is only how one player is shown. Drew five answers on the Stop screen in `design/directions/look-g04-r5.html`. All are dark with the light from the stage, since 2H failed as "flat and bright". Checked by rendering the page and reading the screenshot; fixed C5's cards sitting off their bulbs.
 - 27 Nov, round 6. His words on round 5 are in the Summary. Drew `design/directions/look-g04-r6.html`: each crowd direction is one small kit (board, one player, you, a row) used on four screens, 20 phones. Rendered rows 2, 3 and 4 and read the screenshots; row 1 is round 5's Stop screen redrawn from the kit and was not looked at again.
 - 27 Nov, round 7. His words on round 6 are in the Summary. Drew `design/directions/look-g04-r7.html`: eleven screens. New: Count (a troupe on stage, flap counter), Double or bank (two brass plates, one lamp or two), Repeat (five glass domes), Pair (a wall of shutters), Hold your day (lamps along the stage front; cards go down as people let go), the graph read (a paper roll), Scorecard (the sign, two dials, a flap row per game). Rendered groups 2, 3 and 4 and read the screenshots; group 1 reuses screens already seen.
+- 27 Nov, round 8. His words on round 7 are in the Summary. What went wrong, my reading: from screen 4 on I drew a coloured backdrop and placed lamps and plates on it, so the look's own rule (one lit place with depth) stopped being applied and only its parts were copied. Round 8 adds the stage itself as a shared piece and rebuilds 4 and 6 to 11 on it. Rendered groups 2, 3 and 4 and read the screenshots.
 
 ## Rulings
 
@@ -215,3 +220,4 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 23. **How Count, Repeat and Pair play is not specified in this task.** The pictures (count a troupe, repeat a sequence of domes, find a pair behind shutters) are stand-ins to show that the games can look different; the rules are in `../daily-game-rules` and may differ.
 24. **Hold your day now shows the crowd as cards still up,** with cards going down as people let go. It replaces round 6's seats beside each step. It still carries ruling 11's open question (showing who has let go is a game rule).
 25. **The scorecard keeps Hands and Hunch** as two dials, per `DESIGN.md`; whether Dare shows Hunch is still his call (left open in round 1).
+26. **The design language, written down so later screens follow the rule and not the parts:** (a) you are in the house and the stage is ahead; (b) every new thing is a machine that stands on the stage floor or hangs in it, never a flat panel; (c) it casts a shadow and its light falls on the floor, the back cloth and its neighbours; (d) one stage-light colour per game; (e) yellow is you and what you have won, teal is the crowd's cards. This belongs in `DESIGN.md` when the look is picked.
