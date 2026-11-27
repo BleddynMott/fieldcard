@@ -46,6 +46,7 @@ describe('config', () => {
     const R = r();
     const typo = { ...R, rope: { ...R.rope, snapRule: 'Median' as never, ceilingShare: -0.1 }, dareStop: { ...R.dareStop, mode: 'opne' as never } };
     expect(badChoices(typo)).toEqual(['rope.snapRule', 'rope.ceilingShare', 'dareStop.mode']);
+    expect(badChoices({ ...R, rope: { ...R.rope, rarestScale: 0, step: 0.25 } })).toEqual(['rope.rarestScale', 'rope.step']);
     const { snapPoint } = await import('../src/lib/rules/dare');
     expect(() => snapPoint([2], typo.rope)).toThrow();
   });

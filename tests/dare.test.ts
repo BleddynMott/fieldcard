@@ -271,8 +271,15 @@ describe('V4 hold your day: R-16, his rope (the default): let go where fewest le
     expect(ropeRarestPoints(100, 10, all2, R)).toBe(250); // the top pays no more than any empty rung
     expect(ropeRarestPoints(100, 2, all2, R)).toBe(50);
   });
+  it('rungs match by index, so a pot built by adding steps still counts (K05 round 4, 8)', () => {
+    const tenth = { ...R, step: 0.1 };
+    const built = 1 + 0.1 + 0.1; // 1.2000000000000002
+    expect(ropeRarity(built, Array(10).fill(1.2), tenth)).toBe(1);
+    expect(ropeRarity(1.2, Array(10).fill(built), tenth)).toBe(1);
+  });
   it('a release off the ladder throws; the rarest rope has no snap', () => {
     expect(() => ropeRarity(2.2, [], R)).toThrow();
+    expect(() => ropeRarity(10.5, [], R)).toThrow();
     expect(() => snapPoint([2], R)).toThrow();
   });
   it('no choice wins every time: the same rung pays 5 one day and 1 the next', () => {

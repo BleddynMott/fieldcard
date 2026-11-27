@@ -26,7 +26,7 @@ describe('probe A: the rope over 14 days, both record rules', () => {
     const R = rules().rope;
     const onLadder = (x: number) => 1 + Math.round((Math.max(1, x) - 1) / R.step) * R.step;
     for (const snapped of ['at', 'above'] as const) {
-      const P = { ...R, snapped };
+      const P = { ...R, snapped, snapRule: 'median' as const }; // the signed rule (K05 round 4, 3)
       const rng = mulberry32(42);
       const gut = () => Math.max(1.1, 2.2 + 0.6 * dgauss(rng));
       let field: number[] = Array.from({ length: 500 }, () => onLadder(gut()));
@@ -183,23 +183,35 @@ describe('probe A4: his rope (R-16, let go where fewest let go), 28 days', () =>
     const ladder = ropeLadder(P);
     const onLadder = (x: number) => ladder.reduce((b, r) => (Math.abs(r - x) < Math.abs(b - x) ? r : b), 1);
     const fixed = [1, 1.5, 2, 2.5, 3, 4, 5, 7, 10];
-    for (const seed of [11, 12, 13]) {
+    // K05 round 4 (1, 4): a third kind, "adopt": a player who saw the reveal picks a rung that paid
+    // 5 last night and keeps it while it pays 4 or more, else re-picks. They play for real, so if
+    // the empty top of the rope fills, it shows. Ties among the emptiest break on the raw count,
+    // then at random; the number of rungs tied at price 5 is reported, since many tie.
+    for (const [mixName, mix] of [['copy/spread', [0.5, 1, 0]], ['adopt only', [0, 0, 1]], ['all three', [1 / 3, 2 / 3, 1]]] as const) for (const seed of [11, 12, 13]) {
       const rng = mulberry32(seed);
       const gut = () => onLadder(Math.max(1.1, 2.2 + 0.6 * dgauss(rng)));
       let field: number[] = Array.from({ length: 500 }, gut);
-      const earned: Record<string, [number, number]> = { gut: [0, 0], copy: [0, 0], spread: [0, 0] };
+      const earned: Record<string, [number, number]> = { gut: [0, 0], copy: [0, 0], spread: [0, 0], adopt: [0, 0] };
       const always = fixed.map(() => 0);
       const tops: number[] = [];
+      const tied: number[] = [];
+      const adopters = new Map<number, number>(); // player slot -> their rung
       for (let day = 1; day <= 28; day++) {
         const learn = Math.min(0.7, (0.7 * (day - 1)) / 13);
-        const night = ladder.map((r) => ropeRarity(r, field, P) + rng() * 1e-3); // tie-break at random
-        const order = ladder.map((r, i) => [r, night[i]] as const).sort((a, b) => b[1] - a[1]).map(([r]) => r);
+        const counts = ladder.map((r) => field.filter((x) => x === r).length);
+        const prices = ladder.map((r) => ropeRarity(r, field, P));
+        const order = ladder.map((r, i) => ({ r, c: counts[i], t: rng() })).sort((a, b) => a.c - b.c || a.t - b.t).map((o) => o.r);
+        const fives = ladder.filter((_, i) => prices[i] === 5);
         tops.push(order[0]);
+        tied.push(fives.length);
+        for (const [slot, r] of adopters) if (prices[ladder.indexOf(r)] < 4) adopters.set(slot, fives.length ? fives[Math.floor(rng() * fives.length)] : order[0]);
         const today: number[] = [];
         for (let k = 0; k < 2000; k++) {
           const f = values(rollingField(today, field, 500));
-          const kind = rng() >= learn ? 'gut' : rng() < 0.5 ? 'copy' : 'spread';
-          const release = kind === 'gut' ? gut() : kind === 'copy' ? order[0] : order[Math.floor(rng() * 5)];
+          const u = rng();
+          const kind = rng() >= learn ? 'gut' : u < mix[0] ? 'copy' : u < mix[1] ? 'spread' : 'adopt';
+          if (kind === 'adopt' && !adopters.has(k)) adopters.set(k, fives.length ? fives[Math.floor(rng() * fives.length)] : order[0]);
+          const release = kind === 'gut' ? gut() : kind === 'copy' ? order[0] : kind === 'spread' ? order[Math.floor(rng() * 5)] : (adopters.get(k) as number);
           earned[kind][0] += ropeRarestPoints(100, release, f, P);
           earned[kind][1] += 1;
           fixed.forEach((r, i) => (always[i] += ropeRarestPoints(100, r, f, P)));
@@ -207,8 +219,9 @@ describe('probe A4: his rope (R-16, let go where fewest let go), 28 days', () =>
         }
         field = today.slice(-500);
       }
-      log(`A4. seed ${seed}: earned per 100: ${Object.entries(earned).map(([k, [s, n]]) => `${k} ${n ? Math.round(s / n) : '-'}`).join(', ')} | always ${fixed.map((r, i) => `x${r} ${Math.round(always[i] / 56000)}`).join(', ')}`);
-      if (seed === 11) log(`A4. seed 11: last night's emptiest rung, day by day: ${tops.map((t) => 'x' + t).join(' ')}`);
+      const half = (xs: number[]) => xs.slice(14).reduce((a, b) => a + b, 0) / 14;
+      log(`A4. ${mixName.padEnd(11)} seed ${seed}: earned per 100: ${Object.entries(earned).filter(([, [, n]]) => n).map(([k, [s, n]]) => `${k} ${Math.round(s / n)}`).join(', ')} | always ${fixed.map((r, i) => `x${r} ${Math.round(always[i] / 56000)}`).join(', ')} | rungs at price 5, days 15-28 avg ${half(tied).toFixed(1)}`);
+      if (seed === 11) log(`A4. ${mixName.padEnd(11)} seed 11: emptiest rung by count, day by day: ${tops.map((t) => 'x' + t).join(' ')}`);
     }
   });
 });

@@ -54,6 +54,9 @@ export function badChoices(r: RulesParams = rules()): string[] {
   const bad: string[] = [];
   if (!['rarest', 'load', 'median', 'medianPlus'].includes(r.rope.snapRule)) bad.push('rope.snapRule');
   if (!(r.rope.rarestScale > 0)) bad.push('rope.rarestScale');
+  // the ladder's rungs are even only if step is whole in rope.decimals (K05 round 4, 10)
+  const steps = r.rope.step * 10 ** r.rope.decimals;
+  if (!(r.rope.step > 0) || Math.abs(steps - Math.round(steps)) > 1e-9) bad.push('rope.step');
   if (!['at', 'above'].includes(r.rope.snapped)) bad.push('rope.snapped');
   if (!(r.rope.capacity > 0)) bad.push('rope.capacity');
   if (!(r.rope.ceilingShare >= 0 && r.rope.ceilingShare < 1)) bad.push('rope.ceilingShare');

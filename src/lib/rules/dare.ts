@@ -192,21 +192,26 @@ export function ropeRecord(release: number | null, snap: number, p = rules().rop
  * rungs a sure jackpot. Field records are releases.
  */
 export function ropeRarity(release: number, fieldRecords: number[], p = rules().rope, sp = rules().stopPrice): number {
+  if (!(sp.crowdedRatio > sp.rareRatio)) throw new Error('ropeRarity: crowdedRatio must be above rareRatio');
   const ladder = ropeLadder(p);
-  if (!ladder.includes(release)) throw new Error('ropeRarity: release must be a rung');
+  // rungs compared by index, not bit-exact value (K05 round 4, 8): 1 + 0.1 + 0.1 is 1.2000000000000002
+  const rung = (x: number) => Math.round((x - 1) / p.step);
+  const mine = rung(release);
+  if (mine < 0 || mine >= ladder.length || Math.abs(release - ladder[mine]) > p.step / 4) throw new Error('ropeRarity: release must be a rung');
   if (fieldRecords.length === 0) return sp.maxPrice;
-  const share = fieldRecords.filter((r) => r === release).length / fieldRecords.length;
+  const share = fieldRecords.filter((r) => rung(r) === mine).length / fieldRecords.length;
   const ratio = share * ladder.length;
   if (ratio <= sp.rareRatio) return sp.maxPrice;
   if (ratio >= sp.crowdedRatio) return sp.minPrice;
   return Math.round(sp.minPrice + ((sp.maxPrice - sp.minPrice) * (sp.crowdedRatio - ratio)) / (sp.crowdedRatio - sp.rareRatio));
 }
 
-export function ropeRarestPoints(dayPoints: number, release: number, fieldRecords: number[], p = rules().rope): number {
-  return Math.round(dayPoints * ropeRarity(release, fieldRecords, p) * p.rarestScale);
+export function ropeRarestPoints(dayPoints: number, release: number, fieldRecords: number[], p = rules().rope, sp = rules().stopPrice): number {
+  return Math.round(dayPoints * ropeRarity(release, fieldRecords, p, sp) * p.rarestScale);
 }
 
-/** Letting go below the snap banks dayPoints x your multiple; otherwise you keep snapKeep of it. */
+/** Letting go below the snap banks dayPoints x your multiple; otherwise you keep snapKeep of it.
+ *  Snap rules only ('load', 'median', 'medianPlus'): the 'rarest' rope pays ropeRarestPoints. */
 export function ropePoints(dayPoints: number, release: number | null, snap: number, p = rules().rope): number {
   if (release !== null && release < 1) throw new Error('ropePoints: the pot starts at x1');
   if (release !== null && release < snap) return Math.round(dayPoints * release);
