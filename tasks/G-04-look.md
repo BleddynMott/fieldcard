@@ -4,7 +4,11 @@
 
 **Round 1 was rejected, 27 Nov.** His words: "Really poor. The 2 new ones look, you just like stuck together a bunch of shapes, or like I could just make it in Figma with a flat background and shapes just stuck on top. The themes don't really make sense and are quite boring". Round 1's summary is kept below as written.
 
-**Open now:** `design/directions/look-g04-r2.html` (in a browser, at desktop width). Three new looks on three screens each (home, Stop with the crowd, Hold your day), ids 1D to 3F.
+**Round 2, his words, 27 Nov:** "i like E the most, but D does the best job at getting that idae of real people and a crowd behind it".
+
+**Open now:** `design/directions/look-g04-r3.html`. G is E's studio with D's people in it, beside E on the same three screens (ids 1E to 3G). Type `G` or `E`, a mix by id (e.g. `G, but 3E`), or `none` and what is wrong. My recommendation: G.
+
+**Round 2 page:** `design/directions/look-g04-r2.html` (in a browser, at desktop width). Three new looks on three screens each (home, Stop with the crowd, Hold your day), ids 1D to 3F.
 
 | | look | the place | why it fits | weakest point |
 |---|---|---|---|---|
@@ -158,6 +162,7 @@ Each line is checkable on a drawn screen.
 - 27 Nov. CI after the fixes: `ci-checks: all passed`. Committed on `g04-look`. Waiting for his pick.
 - 27 Nov, round 2. He rejected round 1 (his words are in the Summary). What I took from it: (a) B and C were flat fills with primitives on top, with no light, depth or drawn detail; (b) marbles and a mountain were pictures chosen first and tied to the game afterwards. Round 2 answers both: each look is one lit place with depth, and the crowd is the subject of the picture. Themes were chosen by asking where a crowd already shows itself on a line: people queuing on a field, an audience voting, birds on wires.
 - 27 Nov, round 2. Drew `design/directions/look-g04-r2.html`: D The Field, E Studio night, F First light, on home, Stop and Hold your day. Checked by rendering each row in headless Chrome and reading the screenshots. Fixed: gradient ids shared between phones, the notch off-centre from its queues in 2D, the flock's shape in 1F.
+- 27 Nov, round 3. His words on round 2 are in the Summary. Drew `design/directions/look-g04-r3.html`: G, the studio with drawn people. Home: the stands are full and face out, and you are a person in the spot. Stop: only players sit in the stands, each above the bulb they stopped on. Hold your day: a lit staircase; whoever let go stays on their step. Checked by rendering each row and reading the screenshots; fixed the people standing in front of the wrong step's number.
 
 ## Rulings
 
@@ -175,3 +180,5 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 10. **Round 2 drops A, B and C.** He called the two new ones poor and did not ask for A again. D is Sports day carried forward, so the picked look is still on the page.
 11. **Screen 3 shows the players who have already let go, where they let go.** This is new and is a game rule, not only a look: it tells the player how close the snap is. His to rule on; the look does not depend on it.
 12. **Round 2's type is new in E and F** (Bungee and Doto; Fraunces). D uses Bowlby One and Outfit, already picked. None is in `tokens.css`.
+13. **Round 3 compares G with E only.** He named E as the one he likes and D as the source of the people; F was not mentioned, so it is not redrawn.
+14. **G's crowd is teal in three shades,** read as one colour against the studio's reds. Skin and hair vary so they read as people; clothes do not.
