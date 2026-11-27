@@ -2,11 +2,11 @@
 
 ## Summary (read this first)
 
-### Restart point for a fresh chat (27 Nov, after round 11)
+### Restart point for a fresh chat (27 Nov, after round 12)
 
 **Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd, 4b (the dimmer rail) for Count's number, and round 10's full run: "All looks good". The full run is `design/directions/look-g04-r10.html` (24 screens). Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged.
 
-**Open now, waiting for his line:** `design/directions/look-g04-r11.html`, four screens: Find yourself as a tower of lamps (19a, 19b, third version), and his peek idea on Stop's open track (2p, 2q). He types `go`, or ids and what to change, or `none` and what is wrong.
+**Open now, waiting for his line:** `design/directions/look-g04-r12.html`, four ways to do Find yourself (F1 Said and did, F2 The meter, F3 The stairs, F4 Front of stage), each in play and reveal. He types `F1` to `F4`, a mix, or `none`. The peek (2p, 2q in `look-g04-r11.html`) he called "Fine"; its rule (free or not, which game) is still his to give.
 
 **Round 10, his words, 27 Nov:** "All looks good, but the19 and 19b are only ones that are a bit underwhelming. Also perhaps for one of the games would be interesting to ask if they want to see yesterdays answer distribution? Like a dare, as it could mess up their game or it coudl help them but mostly will just make them overthink it"
 
@@ -289,6 +289,14 @@ Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework 
   - 2p: the house is dark with no cards.
   - 19a, 19b, third version: one tower of ten big lamps, BEST at the top and LAST at the bottom. You push your lamp up; a lamp clicks on for every 10 in 100 you say you beat. On the reveal the lamps you had not earned go out, a white ring marks where you finished, and the crowd's cards sit beside the step each person claimed, with a HALF line. The follow spot (ruling 39) is withdrawn.
   - Same file, `design/directions/look-g04-r11.html`. Rendered and read. **Not run:** no K05 review.
+- 27 Nov, round 12. **His words:** "still, need more brainsotrming/creativity related to the final screen and how it works to give you i formation about both where you came and where you and other predicted you did". Read as: the tower is still not it; he wants options for the mechanism, not a restyle. What the screen has to say at a glance: where you said, where you came, where everyone else said. Kept from his last note: one direction only, good and bad obvious, so the place carries a feeling.
+  - Drew `design/directions/look-g04-r12.html`: four machines, each in play and reveal (ids F1 to F4), same numbers in all.
+    - **F1 Said and did.** Paired columns of lamps: you said, you did, everyone said, everyone did. The only one that shows the crowd's own gap beside yours.
+    - **F2 The meter.** A big studio dial; you push the needle, it falls back on the reveal; everyone's cards stand round the rim.
+    - **F3 The stairs.** You stand yourself on a step; on the reveal you are moved down and everyone's cards pile over the high steps.
+    - **F4 Front of stage.** Best at the front in the light, last at the back in the dark; on the reveal everyone stands where they said, so the front is packed.
+  - Rendered both rows and read them. **Not run:** no K05 review; these are options for him to pick from.
+  - My recommendation: F1 for what it tells you, F4 for how it feels. A mix is possible: F4's stage for play, F1's two pairs for the reveal's numbers.
 
 ## Rulings
 
