@@ -1,5 +1,6 @@
 // Dare's rules (G-00c round 4: V1, V2, V3, V4). Pure and seeded; every number in config "rules".
-import { round } from '../events/stop';
+import { stopParams, type StopParams } from '../config';
+import { generateStop, round, type StopCard } from '../events/stop';
 import { clamp } from '../stats';
 import { rules } from './params';
 
@@ -27,6 +28,31 @@ export function stopPrice(you: number, notchHalf: number, field: number[], p = r
   if (ratio >= p.crowdedRatio) return p.minPrice;
   const t = (p.crowdedRatio - ratio) / (p.crowdedRatio - p.rareRatio);
   return Math.round(p.minPrice + (p.maxPrice - p.minPrice) * t);
+}
+
+/** R-14 (his "try 12%", 28 Nov): Dare's Stop uses Stop's goes with its own notch width, the same
+ *  every day of the week. Only the width changes, so the goes match plain Stop's. */
+export function dareStopParams(sp = stopParams(), p = rules().dareStop): StopParams {
+  return { ...sp, notchWidthMonday: p.notchWidth, notchWidthStepPerDay: 0 };
+}
+
+/** Dare's Stop card: Stop's goes with the dare's notch width (R-14). */
+export function dareStopCard(card: number, p = rules().dareStop): StopCard {
+  return generateStop(card, dareStopParams(stopParams(), p));
+}
+
+/**
+ * R-15, his open Stop (28 Nov: "pick the point to stop that least people have stopped before,
+ * then you can see compared to distribution overlayed on top afterwards"). No notch: a stop
+ * anywhere on the track pays 1 to 5 by how few of the field stopped near it, on the same go.
+ * pos and field are places along the track, 0 to 1. It's stopPrice with the notch the whole
+ * track and the window openWindow (a share of the track, each side). The field is hidden until
+ * you stop; the reveal lays it over the track.
+ */
+export function openStopPrice(pos: number, field: number[], p = rules().dareStop, sp = rules().stopPrice): number {
+  if (!(pos >= 0 && pos <= 1)) throw new Error('openStopPrice: pos must be 0 to 1');
+  const toOff = (x: number) => (x - 0.5) * 100;
+  return stopPrice(toOff(pos), 50, field.map(toOff), { ...sp, window: p.openWindow });
 }
 
 // ---- V1, Repeat: bank or go on ----------------------------------------------------------------
@@ -89,12 +115,40 @@ export function ropeLadder(p = rules().rope): number[] {
   return out;
 }
 
-/** The snap: the multiple by which half of the field had let go (the lower median). R-3: an
- *  empty field snaps at emptySnap. Field entries are ropeRecord values. */
+/** How many of the field the rope holds at multiple m, as a share: capacity / m, at most 1
+ *  (R-13: with capacity 1, at x2 it holds half the field, at x3 a third). */
+export function ropeHolds(m: number, p = rules().rope): number {
+  return Math.min(1, p.capacity / m);
+}
+
+/** Share of the field still on the rope as it reaches m: records at m or above. */
+export function stillOn(m: number, fieldRecords: number[]): number {
+  if (fieldRecords.length === 0) return 0;
+  return fieldRecords.filter((r) => r >= m).length / fieldRecords.length;
+}
+
+/**
+ * The snap. Field entries are ropeRecord values. R-3: an empty field snaps at emptySnap.
+ * - 'load' (R-13, his "rethink rope", 28 Nov): the first rung above x1 where more of the field is
+ *   still on than the rope holds there. If no rung is overloaded, it never snaps: the snap is one
+ *   step past max, so letting go at max banks it. An early crowd lifts the snap, so undercutting
+ *   the crowd stops being safe.
+ * - 'median' (the signed V4 wording): the multiple by which half the field had let go, the lower
+ *   median. Kept for comparison: it slides when players undercut it (probe A).
+ */
 export function snapPoint(fieldRecords: number[], p = rules().rope): number {
   if (fieldRecords.length === 0) return p.emptySnap;
   const s = fieldRecords.slice().sort((a, b) => a - b);
-  return s[Math.ceil(s.length / 2) - 1];
+  const median = s[Math.ceil(s.length / 2) - 1];
+  if (p.snapRule === 'median') return median;
+  if (p.snapRule === 'medianPlus') return Math.min(round(median + p.step, p.decimals), round(p.max + p.step, p.decimals));
+  // 'load', with a ceiling one step past where all but ceilingShare had let go (0: no ceiling)
+  const top = p.ceilingShare > 0 ? round(s[Math.max(0, Math.ceil(s.length * (1 - p.ceilingShare)) - 1)] + p.step, p.decimals) : Infinity;
+  for (const m of ropeLadder(p)) {
+    if (m <= 1) continue;
+    if (m >= top || stillOn(m, fieldRecords) > ropeHolds(m, p)) return m;
+  }
+  return Math.min(top, round(p.max + p.step, p.decimals));
 }
 
 /**

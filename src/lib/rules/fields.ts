@@ -6,10 +6,10 @@ import { config } from '../config';
 import { crowdFor } from '../crowd';
 import { dgauss } from '../dmath';
 import { generateCount } from '../events/count';
-import { generateStop, round } from '../events/stop';
+import { round } from '../events/stop';
 import { stream } from '../rng';
 import { clamp } from '../stats';
-import { ropeRecord, snapPoint } from './dare';
+import { dareStopCard, ropeRecord, snapPoint } from './dare';
 import { fromHabits, rollingField, type FieldEntry } from './field';
 import { generatePlayground, type Point, type Spot } from './hideseek';
 import { rules } from './params';
@@ -18,7 +18,8 @@ import { normalise, pileOf } from './read';
 export interface Fields {
   card: number;
   simulated: true;
-  stop: { notchHalf: number; offs: FieldEntry<number>[] }; // R-9: each player's middle stop (the median of three), signed, % of track
+  stop: { notchHalf: number; offs: FieldEntry<number>[] }; // R-9: each player's middle stop (the median of three), signed, % of track; notchHalf is Dare's (R-14)
+  openStop: { places: FieldEntry<number>[][] }; // R-15: per go, each player's place along the track, 0 to 1
   count: { truth: number; answers: FieldEntry<number>[] };
   repeat: { longest: FieldEntry<number>[] };
   rope: { records: FieldEntry<number>[] };
@@ -65,10 +66,32 @@ function build(card: number): Fields {
   const hides = fromHabits(weights, n, rng).map((i) => ({ x: playground[i].x, y: playground[i].y }));
   const seeks = fromHabits(weights, n, rng).map((i) => jitter(playground[i]));
 
+  // R-15: open Stop's habits are made up (config rules.sim.openStop). A stop lands at the aim plus
+  // noise that grows with the marker's speed there on that go (fast through the middle).
+  const O = S.openStop;
+  const habitAim = () => {
+    let r = rng();
+    for (const m of O.mix) {
+      if (r < m.share) return clamp((m.mean + m.sd * dgauss(rng)) / 100, 0, 1);
+      r -= m.share;
+    }
+    return 0.5;
+  };
+  const places = dareStopCard(card).goes.map((go) =>
+    asField(
+      Array.from({ length: n }, () => {
+        const aim = habitAim();
+        const speed = 1 - go.ease + 6 * go.ease * aim * (1 - aim);
+        return round(clamp(aim + O.sd * speed * dgauss(rng), 0, 1), 4);
+      }),
+    ),
+  );
+
   return {
     card,
     simulated: true,
-    stop: { notchHalf: (generateStop(card).notchWidth * 100) / 2, offs: asField(crowd.players.map((p) => middleOf(p.results.stop.offs))) },
+    stop: { notchHalf: (dareStopCard(card).notchWidth * 100) / 2, offs: asField(crowd.players.map((p) => middleOf(p.results.stop.offs))) },
+    openStop: { places },
     count: { truth: generateCount(card).target, answers: asField(crowd.players.map((p) => p.results.count.guess)) },
     repeat: { longest: asField(crowd.players.map((p) => p.results.repeat.longest)) },
     rope: { records: asField(records) },

@@ -149,7 +149,7 @@ describe('the simulated fields (until G-03)', () => {
   const cards = Array.from({ length: 60 }, (_, i) => i + 1);
   it('the same twice for a card, every entry flagged modelled, values in range', async () => {
     const { fieldsFor, simulatedDrawings } = await import('../src/lib/rules/fields');
-    const { stopPrice, repeatPrices, longJumpScore, snapPoint, ropeLadder } = await import('../src/lib/rules/dare');
+    const { stopPrice, repeatPrices, longJumpScore, snapPoint, ropeLadder, openStopPrice } = await import('../src/lib/rules/dare');
     const { hideScore, seekScore } = await import('../src/lib/rules/hideseek');
     const { countPeak, thoughtAboveMiddle } = await import('../src/lib/rules/read');
     const { roundLengths } = await import('../src/lib/events/repeat');
@@ -169,8 +169,17 @@ describe('the simulated fields (until G-03)', () => {
       }
       repeatPrices(v(f.repeat.longest), roundLengths()).forEach((p) => expect(p >= 1 && p <= rules().repeatBank.maxPrice).toBe(true));
       const snap = snapPoint(v(f.rope.records));
-      expect(snap).toBeGreaterThanOrEqual(1);
-      expect(snap).toBeLessThanOrEqual(ladder[ladder.length - 1]);
+      expect(snap).toBeGreaterThan(1);
+      // R-13: "never snaps" is one step past the top, so letting go at the top banks it
+      expect(snap).toBeLessThanOrEqual(ladder[ladder.length - 1] + rules().rope.step);
+      expect(f.stop.notchHalf).toBe(6); // R-14: Dare's 12% notch
+      expect(f.openStop.places.length).toBe(3); // R-15: one field per go
+      for (const go of f.openStop.places) {
+        expect(go.length).toBe(400);
+        expect(go.every((e) => e.modelled && e.value >= 0 && e.value <= 1)).toBe(true);
+        const price = openStopPrice(0.5, v(go));
+        expect(price >= 1 && price <= 5).toBe(true);
+      }
       const lj = longJumpScore(1, v(f.longJump.takeoffs));
       expect(lj >= 0 && lj <= 100).toBe(true);
       const s0 = f.hideSeek.playground[0];

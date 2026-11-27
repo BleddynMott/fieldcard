@@ -449,6 +449,12 @@
       "minPrice": 1,
       "maxPrice": 5
     },
+    "dareStop": {
+      "_about": "R-14 and R-15 (his reply, 28 Nov). mode 'notch': Stop's goes with a notch notchWidth of the track all week (plain Stop's is 7% narrowing to 2.8%). mode 'open': no notch; a stop anywhere pays by how few of the field stopped within openWindow of it, on the same go.",
+      "mode": "notch",
+      "notchWidth": 0.12,
+      "openWindow": 0.03
+    },
     "repeatBank": {
       "maxPrice": 10,
       "decimals": 1
@@ -465,7 +471,11 @@
       "snapKeep": 0.5,
       "emptySnap": 2,
       "decimals": 1,
-      "snapped": "above"
+      "snapped": "above",
+      "_snapRule": "R-13 (his 'rethink rope', 28 Nov). 'load': it snaps at the first rung where more of the field is still on than it holds there, min(1, capacity / multiple). 'median': the signed rule, which slides (probe A).",
+      "snapRule": "load",
+      "capacity": 1.5,
+      "ceilingShare": 0.1
     },
     "hideSeek": {
       "spots": 12,
@@ -583,6 +593,16 @@
         "decimals": 1
       },
       "seekJitter": 0.05,
+      "openStop": {
+        "_about": "R-15, made up: where players aim on the open track, % of the track (probe E's 'centre-heavy' mix). sd is a stop's spread, share of the track, at the marker's average speed.",
+        "sd": 0.02,
+        "mix": [
+          { "share": 0.4, "mean": 50, "sd": 8 },
+          { "share": 0.15, "mean": 6, "sd": 3 },
+          { "share": 0.15, "mean": 94, "sd": 3 },
+          { "share": 0.3, "mean": 50, "sd": 30 }
+        ]
+      },
       "drawing": {
         "weightFrom": 0.3,
         "weightTo": 0.9,

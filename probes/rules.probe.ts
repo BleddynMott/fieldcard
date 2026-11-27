@@ -8,7 +8,7 @@ import { describe, it } from 'vitest';
 import { config } from '../src/lib/config';
 import { dexp, dgauss } from '../src/lib/dmath';
 import { mulberry32, type Rng } from '../src/lib/rng';
-import { ropePoints, ropeRecord, snapPoint, stopPrice } from '../src/lib/rules/dare';
+import { openStopPrice, ropePoints, ropeRecord, snapPoint, stopPrice } from '../src/lib/rules/dare';
 import { rollingField, values } from '../src/lib/rules/field';
 import { trapFor } from '../src/lib/rules/layers';
 import { rules } from '../src/lib/rules/params';
@@ -47,6 +47,116 @@ describe('probe A: the rope over 14 days, both record rules', () => {
         if (day === 1 || day === 7 || day === 14) rows.push(`day ${day}: learners ${Math.round(learn * 100)}%, night snap x${ySnap}, pays ${Math.round(pay / 2000)}/100`);
       }
       log(`A. snapped recorded ${snapped.padEnd(5)} | ${rows.join(' | ')}`);
+    }
+  });
+});
+
+describe('probe A2: the rope under the load rule (R-13), 14 days', () => {
+  it('runs', () => {
+    // As A: 2,000 players a day, gut players round x2.2 (sd 0.6). Learners rise from 0% to 70%:
+    // "undercut" learners let go one rung below last night's snap; "copy" learners let go at the
+    // fixed release that paid best yesterday. Fixed releases are scored against the snap every
+    // player faced that day, so "which choice paid best" can be read per day. Median rule shown
+    // for comparison. Day pays are per 100 points; x1 always pays 100.
+    const base = rules().rope;
+    const onLadder = (x: number) => 1 + Math.round((Math.max(1, x) - 1) / base.step) * base.step;
+    const fixed = [1, 1.5, 2, 2.5, 3, 4, 5];
+    // "safe" learners let go two rungs below last night's snap. Load runs carry the ceiling
+    // (ceilingShare 0.1) unless marked ceil 0.
+    type Run = { rule: 'load' | 'median' | 'medianPlus'; capacity: number; ceil: number; learner: 'undercut' | 'copy' | 'safe'; to: number };
+    const runs: Run[] = [];
+    for (const learner of ['undercut', 'copy', 'safe'] as const) {
+      runs.push({ rule: 'median', capacity: 1, ceil: 0, learner, to: 0.7 });
+      runs.push({ rule: 'medianPlus', capacity: 1, ceil: 0, learner, to: 0.7 });
+      runs.push({ rule: 'load', capacity: 1.5, ceil: 0, learner, to: 0.7 });
+      for (const capacity of [1, 1.5, 2]) runs.push({ rule: 'load', capacity, ceil: 0.1, learner, to: 0.7 });
+    }
+    for (const run of runs) {
+      const P = { ...base, snapRule: run.rule, capacity: run.capacity, ceilingShare: run.ceil };
+      const rng = mulberry32(42);
+      const gut = () => onLadder(Math.max(1.1, 2.2 + 0.6 * dgauss(rng)));
+      let field: number[] = Array.from({ length: 500 }, gut);
+      let ySnap = snapPoint(field, P);
+      let yBest = 2;
+      const snaps: number[] = [];
+      const bests: number[] = [];
+      let allPay = 0;
+      let gutPay = 0;
+      let gutN = 0;
+      for (let day = 1; day <= 14; day++) {
+        const learn = (run.to * (day - 1)) / 13;
+        const fixedPay = fixed.map(() => 0);
+        const today: number[] = [];
+        for (let k = 0; k < 2000; k++) {
+          const snap = snapPoint(values(rollingField(today, field, 500)), P);
+          const isLearner = rng() < learn;
+          const below = (n: number) => Math.max(1, Math.min(P.max, ySnap) - n * P.step);
+          const release = isLearner ? (run.learner === 'copy' ? yBest : below(run.learner === 'undercut' ? 1 : 2)) : gut();
+          const pay = ropePoints(100, release, snap, P);
+          allPay += pay;
+          if (!isLearner) {
+            gutPay += pay;
+            gutN++;
+          }
+          fixed.forEach((r, i) => (fixedPay[i] += ropePoints(100, r, snap, P)));
+          today.push(ropeRecord(release, snap, P));
+        }
+        field = today.slice(-500);
+        ySnap = snapPoint(field, P);
+        const best = fixedPay.indexOf(Math.max(...fixedPay));
+        yBest = fixed[best];
+        snaps.push(ySnap);
+        bests.push(fixed[best]);
+      }
+      log(
+        `A2. ${run.rule.padEnd(10)} ${run.rule === 'load' ? `cap ${run.capacity} ceil ${run.ceil}` : ''.padEnd(16)} ${run.learner.padEnd(8)} learners to ${run.to * 100}%: night snaps ${snaps.map((s) => 'x' + s).join(' ')} | best fixed release ${bests.map((b) => 'x' + b).join(' ')} | everyone ${Math.round(allPay / 28000)}/100, gut players ${Math.round(gutPay / Math.max(1, gutN))}/100`,
+      );
+    }
+  });
+});
+
+describe('probe A3: the rope with a mixed crowd of learners', () => {
+  it('runs', () => {
+    // As A2, but learners (to 70% by day 14) are a third each undercut, copy and safe, and each
+    // reads one of the last three nights at random, so they don't all react to the same night.
+    // 28 days. Reported: the night snaps, the best fixed release by day, and what each kind earned.
+    const base = rules().rope;
+    const onLadder = (x: number) => 1 + Math.round((Math.max(1, x) - 1) / base.step) * base.step;
+    const fixed = [1, 1.5, 2, 2.5, 3, 3.5, 4, 5];
+    const runs = [
+      { snapRule: 'medianPlus' as const, capacity: 1, ceilingShare: 0 },
+      ...[1.25, 1.5, 1.75].map((capacity) => ({ snapRule: 'load' as const, capacity, ceilingShare: 0.1 })),
+    ];
+    for (const run of runs) {
+      const P = { ...base, ...run };
+      const rng = mulberry32(99);
+      const gut = () => onLadder(Math.max(1.1, 2.2 + 0.6 * dgauss(rng)));
+      let field: number[] = Array.from({ length: 500 }, gut);
+      const nights: { snap: number; best: number }[] = [{ snap: snapPoint(field, P), best: 2 }];
+      const earned: Record<string, [number, number]> = { gut: [0, 0], undercut: [0, 0], copy: [0, 0], safe: [0, 0] };
+      for (let day = 1; day <= 28; day++) {
+        const learn = Math.min(0.7, (0.7 * (day - 1)) / 13);
+        const fixedPay = fixed.map(() => 0);
+        const today: number[] = [];
+        for (let k = 0; k < 2000; k++) {
+          const snap = snapPoint(values(rollingField(today, field, 500)), P);
+          const night = nights[Math.max(0, nights.length - 1 - Math.floor(rng() * 3))];
+          const kind = rng() < learn ? (['undercut', 'copy', 'safe'] as const)[Math.floor(rng() * 3)] : 'gut';
+          const top = Math.min(P.max, night.snap);
+          const release = kind === 'gut' ? gut() : kind === 'copy' ? night.best : Math.max(1, top - (kind === 'undercut' ? 1 : 2) * P.step);
+          const pay = ropePoints(100, release, snap, P);
+          earned[kind][0] += pay;
+          earned[kind][1] += 1;
+          fixed.forEach((r, i) => (fixedPay[i] += ropePoints(100, r, snap, P)));
+          today.push(ropeRecord(release, snap, P));
+        }
+        field = today.slice(-500);
+        nights.push({ snap: snapPoint(field, P), best: fixed[fixedPay.indexOf(Math.max(...fixedPay))] });
+      }
+      const label = run.snapRule === 'load' ? `load cap ${run.capacity} ceil ${run.ceilingShare}` : 'medianPlus';
+      log(`A3. ${label.padEnd(22)} night snaps ${nights.slice(1).map((n) => 'x' + n.snap).join(' ')}`);
+      log(`A3. ${''.padEnd(22)} best fixed  ${nights.slice(1).map((n) => 'x' + n.best).join(' ')}`);
+      log(`A3. ${''.padEnd(22)} earned per 100: ${Object.entries(earned).map(([k, [s, n]]) => `${k} ${n ? Math.round(s / n) : '-'}`).join(', ')}`);
     }
   });
 });
@@ -158,6 +268,116 @@ describe('probe C: Stop, what each aim pays', () => {
         }
       }
       log(`C. seekers ${String(Math.round(seekers * 100)).padStart(2)}%: average points aiming at centre ${(pay.centre / trials).toFixed(2)}, +-1.75 ${(pay.mid / trials).toFixed(2)}, +-3 ${(pay.edge / trials).toFixed(2)}`);
+    }
+  });
+});
+
+describe('probe D: the 12% notch (R-14) with an adapting crowd', () => {
+  it('runs', () => {
+    // As C (price-seekers see the strip and aim at its best-priced spot; the rest aim at the
+    // centre; stop noise sd 2.5), at notch half-widths 3.5 (today's Monday) and 6 (12%). Reported:
+    // what a fresh player gets aiming at the centre, halfway out, and at 85% of the half-width.
+    for (const half of [3.5, 6]) {
+      const aims = Array.from({ length: 15 }, (_, i) => -half + (2 * half * (i + 0.5)) / 15);
+      for (const seekers of [0, 0.3, 0.6]) {
+        const pay = { centre: 0, mid: 0, edge: 0 };
+        let trials = 0;
+        for (let seed = 1; seed <= 5; seed++) {
+          const rng = mulberry32(400 + seed);
+          const today: number[] = [];
+          const price = (x: number) => stopPrice(x, half, today.slice(-500));
+          for (let k = 0; k < 1500; k++) {
+            let aim = 0;
+            if (rng() < seekers && today.length > 0) {
+              const ps = aims.map(price);
+              const top = Math.max(...ps);
+              const best = aims.filter((_, i) => ps[i] === top);
+              aim = best[Math.min(best.length - 1, Math.floor(rng() * best.length))];
+            }
+            today.push(aim + 2.5 * dgauss(rng));
+          }
+          for (let t = 0; t < 400; t++) {
+            const side = rng() < 0.5 ? -1 : 1;
+            pay.centre += price(2.5 * dgauss(rng));
+            pay.mid += price(side * 0.5 * half + 2.5 * dgauss(rng));
+            pay.edge += price(side * 0.85 * half + 2.5 * dgauss(rng));
+            trials++;
+          }
+        }
+        log(`D. notch ${2 * half}% of track, seekers ${String(seekers * 100).padStart(2)}%: centre ${(pay.centre / trials).toFixed(2)}, halfway out ${(pay.mid / trials).toFixed(2)}, near the edge ${(pay.edge / trials).toFixed(2)}`);
+      }
+    }
+  });
+});
+
+describe('probe E: his open Stop (R-15), the field hidden, 14 days', () => {
+  it('runs', () => {
+    // No notch. 2,000 players a day. Habit players aim from a made-up mix (below); learners
+    // (rising to 70%) aim at the thinnest of 21 spots in last night's field (a tie at random).
+    // A stop lands at the aim plus noise that grows with the marker's speed there: fastest in
+    // the middle (ease 0.5: x1.25), slowest at the ends (x0.5); sd 2% of the track at x1.
+    // Reported on days 1, 7 and 14: the best fixed aim and what it paid, a random aim, the
+    // learners and the habit players. Run under two habit mixes, since real habits are unknown.
+    const mixes: Record<string, { share: number; mean: number; sd: number }[]> = {
+      'centre-heavy': [
+        { share: 0.4, mean: 50, sd: 8 },
+        { share: 0.15, mean: 6, sd: 3 },
+        { share: 0.15, mean: 94, sd: 3 },
+        { share: 0.3, mean: 50, sd: 30 },
+      ],
+      spread: [
+        { share: 0.2, mean: 50, sd: 8 },
+        { share: 0.2, mean: 25, sd: 6 },
+        { share: 0.2, mean: 75, sd: 6 },
+        { share: 0.4, mean: 50, sd: 30 },
+      ],
+    };
+    const spots = Array.from({ length: 21 }, (_, i) => i / 20);
+    const reflect = (x: number) => (x < 0 ? -x : x > 1 ? 2 - x : x);
+    const land = (rng: Rng, aim: number) => {
+      const speed = 0.5 + 6 * 0.5 * aim * (1 - aim);
+      return Math.min(1, Math.max(0, reflect(aim + 0.02 * speed * dgauss(rng))));
+    };
+    for (const [name, mix] of Object.entries(mixes)) {
+      const rng = mulberry32(77);
+      const habit = () => {
+        let r = rng();
+        for (const m of mix) {
+          if (r < m.share) return Math.min(1, Math.max(0, (m.mean + m.sd * dgauss(rng)) / 100));
+          r -= m.share;
+        }
+        return 0.5;
+      };
+      let field = Array.from({ length: 500 }, () => land(rng, habit()));
+      const rows: string[] = [];
+      for (let day = 1; day <= 14; day++) {
+        const learn = (0.7 * (day - 1)) / 13;
+        const night = spots.map((s) => openStopPrice(s, field));
+        const top = Math.max(...night);
+        const thin = spots.filter((_, i) => night[i] === top);
+        const fixedPay = spots.map(() => 0);
+        let rand = 0;
+        const earned = { habit: [0, 0], learner: [0, 0] };
+        const today: number[] = [];
+        for (let k = 0; k < 2000; k++) {
+          const f = values(rollingField(today, field, 500));
+          const learner = rng() < learn;
+          const pos = land(rng, learner ? thin[Math.floor(rng() * thin.length)] : habit());
+          const pay = openStopPrice(pos, f);
+          earned[learner ? 'learner' : 'habit'][0] += pay;
+          earned[learner ? 'learner' : 'habit'][1] += 1;
+          spots.forEach((s, i) => (fixedPay[i] += openStopPrice(land(rng, s), f)));
+          rand += openStopPrice(land(rng, rng()), f);
+          today.push(pos);
+        }
+        field = today.slice(-500);
+        if (day === 1 || day === 7 || day === 14) {
+          const b = fixedPay.indexOf(Math.max(...fixedPay));
+          const avg = (e: number[]) => (e[1] ? (e[0] / e[1]).toFixed(2) : '-');
+          rows.push(`day ${day}: best aim ${Math.round(spots[b] * 100)}% pays ${(fixedPay[b] / 2000).toFixed(2)}, random ${(rand / 2000).toFixed(2)}, learners ${avg(earned.learner)}, habit ${avg(earned.habit)}`);
+        }
+      }
+      log(`E. ${name.padEnd(12)} | ${rows.join(' | ')}`);
     }
   });
 });

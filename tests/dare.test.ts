@@ -1,19 +1,26 @@
 // G-02b: Dare's rules, by hand from tasks/G-02b.md "Rules" (spec: G-00c round 4).
 import { describe, expect, it } from 'vitest';
+import { generateStop } from '../src/lib/events/stop';
+import { mulberry32 } from '../src/lib/rng';
 import {
   braverThan,
+  dareStopCard,
+  dareStopParams,
   doubleOrBank,
   longJumpScore,
+  openStopPrice,
   repeatPoints,
   repeatPrices,
+  ropeHolds,
   ropeLadder,
   ropePoints,
   ropeRecord,
   snapPoint,
+  stillOn,
   stopPrice,
 } from '../src/lib/rules/dare';
 import { generatePlayground, hideScore, seekScore, spotsFound } from '../src/lib/rules/hideseek';
-import { rules } from '../src/lib/rules/params';
+import { rules, type RulesParams } from '../src/lib/rules/params';
 
 const SP = { window: 0.15, rareRatio: 0.25, crowdedRatio: 1.5, minPrice: 1, maxPrice: 5 };
 const cards = Array.from({ length: 60 }, (_, i) => i + 1);
@@ -109,8 +116,8 @@ describe('V2 double or bank', () => {
   });
 });
 
-describe('V4 hold your day', () => {
-  const P = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above' as const };
+describe('V4 hold your day (the signed median rule, kept for comparison)', () => {
+  const P = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above' as const, snapRule: 'median' as const, capacity: 1.5, ceilingShare: 0.1 };
   const AT = { ...P, snapped: 'at' as const };
   it('the ladder climbs x1, x1.5, x2 and on, to x10, never past max', () => {
     const l = ropeLadder(P);
@@ -171,6 +178,107 @@ describe('V4 hold your day', () => {
   it('no choice wins every time: letting go at once is beaten when the snap is late, and wins when it is early', () => {
     expect(ropePoints(100, 1.5, 2, P)).toBeGreaterThan(ropePoints(100, 1, 2, P));
     expect(ropePoints(100, 1, 1.5, P)).toBeGreaterThan(ropePoints(100, 1.5, 1.5, P));
+  });
+});
+
+describe('V4 hold your day: R-13, the load rule (the default)', () => {
+  const L: RulesParams['rope'] = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above', snapRule: 'load', capacity: 1.5, ceilingShare: 0.1 };
+  it('is the default, at capacity 1.5 with a ceiling at the bravest tenth', () => {
+    expect(rules().rope).toMatchObject({ snapRule: 'load', capacity: 1.5, ceilingShare: 0.1 });
+  });
+  it('the rope holds capacity / multiple of the field, at most all of it', () => {
+    expect(ropeHolds(1.5, L)).toBe(1);
+    expect(ropeHolds(2, L)).toBe(0.75);
+    expect(ropeHolds(3, L)).toBe(0.5);
+    expect(stillOn(2, [1, 2, 3, 1.5])).toBe(0.5);
+    expect(stillOn(2, [])).toBe(0);
+  });
+  it('by hand: a bold crowd overloads it at x2 (8 in 10 still on, it holds 3 in 4)', () => {
+    expect(snapPoint([1, 1, 2, 2, 2, 3, 3, 3, 4, 5], L)).toBe(2);
+  });
+  it('by hand: an early crowd lifts it until the ceiling, one rung past the bravest tenth (x3 + 0.5)', () => {
+    // still on: x1.5 6/10 (holds all), x2 4/10 (holds .75), x2.5 2/10 (.6), x3 2/10 (.5); x3.5 is the ceiling
+    expect(snapPoint([1, 1, 1, 1, 1.5, 1.5, 2, 2, 3, 3], L)).toBe(3.5);
+  });
+  it('the ceiling stops the jackpot: a crowd all at x1 snaps at x1.5, not never', () => {
+    expect(snapPoint(Array(10).fill(1), L)).toBe(1.5);
+    // without the ceiling nothing overloads, so it never snaps and holding to the top banks x10
+    const noCeiling = { ...L, ceilingShare: 0 };
+    expect(snapPoint(Array(10).fill(1), noCeiling)).toBe(10.5);
+    expect(ropePoints(100, 10, 10.5, noCeiling)).toBe(1000);
+  });
+  it('empty field: emptySnap (R-3)', () => {
+    expect(snapPoint([], L)).toBe(2);
+  });
+  it('medianPlus: one rung past the lower median', () => {
+    expect(snapPoint([3, 1.2, 2, 1.5], { ...L, snapRule: 'medianPlus' })).toBe(2);
+  });
+  it('undercutting the crowd does not drive the load rule to the bottom; it does the median rule', () => {
+    const run = (q: RulesParams['rope']) => {
+      let field: number[] = Array(500).fill(2.5);
+      let night = snapPoint(field, q);
+      const nights: number[] = [];
+      for (let day = 0; day < 20; day++) {
+        const today: number[] = [];
+        for (let k = 0; k < 600; k++) {
+          const snap = snapPoint([...field, ...today].slice(-500), q);
+          today.push(ropeRecord(Math.max(1, Math.min(q.max, night) - q.step), snap, q));
+        }
+        field = today.slice(-500);
+        night = snapPoint(field, q);
+        nights.push(night);
+      }
+      return nights.slice(-10);
+    };
+    // everyone undercutting together: the load rule settles with the snap at x2 (they bank x1.5,
+    // the ceiling holds it there); the median rule falls to x1.5 or below
+    expect(Math.min(...run(L))).toBeGreaterThanOrEqual(2);
+    expect(Math.max(...run({ ...L, snapRule: 'median' }))).toBeLessThanOrEqual(1.5);
+  });
+  it('no choice wins every time under the load rule: x1 beats x2 on a bold day and loses on an early one', () => {
+    const bold = snapPoint([1, 1, 2, 2, 2, 3, 3, 3, 4, 5], L);
+    const early = snapPoint([1, 1, 1, 1, 1.5, 1.5, 2, 2, 3, 3], L);
+    expect(ropePoints(100, 1, bold, L)).toBeGreaterThan(ropePoints(100, 2, bold, L));
+    expect(ropePoints(100, 2, early, L)).toBeGreaterThan(ropePoints(100, 1, early, L));
+  });
+});
+
+describe("Dare's Stop: R-14 the 12% notch, R-15 his open track", () => {
+  it('the dare notch is 12% every day, and the goes match plain Stop', () => {
+    for (const c of cards) {
+      const d = dareStopCard(c);
+      expect(d.notchWidth).toBe(0.12);
+      expect(d.goes).toEqual(generateStop(c).goes);
+    }
+    expect(dareStopParams().notchWidthStepPerDay).toBe(0);
+  });
+  it('open: anywhere on the track pays; an empty field pays 5; a crowded spot pays 1, an empty one 5', () => {
+    expect(openStopPrice(0, [])).toBe(5);
+    const crowd = Array(100).fill(0.5);
+    expect(openStopPrice(0.5, crowd)).toBe(1);
+    expect(openStopPrice(0.9, crowd)).toBe(5);
+    expect(openStopPrice(0.52, crowd)).toBe(1); // within 3% of the track
+    expect(openStopPrice(0.54, crowd)).toBe(5);
+  });
+  it('open: by hand, an even field pays the middle price', () => {
+    // 100 stops at 0.5%, 1.5%, ... 99.5%: the window +-3% round the middle holds 6 of them, what an
+    // even spread puts there, so the ratio is 1. That's (1.5 - 1) / (1.5 - 0.25) = 0.4 of the way
+    // from crowded to rare: 1 + 4 x 0.4 = 2.6, rounded to 3. (Off the window's edges on purpose.)
+    const even = Array.from({ length: 100 }, (_, i) => (i + 0.5) / 100);
+    expect(openStopPrice(0.5, even)).toBe(3);
+  });
+  it('open: a place off the track throws', () => {
+    expect(() => openStopPrice(-0.01, [])).toThrow();
+    expect(() => openStopPrice(1.01, [])).toThrow();
+  });
+  it('open: prices stay 1 to 5 over random fields', () => {
+    const r = mulberry32(5);
+    for (let t = 0; t < 300; t++) {
+      const field = Array.from({ length: 1 + Math.floor(r() * 80) }, () => r());
+      const v = openStopPrice(r(), field);
+      expect(v).toBeGreaterThanOrEqual(1);
+      expect(v).toBeLessThanOrEqual(5);
+    }
   });
 });
 

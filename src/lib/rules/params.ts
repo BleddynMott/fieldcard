@@ -4,9 +4,20 @@ import { config } from '../config';
 export interface RulesParams {
   field: { size: number };
   stopPrice: { window: number; rareRatio: number; crowdedRatio: number; minPrice: number; maxPrice: number };
+  dareStop: { mode: 'notch' | 'open'; notchWidth: number; openWindow: number };
   repeatBank: { maxPrice: number; decimals: number };
   double: { bankRight: number; doubleRight: number; doubleWrong: number };
-  rope: { step: number; max: number; snapKeep: number; emptySnap: number; decimals: number; snapped: 'at' | 'above' };
+  rope: {
+    step: number;
+    max: number;
+    snapKeep: number;
+    emptySnap: number;
+    decimals: number;
+    snapped: 'at' | 'above';
+    snapRule: 'load' | 'median' | 'medianPlus';
+    capacity: number;
+    ceilingShare: number;
+  };
   hideSeek: {
     spots: number;
     minGap: number;
@@ -27,6 +38,7 @@ export interface RulesParams {
     rope: { mean: number; sd: number; min: number };
     longJump: { mean: number; sd: number; decimals: number };
     seekJitter: number;
+    openStop: { sd: number; mix: { share: number; mean: number; sd: number }[] };
     drawing: { weightFrom: number; weightTo: number; noise: number };
   };
 }
