@@ -2,11 +2,13 @@
 
 ## Summary (read this first)
 
-### Restart point for a fresh chat (27 Nov, after round 9)
+### Restart point for a fresh chat (27 Nov, after round 10)
 
-**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd. Latest page: `design/directions/look-g04-r9.html`, a test of five screens (4a, 4b, 4c for Count; 7a, 7b for Repeat). The last full run is `look-g04-r8.html`, eleven screens. Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged. No K05 review has been run since round 1.
+**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd, 4b (the dimmer rail) for Count's number. Latest page: `design/directions/look-g04-r10.html`, the full run: 24 screens in 8 rows, drawn while he was away for an hour. Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged.
 
-**Open now, waiting for his line:** `design/directions/look-g04-r9.html`. He types an id for Count (`4a` flick the flaps, `4b` the dimmer, `4c` tap each one) and a word on Repeat, or ids and what to change, or `none` and what is wrong. My recommendation: `4b`, because bulbs clicking on as the number builds is the thing he named in round 3, and one slide covers "a few" at once.
+**Open now, waiting for his line:** `design/directions/look-g04-r10.html`. He types `go`, or ids and what to change, or `none` and what is wrong.
+
+**Round 10, what he asked, 27 Nov:** "I need to leave laptop for na hour so do as many as you cna, being through, taking as much time as you need for designs that authentically represent the design language and ethos".
 
 **Round 8, his words, 27 Nov:** "Better, but you tried to correct the broken thing by just adding stuff. So put the lamp on a stand with wires, which isn't quite right For example, the plus and minus buttons on the counter are really flat. It's all about thinking what we were aiming for making the original ones, aiming for the same thing rather than making things in the same style. Also, the counter shouldn't be plus and minus because you might want to do a few, so to think of a thematically accurate one that would allow counting. I like the flip chart numbers, but just have to think how we can interface with it on the screen in a really cool way"
 
@@ -14,7 +16,7 @@
 
 **Round 9, his words, 27 Nov:** "4b, 7 still needs work but we also have a number of screens to do. So look through latest update to see what other games/screens need coding". Read as: 4b is the Count input; Repeat (7) is not right yet, with no detail given; "latest update" is G-02b in `../daily-game-rules` (commit `e324b49`, R-17).
 
-**Next step.** The screen list below (§5). Waiting for his line on the order.
+**Next step.** His line on round 10. Then `DESIGN.md`, `PICK.md` and `tokens.css` get their own task once he says `go`.
 
 **How he works on this task.** He judges at a glance and answers in a line. Draw two or three screens to test an idea before a full set. One page, rows by screen, ids on everything. Screenshot with headless Chrome and read the result before showing him.
 
@@ -252,6 +254,31 @@ Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework 
 - 27 Nov, round 7. His words on round 6 are in the Summary. Drew `design/directions/look-g04-r7.html`: eleven screens. New: Count (a troupe on stage, flap counter), Double or bank (two brass plates, one lamp or two), Repeat (five glass domes), Pair (a wall of shutters), Hold your day (lamps along the stage front; cards go down as people let go), the graph read (a paper roll), Scorecard (the sign, two dials, a flap row per game). Rendered groups 2, 3 and 4 and read the screenshots; group 1 reuses screens already seen.
 - 27 Nov, round 8. His words on round 7 are in the Summary. What went wrong, my reading: from screen 4 on I drew a coloured backdrop and placed lamps and plates on it, so the look's own rule (one lit place with depth) stopped being applied and only its parts were copied. Round 8 adds the stage itself as a shared piece and rebuilds 4 and 6 to 11 on it. Rendered groups 2, 3 and 4 and read the screenshots.
 - 27 Nov, round 9. His words on round 8 are in the Summary. Drew `design/directions/look-g04-r9.html`: five screens as a test, not a full set. Count three ways (4a each flap digit is a wheel you flick; 4b a lamp slid along a rail of 41 bulbs; 4c tap each figure and it lights as yours) and Repeat as five footlights in the stage front under a closed curtain, in two states (7a watch, 7b your turn). The phone is the whole theatre again: no proscenium box, stands, wires or cabinets; the machine is set into the stage front. Rendered both rows in headless Chrome and read the screenshots; fixed figures hidden behind the left curtain and too small, and 4a's neighbouring flaps too dark to read. **Not run:** no K05 review (a five-screen test he judges at a glance; one is planned on the full run).
+- 27 Nov, round 10. He left for an hour and asked for as many screens as possible. He did not answer the three lines put to him, so I ruled (31 to 37 below) and drew every row of §5 except Home (unchanged), the flag and Sunday. `design/directions/look-g04-r10.html`, 24 screens:
+  - Stop, the open track (2, 3); Long jump (13a, 13b); Hide, Seek and their reveal (14, 15a, 15b);
+  - Repeat redrawn as a wall of nine lamps (8a, 8b) and bank or go on (9);
+  - Count with 4b carried through (4, 5, 7) and Double or bank as one lever (6);
+  - Pair as a shadow screen (10, 11); Sort as pools of light (12);
+  - the graph read as Draw, Select and Adjust (16a, 16b, 17, 18); Find yourself (19a, 19b); the scorecard (21).
+  - Every row was rendered in headless Chrome and read. Fixed after reading, before the review: Long jump's runway and lamp too small; Hide's scenery reading as outlines; Double or bank's lamps reading as brown discs; Pair's rods crossing the shapes below; Find yourself's rows drawn as boxes, now light.
+  - The page is built from four script chunks in the session scratchpad; the HTML file is the whole record.
+- 27 Nov, round 10. **K05 review, one round, fresh context** (CI first, by the reviewer: `ci-checks: all passed`, `design-check: pass`). Standard given: his words for rounds 1 to 9, §1, §5, ruling 26, `DESIGN.md`, his standing feedback, G-02b's Rules and `games.json`. Told to report everything. **96 findings.** Its three weakest: 9 (bank or go on), 6 (Double or bank), 12 (Sort); runner-up Hide and Seek.
+  - **Taken, on the page:**
+    - Rules and numbers: Pair's four now pick a different shape from yours (1); Count's truth is 23, the stage has 23 figures, and the reveal shows the double, +20, matching the scorecard (2, 3, 25, 87); Adjust is off by 3, not 4, and its arrows point both ways (6, 7); "simulated crowd" added to 15b and 16b (8, 9); Hide and Seek's title and "you found 48 in 100" match the picture (11, 12, 14); Long jump reads "Later than most", 77 (17, 18, 19); Stop's go 1 mark matches the reveal (23); "The middle was crowded", "The crowd says 27" (22, 24); 16b's pile is 61% late and the two lines sit nearer it (28, 29); Select's two piles have the same number of cards (31); Find yourself's true row is the one 57 falls in (33); the scorecard's sentence no longer claims three doubles (5).
+    - Look: Count's 5 and 7 are in Count's blue, and Find yourself has its own cool light (39, 40); 9 is rebuilt as one big flap number over the crowd, without the unused lamp block (41, 74, 75); Double or bank's lamps cast light and a shadow (42, 88); Sort lost its dotted line and its beams and floor light are stronger (44); game tags on 2, 3, 19a, 19b (55); 17 says its instruction once (56).
+    - Drawing: Doto's full stop no longer reads as a plus (73); the four's ring is clear of the curtain (77); 15b's Next lines up (79); labels on 19 are clear of cards (83); 2's beam stops at the seats (86); the scorecard's four numbers are readable (93).
+    - Page text: says what is not drawn, that the aim is my reading, and that the open track plays like Hide (64, 65, 66).
+  - **Left, with the reason (his to overrule):**
+    - 37, 38: seven screens share one picture (bulb bar, seats, cards) and three share another. That is the picked crowd doing its job as the graph (ruling 35), now in three lights (rose, blue, cool white). Whether it is too alike is his call; it is the first thing to ask him.
+    - 45, 46, 16, 80, 81, 82: Hide and Seek's scenery still reads as cut-outs in three rows, flat when lit. The weakest drawing on the page.
+    - 47, 48, 49, 12 (Sort has no machine), 50, 51, 52, 53: taste findings on single screens, left so he judges them as drawn.
+    - 4: the scorecard's four numbers do not carry over from the games; points have no common unit yet (G-02b, ruling 37).
+    - 13, 15, 20, 21, 30, 32, 34, 36: the reveal for seekers, the spot's radius, no-jumpers, one field per go on Stop, the badge, 12 bins against 13 bulbs, Repeat's six bulbs, Double or bank on other games. All for the screen task that codes each game.
+    - 54, 58, 59, 60, 61: no stake as a thing on five play screens; scores without a sentence; no "Why?" mark; no step bar; no marks in `DESIGN.md` for the new games. These belong to the `DESIGN.md` task after `go`.
+    - 67 to 71: the audience's rims take the colour of the light on them, yellow included. It is light, not a mark; his to rule if yellow must never touch the crowd.
+    - 10, 26, 27, 35, 43, 57, 62, 63, 72, 76, 78, 84, 85, 89 to 92, 94 to 96: minor or within budget.
+    - Not on the page: Home (unchanged), the flag, the Sunday week, the twin and the badge on the scorecard, reveals for Sort, Pair, Repeat, Select and Adjust.
+  - **One round only.** No second round was run on the fix; he was due back.
 
 ## Rulings
 
@@ -287,3 +314,10 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 28. **4c changes how Count plays, not only how it looks.** Tapping each figure makes the count exact if the troupe stays on stage, so it only works if Count is timed or the troupe moves. That is a rule for `../daily-game-rules`; his to rule on if he picks 4c.
 29. **Repeat's five lamps keep five colours** (rose, orange, green, blue, violet), none of them yellow or teal. The curtain on Repeat is grey so each colour reads true on it. The small bulbs that keep count are cream while you watch and yellow as you get each one right.
 30. **4b's rail runs 0 to 40.** The range is for the look only.
+31. **Round 10's order and scope are mine,** since he left without answering: the open track first, then the new games, then the rest of §5. Not drawn: Home (unchanged, liked), the flag (Sundays), the Sunday week.
+32. **The open track sits at Stop's place** on the card. Still his to rule; the rules session notes it plays like Hide.
+33. **Repeat is redrawn without knowing what was wrong.** He said 7 "still needs work" and gave no detail. My guess: five small domes under an empty curtain were not "one big thing you touch", and the game is a three by three grid (`games.json`), not five lamps. So it is a wall of nine stage lamps. The pattern shows in Repeat's green; your presses are yellow.
+34. **Three new stage-light colours,** as ruling 22: Sort violet, Long jump red, Hide and Seek indigo. Not in `tokens.css`.
+35. **The house is the graph.** The crowd's cards under the bulbs are the pile on every graph screen (Draw, Select, Adjust, the Stop and Count reveals), which replaces round 8's paper roll. Select's two piles are upstairs and downstairs.
+36. **Pictures chosen for the new games,** all stand-ins for the look and none a rule: Long jump is a light running down the stage towards the edge; Hide and Seek's playground is painted scenery on a dark stage, and Seek is a follow spot; Pair is twelve shadow cut-outs, drawn as a single pick (not coded in the rules yet); Sort is five pools of light; Find yourself is the field seated best at the front, and you tap a row; Double or bank is one lever and the lamps it would light.
+37. **Every number on round 10's screens is for the look only,** except the rules they follow (1 to 5 on the open track, averaged; +2 for keeping when closer; a wrong double costs the base). Reveals say "simulated crowd".
