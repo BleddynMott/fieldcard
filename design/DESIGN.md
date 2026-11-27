@@ -30,7 +30,7 @@
 ## Do
 
 1. One job per screen: one question, one gesture, one reveal, one fact line.
-2. Build every fact line from the day's numbers only ("61% stopped late"), never a claim about why.
+2. Build every fact line from the day's numbers ("61% stopped late"). One line of why may follow it ("People wait to see the marker arrive"), in the "Why?" chip (G-00d).
 3. Call other players "everyone" or "the crowd".
 4. Outline cards, buttons, boards, doors and chips in `--line`; beads, bib dots and small marks in `--line-thin`; hard shadows from `--shadow-*`.
 5. Show the step bar after the events, so the player knows which of the three reads they are on.
@@ -38,7 +38,7 @@
 ## Don't
 
 1. Don't use the word "readers", or show any score without a sentence saying what it means.
-2. Don't show more than two data series in one reveal (the crowd and your read), plus your own marker.
+2. Don't show more than four marks in one reveal: the truth, everyone's play, everyone's guesses, and you (your guess and your result). Build them in that order (G-00d).
 3. Don't use an event colour for a state or a person, or `--right`, `--wrong` and `--you` for anything but their meaning.
 4. Don't add a colour, typeface, size, radius, spacing, shadow, line or duration outside `tokens.css`.
 5. Don't restyle a screen outside the task that owns it.
