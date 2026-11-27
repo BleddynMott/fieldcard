@@ -2,11 +2,15 @@
 
 ## Summary (read this first)
 
-### Restart point for a fresh chat (27 Nov, after round 13)
+### Restart point for a fresh chat (27 Nov, the look is picked)
 
-**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd, 4b (the dimmer rail) for Count's number, and round 10's full run: "All looks good". The full run is `design/directions/look-g04-r10.html` (24 screens). Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged.
+**He picked.** His words, 27 Nov: "yeah thats good, so assume all screens are done. I take your recommendation for both". The look is the studio (E), an old mechanical theatre, with every screen on **`design/directions/look-g04-picked.html`** (27 screens): Home (1E), round 10's full run ("All looks good"), the peek on Stop ("Fine"; free), and Find yourself on the meter ("yeah thats good").
 
-**Open now, waiting for his line:** `design/directions/look-g04-r13.html`: Find yourself on the meter (his pick), play and one reveal (one dial; your needle and its ghost; everyone's guesses as cards on the rim). He types `go` or what to change. The peek is settled: free, on Stop's open track (2p, 2q in `look-g04-r11.html`). Still open: where the open track sits on the card; whether the Stop reveal says how peekers did.
+**His rulings in that line:** the Stop reveal says how peekers did ("Peekers scored 2.2 today. The rest, 3.0."); the open track sits at Stop's place on the card.
+
+**Named check 8 is met** (he picks, in his words). **Not done, and not this task:** `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged; no screen in `src/` has the look; `g02-card` (the rules code) is not merged into `g04-look`. Those are the next task. `Signed:` and `Merge:` are his.
+
+**Known and left for the next task** (from the round 10 review): no stake as a thing on five play screens; scores without a sentence; no marks or tokens for Long jump, Hide and Seek, Find yourself; Hide and Seek's scenery is the weakest drawing; the scorecard's numbers have no common unit; no twin or badge on the scorecard; no reveals for Sort, Pair, Repeat, Select, Adjust; the flag and the Sunday week are not drawn.
 
 **Round 10, his words, 27 Nov:** "All looks good, but the19 and 19b are only ones that are a bit underwhelming. Also perhaps for one of the games would be interesting to ask if they want to see yesterdays answer distribution? Like a dare, as it could mess up their game or it coudl help them but mostly will just make them overthink it"
 
@@ -303,6 +307,7 @@ Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework 
   - Rendered and read. Known: the line under the title repeats "You said 70 ... beat 57"; one of the two goes when he picks. **Not run:** no K05 review.
 - 27 Nov, round 13, second pass. **His words:** "actually yeah that was me being silly, as of course everyone came 50 which now might actually confuse. Adjust back to one dial, just ensuring we have clarity wiht the visual as well of how everyone voted". M1 and M2 are withdrawn. `look-g04-r13.html` now has play and one reveal: one dial; your needle falls back from its ghost ("SAID 70"); everyone else is shown only by what they said, one card a person standing on the rim where they claimed, with the HALF line running out through the cards; two sentences, "You said 70, came 57." and "Each card is someone's guess." The repeated line under the title is gone. Rendered and read. **Not run:** no K05 review.
 - 27 Nov. From the rules session (probe E2, a model with made-up habits, nothing coded): whether peeking helps depends on how many others peek. When 20% peek, following yesterday's gap pays more than not peeking; at 50% or more it ties or does worse. A reveal line such as "Peekers 2.2, others 3.0 today" would be true and would change day to day. His to rule.
+- 27 Nov. **Picked** (his words in the Summary). Built `design/directions/look-g04-picked.html`: one page of every passed screen, 27 in 9 rows. Changes from the round pages: Home added; 2p and 2q moved in beside Stop; 19a and 19b are the meter; Stop's reveal carries the peekers line in place of "Yesterday's empty spot was today's crowd". Rows 0, 1 and 8 (the changed ones) rendered and read; the other rows are round 10's, unchanged. `ci-checks: all passed`, `design-check: pass`. **Not run:** no K05 review of the assembled page.
 
 ## Rulings
 
@@ -348,3 +353,5 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 38. **The peek is a new rule, not only a screen,** and it is not in G-02b. As drawn: offered once before Stop's first go, free, and yesterday's field stays up dim for all three goes. Whether it costs anything, whether peeking shows on the reveal ("6 in 10 peeked; they scored less"), and which game carries it are his to rule, then for the rules task.
 39. **Withdrawn in the second pass (the tower replaces it).** Find yourself turns the house round: it is seen from the stage, with faces, where every other crowd screen is seen from your seat. That is deliberate, so it is not the eighth copy of the same picture.
 40. **His ruling, 27 Nov:** the peek is free and stays on Stop's open track. Whether the reveal says how peekers did is still open.
+41. **His rulings, 27 Nov** ("I take your recommendation for both"): Stop's reveal says how peekers did; the open track sits at Stop's place on the card. Ruling 32 is now his.
+42. **The peekers line replaces the model's line on Stop's reveal** so the screen keeps one fact line. Its numbers (2.2 and 3.0) are for the look only.
