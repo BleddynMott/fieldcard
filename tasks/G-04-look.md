@@ -6,7 +6,7 @@
 
 **Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd, 4b (the dimmer rail) for Count's number, and round 10's full run: "All looks good". The full run is `design/directions/look-g04-r10.html` (24 screens). Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged.
 
-**Open now, waiting for his line:** `design/directions/look-g04-r13.html`: Find yourself on the meter (his pick, F2), with the reveal two ways, `M1` (one dial, two needles) or `M2` (two dials). The peek is settled: free, on Stop's open track (2p, 2q in `look-g04-r11.html`). Still open: where the open track sits on the card.
+**Open now, waiting for his line:** `design/directions/look-g04-r13.html`: Find yourself on the meter (his pick), play and one reveal (one dial; your needle and its ghost; everyone's guesses as cards on the rim). He types `go` or what to change. The peek is settled: free, on Stop's open track (2p, 2q in `look-g04-r11.html`). Still open: where the open track sits on the card; whether the Stop reveal says how peekers did.
 
 **Round 10, his words, 27 Nov:** "All looks good, but the19 and 19b are only ones that are a bit underwhelming. Also perhaps for one of the games would be interesting to ask if they want to see yesterdays answer distribution? Like a dare, as it could mess up their game or it coudl help them but mostly will just make them overthink it"
 
@@ -301,6 +301,8 @@ Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework 
   - **Picked:** F2, the meter, for Find yourself; the needle falling back and leaving a ghost stays. **Ruled by him:** the peek is free and stays on Stop's open track (ruling 38 is settled on those two points).
   - Drew `design/directions/look-g04-r13.html`, three screens: play (unchanged) and the reveal two ways. The loose cards round the rim are gone. The crowd now reads the same way you do: a dashed ghost marked SAID, and a needle where it really came. M1 is one dial with two rings and two needles (you outer in yellow, everyone inner in teal). M2 is two dials, yours above and everyone's below. Each has one sentence per needle: "You said 70, came 57." "Everyone said 66, came 50."
   - Rendered and read. Known: the line under the title repeats "You said 70 ... beat 57"; one of the two goes when he picks. **Not run:** no K05 review.
+- 27 Nov, round 13, second pass. **His words:** "actually yeah that was me being silly, as of course everyone came 50 which now might actually confuse. Adjust back to one dial, just ensuring we have clarity wiht the visual as well of how everyone voted". M1 and M2 are withdrawn. `look-g04-r13.html` now has play and one reveal: one dial; your needle falls back from its ghost ("SAID 70"); everyone else is shown only by what they said, one card a person standing on the rim where they claimed, with the HALF line running out through the cards; two sentences, "You said 70, came 57." and "Each card is someone's guess." The repeated line under the title is gone. Rendered and read. **Not run:** no K05 review.
+- 27 Nov. From the rules session (probe E2, a model with made-up habits, nothing coded): whether peeking helps depends on how many others peek. When 20% peek, following yesterday's gap pays more than not peeking; at 50% or more it ties or does worse. A reveal line such as "Peekers 2.2, others 3.0 today" would be true and would change day to day. His to rule.
 
 ## Rulings
 

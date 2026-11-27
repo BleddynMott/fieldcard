@@ -34,21 +34,21 @@ th{font-weight:800}
 <div class="intro">
 <h1>Fieldcard: the studio look, round 13 (the meter)</h1>
 <p>Your words: "I like the speed dial meter, as long as the reveal makes a bit more sense. I like hte meter fallingback and leaving a ghost, just need to make sure the the speedometer for the other people make senses. Currently lsighlty confused as to what is the people voting vs their actual scores. Which is clearer with teh column of lamps."</p>
-<p>So the crowd now gets exactly what you get: a needle that falls back and leaves a ghost. The ghost is what was said; the needle is what happened. The loose cards round the rim are gone. Two ways to lay it out.</p>
-<div class="pick">To answer, type one line: <code>M1</code> or <code>M2</code> · or what to change · or <code>none</code> and what is wrong</div>
+<p>Then: "actually yeah that was me being silly, as of course everyone came 50 which now might actually confuse. Adjust back to one dial, just ensuring we have clarity wiht the visual as well of how everyone voted".</p>
+<p>One dial. Your needle falls back and leaves its ghost. Everyone else is shown only by what they said: one card per person, standing on the rim at the place they claimed, with the HALF line running out through them.</p>
+<div class="pick">To answer, type one line: <code>go</code> · or what to change · or <code>none</code> and what is wrong</div>
 </div>
 
 <section data-s="1">
 <h2>Find yourself on the meter</h2>
 <div class="row">
   <div class="cell"><b>19a · Play (unchanged from F2)</b><div class="ph E"><svg viewBox="0 0 390 720" id="m0"></svg></div><div class="note">You push the needle to where you think you finished.</div></div>
-  <div class="cell"><b>M1 · Reveal: one dial, two needles</b><div class="ph E"><svg viewBox="0 0 390 720" id="m1"></svg></div><div class="note">Yours is the outer ring in yellow, everyone's the inner ring in teal. Both fall back from a ghost.</div></div>
-  <div class="cell"><b>M2 · Reveal: two dials</b><div class="ph E"><svg viewBox="0 0 390 720" id="m2"></svg></div><div class="note">Your meter, then everyone's below it, working the same way. Everyone's needle can only land on half.</div></div>
+  <div class="cell"><b>19b · Reveal</b><div class="ph E"><svg viewBox="0 0 390 720" id="m1"></svg></div><div class="note">Most of the cards stand past HALF. Nobody's real finish is shown but yours.</div></div>
   </div>
 </section>
 
 <h2>What to type</h2>
-<p><code>M1</code> or <code>M2</code> · or what to change · or <code>none</code> and what is wrong.</p>
+<p><code>go</code> · or what to change · or <code>none</code> and what is wrong.</p>
 <script>
 // seeded random, so the page draws the same every time
 function R(seed){let a=seed;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -1453,14 +1453,16 @@ const line13=(y,who,c,said,came)=>T(195,y,`${who} said ${said}, came ${came}.`,`
 (function(){let h=fBase()+meter13(195,452,150,'you',null,70)+doto(45,488,'LAST',12,'#b9929f','middle',3)+doto(345,488,'BEST',12,E_CREAM,'middle',3);
   h+=`<rect x="124" y="492" width="142" height="82" rx="12" fill="#07020a" stroke="#5a2a3c" stroke-width="1.5"/><rect x="134" y="500" width="122" height="66" fill="${YOU}" opacity=".22" filter="url(#eb14)"/>`+flap9(132,500,60,66,'7')+flap9(198,500,60,66,'0');
   fEnd('m0',h,'find','How well','did you do?')})();
-// M1 · one dial, two needles
-(function(){let h=fBase()+meter13(195,470,156,'you',70,57,{half:1,nohub:1})+meter13(195,470,104,'crowd',66,50,{w:22,br:3.4,step:5,kr:11,nw:7,inset:2});
-  h+=doto(39,506,'LAST',12,'#b9929f','middle',3)+doto(351,506,'BEST',12,E_CREAM,'middle',3)+line13(540,'You',YOU,70,57)+line13(566,'Everyone',E_CROWD,66,50);
-  fEnd('m1',h,'reveal')})();
-// M2 · two dials
-(function(){let h=fBase()+meter13(195,348,128,'you',70,57,{half:1})+doto(67,382,'LAST',11,'#b9929f','middle',3)+doto(323,382,'BEST',11,E_CREAM,'middle',3)+line13(386,'You',YOU,70,57);
-  h+=meter13(195,548,92,'crowd',66,50,{w:22,br:3.4,step:5,kr:11,nw:7,hub:16,half:1})+line13(582,'Everyone',E_CROWD,66,50);
-  fEnd('m2',h,'reveal')})();
+// the reveal: one dial. Your needle and its ghost; everyone's guesses as cards standing on the rim
+(function(){const cx=195,cy=486,Rr=128,pt=(v,rad)=>{const a=Math.PI*(1-v/100);return[cx+rad*Math.cos(a),cy-rad*Math.sin(a)]};let h=fBase();
+  // the half line runs out through the cards, so the pile past it is plain
+  const [h1x,h1y]=pt(50,Rr+16),[h2x,h2y]=pt(50,Rr+112);h+=`<path d="M${h1x} ${h1y} L${h2x} ${h2y}" stroke="${E_CREAM}" stroke-width="1.5" stroke-dasharray="3 5" opacity=".7"/>`+doto(cx,h2y-8,'HALF',11,E_CREAM,'middle',3);
+  [5,15,25,35,45,55,65,75,85,95].forEach((v,i)=>{for(let q=0;q<TH[i];q++){const [x,y]=pt(v,Rr+26+q*15),rot=90-180*(1-v/100);h+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)})">${card12(0,6,11,12)}</g>`}});
+  h+=meter13(cx,cy,Rr,'you',70,57,{})+doto(cx-Rr,cy+36,'LAST',12,'#b9929f','middle',3)+doto(cx+Rr,cy+36,'BEST',12,E_CREAM,'middle',3);
+  h+=T(195,552,'You said 70, came 57.',`font:800 17px Outfit;fill:${YOU};text-anchor:middle`)+T(195,578,"Each card is someone's guess.",`font:800 16px Outfit;fill:${E_CROWD};text-anchor:middle`);
+  h+=`<rect width="390" height="140" fill="url(#etop)"/><rect y="596" width="390" height="124" fill="url(#eshade)"/>`+tag('FIND YOURSELF',FG)+T(24,84,'71% said they',eTitle(27))+T(24,114,'beat most.',eTitle(27))
+    +glowText(28,662,'−13',`font:900 56px Doto,monospace`,YOU)+doto(30,690,'TOO PROUD · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(614);
+  put('m1',h+eEnd())})();
 // ?only=2 shows one row (used for screenshots)
 const only=new URLSearchParams(location.search).get('only');
 if(only)document.querySelectorAll('section[data-s]').forEach(s=>{if(s.dataset.s!==only)s.style.display='none'});
