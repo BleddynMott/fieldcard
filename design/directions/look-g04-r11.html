@@ -39,10 +39,10 @@ th{font-weight:800}
 
 <section data-s="1">
 <h2>Find yourself, redrawn</h2>
-<p>You are on the stage with a follow spot, and the whole field is in the house, best at the front. You swing the spot to where you think you are sitting.</p>
+<p>Third go. One tower of lamps: higher is better, and that is all there is to read. You push your lamp up to where you think you finished.</p>
 <div class="row">
-  <div class="cell"><b>19a · Find yourself</b><div class="ph E"><svg viewBox="0 0 390 720" id="u19a"></svg></div><div class="note">Drag the spot up and down the house. The people in it light up.</div></div>
-  <div class="cell"><b>19b · Find yourself: the reveal</b><div class="ph E"><svg viewBox="0 0 390 720" id="u19b"></svg></div><div class="note">A white spot finds where you really are. The cards show where everyone thought they sat.</div></div>
+  <div class="cell"><b>19a · Find yourself</b><div class="ph E"><svg viewBox="0 0 390 720" id="u19a"></svg></div><div class="note">Slide up. A lamp clicks on for every 10 in 100 you say you beat.</div></div>
+  <div class="cell"><b>19b · Find yourself: the reveal</b><div class="ph E"><svg viewBox="0 0 390 720" id="u19b"></svg></div><div class="note">The lamps you had not earned go out, and the white ring is where you really finished. Cards show where everyone else put themselves.</div></div>
   </div>
 </section>
 
@@ -50,7 +50,7 @@ th{font-weight:800}
 <h2>The peek, on Stop's open track</h2>
 <p>I put it on the open track because the rules model already says what happens there: people who copy yesterday's empty spot do worst. So the peek is true, and it is still a trap.</p>
 <div class="row">
-  <div class="cell"><b>2p · Stop: the peek is offered</b><div class="ph E"><svg viewBox="0 0 390 720" id="u2p"></svg></div><div class="note">Yesterday's cards are almost there in the dark.</div></div>
+  <div class="cell"><b>2p · Stop: the peek is offered</b><div class="ph E"><svg viewBox="0 0 390 720" id="u2p"></svg></div><div class="note">The house is dark. Nothing of yesterday shows until you choose.</div></div>
   <div class="cell"><b>2q · Stop: play, having peeked</b><div class="ph E"><svg viewBox="0 0 390 720" id="u2q"></svg></div><div class="note">Yesterday's crowd stays up, dim, while you play today's.</div></div>
   </div>
 </section>
@@ -1334,18 +1334,39 @@ function spot10(id,mode){const r=R(301),N=9,gel='#9fb0c8';let h=base()+`<rect wi
   if(mode==='find')h+=T(24,84,'Where did',eTitle(28))+T(24,114,'you finish?',eTitle(28))+sub10(138,'Best at the front. Swing the spot.')+T(195,622,'70 in 100 finished behind you.',`font:800 17px Outfit;fill:${E_CREAM};text-anchor:middle`)+eButton(640,'Lock in');
   else h+=T(24,84,'71% thought they',eTitle(25))+T(24,114,'beat most.',eTitle(25))+sub10(138,'You said 70 in 100. You beat 57.')+glowText(28,652,'−13',`font:900 60px Doto,monospace`,YOU)+doto(30,682,'TOO PROUD · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(604);
   put(id,h+eEnd())}
-spot10('u19a','find');spot10('u19b','reveal');
+
 
 // the peek, on Stop's open track. mode: offer | play
 function peek10(id,mode){const r=R(141);let h=base()+tag('STOP',G10.stop);
   if(mode==='offer')h+=T(24,84,'Peek at',eTitle(28))+T(24,114,'yesterday?',eTitle(28))+sub10(138,'It might help. It might not.');else h+=T(24,84,'Stop where',eTitle(28))+T(24,114,'nobody does.',eTitle(28))+sub10(138,'Empty spots pay more.');
   const c=4,st=CX.map((_,i)=>mode==='play'&&i===c?'you':mode==='play'&&(i===c-1||i===c-2)?'trail':'off'),yest=[3,5,6,4,2,1,0,1,3,5,6,4,2];
-  h+=topStage()+bar10(204,st)+house10(r,yest)+`<rect x="0" y="252" width="390" height="468" fill="#0c040a" opacity="${mode==='offer'?.84:.5}"/>`;
+  h+=topStage()+bar10(204,st)+house10(r,mode==='offer'?CX.map(()=>0):yest)+`<rect x="0" y="252" width="390" height="468" fill="#0c040a" opacity="${mode==='offer'?.25:.5}"/>`;
   if(mode==='play'){h+=`<path d="M${CX[c]-9} 214 L${CX[c]-30} 600 H${CX[c]+30} L${CX[c]+9} 214Z" fill="${YOU}" opacity=".3" filter="url(#eb6)"/><path d="M${CX[c]-5} 214 L${CX[c]-15} 600 H${CX[c]+15} L${CX[c]+5} 214Z" fill="#fff6c8" opacity=".16" filter="url(#eb3)"/>`
     +doto(195,244,'YESTERDAY',12,E_CROWD,'middle',5)+`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+glowText(195,640,'Tap to stop',`font:400 30px Bungee;text-anchor:middle`,E_CREAM)+doto(195,684,'GO 1 OF 3',14,'#ffb884')}
   else h+=`<rect y="540" width="390" height="180" fill="url(#eshade)"/>`+two10(606,'Play blind','Peek');
   put(id,h+eEnd())}
 peek10('u2p','offer');peek10('u2q','play');
+
+// Find yourself, third go: one tower of lamps. Higher is better; nothing else to read.
+function tower10(id,mode){const r=R(311),gel='#9fb0c8',X=72,Y=k=>598-k*38,claim=7,truth=5.7,thought=[1,1,2,3,4,6,8,7,5,3];
+  let h=base()+`<rect width="390" height="720" fill="#0d050c"/><ellipse cx="195" cy="80" rx="300" ry="170" fill="${gel}" opacity=".14" filter="url(#eb14)"/>`;
+  // the field, in the dark beside each step
+  for(let k=10;k>=1;k--){const y=Y(k);h+=`<rect x="112" y="${y+10}" width="278" height="9" fill="#0a0409"/>`;
+    for(let q=0;q<10;q++)h+=member(q<2&&(k===10||k===1)?-40:134+q*26,y+2,.95,false,r)}
+  h+=`<rect x="112" y="170" width="278" height="430" fill="#0c040a" opacity=".35"/>`;
+  if(mode==='reveal'){for(let k=1;k<=10;k++)for(let q=0;q<thought[k-1];q++){const cx=134+(q+(k===10||k===1?2:0))*26+1;h+=`<rect x="${cx}" y="${Y(k)-17}" width="10" height="11" rx="1.5" fill="${E_CROWD}" opacity=".8" filter="url(#eb3)"/><rect x="${cx}" y="${Y(k)-17}" width="10" height="11" rx="1.5" fill="#c9f7f8"/>`}
+    const hy=(Y(5)+Y(6))/2+4;h+=`<path d="M112 ${hy} H384" stroke="${E_CREAM}" stroke-width="1.5" stroke-dasharray="3 5" opacity=".6"/>`+doto(384,hy-6,'HALF',11,E_CREAM,'end',3)}
+  // the tower
+  h+=`<rect x="${X-31}" y="${Y(10)-34}" width="62" height="${Y(1)-Y(10)+68}" rx="31" fill="#07020a"/><rect x="${X-27}" y="${Y(10)-30}" width="54" height="${Y(1)-Y(10)+60}" rx="27" fill="#1c0e15" stroke="#7b3d4a" stroke-width="2"/>`;
+  for(let k=1;k<=10;k++){const st=mode==='find'?(k<claim?'on':k===claim?'cur':'off'):(k<=Math.floor(truth)?'on':k<=claim?'warm':'off');h+=bigLamp(X,Y(k),15,st)}
+  h+=doto(X+34,Y(10)+5,'BEST',13,E_CREAM,'start',4)+doto(X+34,Y(1)+5,'LAST',13,'#b9929f','start',4);
+  if(mode==='reveal'){const ty=Y(truth);h+=`<circle cx="${X}" cy="${ty}" r="23" fill="none" stroke="#fff" stroke-width="3"/><circle cx="${X}" cy="${ty}" r="23" fill="none" stroke="#fff" stroke-width="8" opacity=".6" filter="url(#eb6)"/><path d="M${X+24} ${ty} H112" stroke="#fff" stroke-width="2" opacity=".8"/>`
+    +`<path d="M${X} ${Y(claim)+22} V${ty-28} m-7 -9 l7 9 l7 -9" fill="none" stroke="#ff8a7a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`}
+  h+=`<rect width="390" height="150" fill="url(#etop)"/><rect y="590" width="390" height="130" fill="url(#eshade)"/>`+tag('FIND YOURSELF',gel);
+  if(mode==='find')h+=T(24,84,'How high',eTitle(28))+T(24,114,'did you finish?',eTitle(28))+eButton(634,'Ahead of 70 in 100');
+  else h+=T(24,84,'71% thought they',eTitle(25))+T(24,114,'beat most.',eTitle(25))+sub10(138,'You said 70 in 100. You beat 57.')+glowText(28,662,'−13',`font:900 56px Doto,monospace`,YOU)+doto(30,690,'TOO PROUD · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(614);
+  put(id,h+eEnd())}
+tower10('u19a','find');tower10('u19b','reveal');
 // ?only=2 shows one row (used for screenshots)
 const only=new URLSearchParams(location.search).get('only');
 if(only)document.querySelectorAll('section[data-s]').forEach(s=>{if(s.dataset.s!==only)s.style.display='none'});
