@@ -12,7 +12,9 @@
 
 **My reading of the aim (mine, not his words; it is printed at the top of the round 9 page for him to correct).** The screens he liked (1E's lamp, the bulbs under the crowd, the big yellow lights clicking on) share this: darkness first; light is the picture; one big thing you touch, and it behaves like a machine (clicks, flips, slides); the crowd is there in the dark; nothing on screen that is not used. Round 8 broke it by adding props (stands, wires, cabinets) inside a small stage box.
 
-**Next step, after his line.** Carry the aim over 6, 8, 9, 10, 11 with the Count input and the Repeat he picks, and bring 2, 3 and 5 into line. Then a K05 review of the full run before `go`.
+**Round 9, his words, 27 Nov:** "4b, 7 still needs work but we also have a number of screens to do. So look through latest update to see what other games/screens need coding". Read as: 4b is the Count input; Repeat (7) is not right yet, with no detail given; "latest update" is G-02b in `../daily-game-rules` (commit `e324b49`, R-17).
+
+**Next step.** The screen list below (§5). Waiting for his line on the order.
 
 **How he works on this task.** He judges at a glance and answers in a line. Draw two or three screens to test an idea before a full set. One page, rows by screen, ids on everything. Screenshot with headless Chrome and read the result before showing him.
 
@@ -166,6 +168,42 @@ Each line is checkable on a drawn screen.
 - Hold your day: 64 points on the rope at ×1.6 = 102; it snaps where half let go, and a snap leaves half, 32 (V4).
 - The graph read, draw day, on Stop's track: the notch, everyone's stops, everyone's guesses, yours (Q3). "61% stopped late."
 - Scorecard: 102, then Hands and Hunch, a row per event, the rope.
+
+## 5. Screen list after G-02b (R-17), 27 Nov
+
+Source: `../daily-game-rules/tasks/G-02b.md` at `e324b49`, G-00c C6 and G-00d Read 4. "Drawn" means a mock-up in the studio look in `design/directions/`. No screen in `src/screens/` uses the new rules (no file there imports `lib/rules/`); the ten that exist are the old card in the Sports day look.
+
+**Changed by the latest update**
+- **The rope is off the card (R-17).** Screen 9, Hold your day, is dropped, and so is its row on the scorecard.
+- **Dare's Stop is the open track.** No notch and no 5 · 1 · 5; the field is hidden while you play; the reveal lays the field over the track with your stop on it; points are the average of three goes, 1 to 5. Screens 2 and 3 show the notch and show the crowd during play, so both are out of date for Dare.
+- **Where the open track sits** (at Stop's place, or closing the day where the rope was) is left to this task. His to rule.
+
+| # | game or step | rule coded | drawn in the look | to do |
+|---|---|---|---|---|
+| 1 | Home | n/a | yes (1E, liked) | whether Home chooses Dare or Read is not in any spec |
+| 2 | Stop, open track: play | yes | notch version only | redraw: no notch, no crowd, three goes |
+| 3 | Stop, open track: reveal | yes | notch version only | redraw: the field over the track, your three stops, the price |
+| 4 | Count: play | yes | yes (4b picked) | carry 4b into the full run |
+| 5 | Count: keep or switch | yes (R-7 open) | yes (5) | bring into line with the aim |
+| 6 | Double or bank (Count, Pair, Sort, Hide and Seek) | yes | round 8, cabinets | redraw |
+| 7 | Count: reveal | yes | no | new |
+| 8 | Repeat: watch, your turn | yes | round 9 (7a, 7b), "still needs work" | redo; he gave no detail |
+| 9 | Repeat: bank or go on, with the round's price | yes | no | new |
+| 10 | Pair: play | single pick not coded | round 8, cabinet | redraw |
+| 11 | Pair: the four, keep or switch | yes | no | new |
+| 12 | Sort | old event only | no | new |
+| 13 | Long jump: play and reveal | yes | no | new; no event code |
+| 14 | Hide | yes | no | new; no event code |
+| 15 | Seek, and the sealed reveal of both | yes | no | new; no event code |
+| 16 | The graph read: Draw | yes | round 8, paper roll | redraw |
+| 17 | The graph read: Select | yes | no | new |
+| 18 | The graph read: Adjust | yes | no | new |
+| 19 | Find yourself (Read, daily) | yes | no | new |
+| 20 | The flag (Sundays) | old Claim screen | no | new |
+| 21 | Scorecard | adding points into Hands and Hunch not done | round 8, with the rope row | redraw without the rope; add the personality word, the twin, the badge |
+| 22 | Sunday: the week's personality, the heat | personality yes; the heat no | no | new, later |
+
+Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework (8). 6 are drawn but out of date or built on round 8's props (2, 3, 6, 10, 16, 21). 12 have never been drawn (7, 9, 11 to 15, 17 to 20, 22).
 
 ## Log
 
