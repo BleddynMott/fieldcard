@@ -21,13 +21,13 @@ function rawTrap(card: number, event: EventId, p = rules().traps): boolean {
 /** Is this event a trap on this card? Seeded, never the same event two cards running. */
 export function isTrap(card: number, event: EventId, p = rules().traps): boolean {
   if (card < 1) return false;
-  const key = `${card}:${event}`;
+  const key = `${p.share}:${card}:${event}`; // the share is in the key (K05 4)
   const hit = trapCache.get(key);
   if (hit !== undefined) return hit;
   // walk forward from the first card so there is no deep recursion
   let prev = false;
   for (let n = 1; n <= card; n++) {
-    const k = `${n}:${event}`;
+    const k = `${p.share}:${n}:${event}`;
     let v = trapCache.get(k);
     if (v === undefined) {
       v = rawTrap(n, event, p) && !prev;
@@ -50,20 +50,20 @@ export interface YesterdayStop {
 }
 
 /**
- * R-5: today's notch goes in the part of the track (of `thirds`) where yesterday's field was most
- * often early, at a seeded place inside it, within Stop's notch range. A tie, or no early stops,
- * goes to the middle part.
+ * R-5 (revised, K05 22): the notch for go `go` goes in the part of the track (of `thirds`) where
+ * yesterday's field was most often early, at a seeded place inside it, within Stop's notch range.
+ * A tie goes to the tied part nearest the middle, then the lower; no early stops, the middle.
  */
-export function notchFromYesterday(card: number, yesterday: YesterdayStop[], p = rules().traps, sp = stopParams()): number {
+export function notchFromYesterday(card: number, yesterday: YesterdayStop[], go = 0, p = rules().traps, sp = stopParams()): number {
   const counts = new Array<number>(p.thirds).fill(0);
   for (const s of yesterday) if (s.off <= p.earlyAt) counts[clamp(Math.floor(s.at * p.thirds), 0, p.thirds - 1)] += 1;
   const top = Math.max(...counts);
   const mid = Math.floor(p.thirds / 2);
   const tops = counts.map((c, i) => (c === top ? i : -1)).filter((i) => i >= 0);
-  const part = top === 0 || tops.length > 1 ? mid : tops[0];
+  const part = top === 0 ? mid : tops.sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid) || a - b)[0];
   const lo = Math.max(part / p.thirds, sp.notchFrom);
   const hi = Math.min((part + 1) / p.thirds, sp.notchTo);
-  const rng = stream(config.seedName, card, 'trap-notch');
+  const rng = stream(config.seedName, card, `trap-notch:${go}`);
   if (hi <= lo) return sp.notchFrom + (sp.notchTo - sp.notchFrom) * rng();
   return lo + (hi - lo) * rng();
 }
@@ -96,10 +96,13 @@ const median = (xs: number[]) => {
 };
 
 /** Bold/Careful (Dare) or Loner/Joiner (Read): your act rate against the field's median rate.
- *  No word under minChances. */
+ *  R-12: for Dare, acts are every bold choice the card had (V1 the bare stretch or going on, V2
+ *  doubles, V4 holding past the field's halfway point), summed by the caller. No word under
+ *  minChances, or with no field to compare with. */
 export function personality(kind: 'dare' | 'read', you: Tally, field: Tally[], p = rules().personality): Personality | null {
   if (you.chances < p.minChances) return null;
   const rates = field.filter((t) => t.chances > 0).map((t) => t.acts / t.chances);
+  if (rates.length === 0) return null;
   const rightRates = field.filter((t) => t.acts > 0).map((t) => t.right / t.acts);
   const medRate = median(rates);
   const words = kind === 'dare' ? p.dare : p.read;
@@ -114,15 +117,16 @@ export interface TwinCandidate {
   choices: number[]; // the same choices, in the same order, as yours
   town?: string;
   optedIn: boolean;
+  modelled?: boolean;
 }
 
-/** The nearest field player by your choices (Euclidean); a tie goes to the earliest. The town
- *  comes back only if they opted in. */
+/** The nearest real field player by your choices (Euclidean); modelled players are never a twin
+ *  (K05 8); a tie goes to the earliest. The town comes back only if they opted in. */
 export function crowdTwin(mine: number[], field: TwinCandidate[]): { index: number; distance: number; town?: string } | null {
   let best = -1;
   let bestD = Infinity;
   field.forEach((c, i) => {
-    if (c.choices.length !== mine.length) return;
+    if (c.modelled || c.choices.length !== mine.length) return;
     const d = Math.sqrt(c.choices.reduce((s, x, k) => s + (x - mine[k]) * (x - mine[k]), 0));
     if (d < bestD) {
       bestD = d;

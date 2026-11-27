@@ -459,11 +459,13 @@
       "doubleWrong": -1
     },
     "rope": {
-      "step": 0.1,
+      "_about": "V4. step 0.5 as signed ('x1, x1.5, x2 and on'). snapped: 'above' records a snapped player one step above the snap (R-8), because recording them at the snap makes the snap a one-way ratchet (K05 finding 1); 'at' is the signed wording.",
+      "step": 0.5,
       "max": 10,
       "snapKeep": 0.5,
       "emptySnap": 2,
-      "decimals": 1
+      "decimals": 1,
+      "snapped": "above"
     },
     "hideSeek": {
       "spots": 12,
@@ -483,7 +485,15 @@
         "bush",
         "cones",
         "van",
-        "steps"
+        "steps",
+        "tyres",
+        "nets",
+        "hut",
+        "log",
+        "trolley",
+        "flowerbed",
+        "sandpit",
+        "fence"
       ],
       "habit": [
         3,
@@ -497,15 +507,23 @@
         3,
         1,
         2,
-        1
+        1,
+        2,
+        1,
+        2,
+        2,
+        1,
+        1,
+        1,
+        2
       ]
     },
     "meet": {
-      "_about": "Hunch when you and the crowd disagree. As signed (G-00d): keep and switch both +1 closer / -1 further. Probe B4 (tasks/G-02b.md) tested switch 0/0 and keep +2/-1: his call.",
-      "keepCloser": 1,
+      "_about": "Hunch when you and the crowd disagree. R-7: keep +2 if closer / -1 if further, switch 0. G-00d is split: Read 2, Read 4 and ruling 2 say going with the crowd is safe and earns no Hunch; Read 3 says both score +1/-1. Probe B (tasks/G-02b.md): with +1/-1 either way nobody should ever keep, so this is the only setting where the choice is real. His call.",
+      "keepCloser": 2,
       "keepFurther": -1,
-      "switchCloser": 1,
-      "switchFurther": -1,
+      "switchCloser": 0,
+      "switchFurther": 0,
       "four": 4
     },
     "draw": {
@@ -516,10 +534,14 @@
       "recipes": [
         "tidy",
         "spread",
-        "shift"
+        "shift",
+        "skew"
       ],
       "spreadFactor": 1.7,
       "shiftBins": 2,
+      "skew": 0.12,
+      "noise": 0.25,
+      "minSd": 0.35,
       "maxOverlap": 85
     },
     "adjust": {
@@ -533,10 +555,12 @@
       "strengthFrom": 0.4,
       "strengthTo": 1,
       "thirds": 3,
-      "earlyAt": -1
+      "earlyAt": -1,
+      "_about": "Z1. R-5 (revised after K05 22): the notch goes in the part where yesterday's field was most often early; a tie goes to the tied part nearest the middle, then the lower; no early stops, the middle."
     },
     "personality": {
-      "minChances": 5,
+      "_about": "Z4. minChances: the fewest dares (or breaks) before a word shows; a card has 3 or 4, so a daily word needs 3 (R-12).",
+      "minChances": 3,
       "dare": [
         "Bold",
         "Careful"

@@ -28,27 +28,34 @@ const close = (a: number[] | null, b: number[]) => {
   (a as number[]).forEach((x, i) => expect(x).toBeCloseTo(b[i], 2));
 };
 
+const SYM = { keepCloser: 1, keepFurther: -1, switchCloser: 1, switchFurther: -1, four: 4 };
+
 describe('Q1 and Q2: answer blind, then meet the crowd', () => {
-  it('Count: keeping the closer answer +1, the further -1, equally close 0, agreeing 0', () => {
-    expect(meetHunch(15, 13, 'keep', 17, numberDistance)).toBe(1);
-    expect(meetHunch(15, 13, 'switch', 17, numberDistance)).toBe(-1);
-    expect(meetHunch(15, 19, 'keep', 17, numberDistance)).toBe(0);
-    expect(meetHunch(15, 15, 'switch', 99, numberDistance)).toBe(0);
-  });
-  it('trusting a good crowd scores too: switching to the right answer is +1', () => {
-    expect(meetHunch(12, 17, 'switch', 17, numberDistance)).toBe(1);
-  });
-  it('the signed rule is symmetric (+1 / -1 for keep and switch); the B4 option scores keep alone', () => {
+  it('the default (R-7): keeping is the dare (+2 / -1), switching is safe (0)', () => {
     const P = rules().meet;
-    expect([P.keepCloser, P.keepFurther, P.switchCloser, P.switchFurther]).toEqual([1, -1, 1, -1]);
+    expect([P.keepCloser, P.keepFurther, P.switchCloser, P.switchFurther]).toEqual([2, -1, 0, 0]);
+    expect(meetHunch(15, 13, 'keep', 17, numberDistance)).toBe(2);
+    expect(meetHunch(13, 15, 'keep', 17, numberDistance)).toBe(-1);
+    expect(meetHunch(15, 13, 'switch', 17, numberDistance)).toBe(0);
+    expect(meetHunch(13, 15, 'switch', 17, numberDistance)).toBe(0);
+  });
+  it('Count, with the Read 3 wording (both score): keeping the closer answer +1, the further -1, equally close 0, agreeing 0', () => {
+    expect(meetHunch(15, 13, 'keep', 17, numberDistance, SYM)).toBe(1);
+    expect(meetHunch(15, 13, 'switch', 17, numberDistance, SYM)).toBe(-1);
+    expect(meetHunch(15, 19, 'keep', 17, numberDistance, SYM)).toBe(0);
+    expect(meetHunch(15, 15, 'switch', 99, numberDistance, SYM)).toBe(0);
+    expect(meetHunch(12, 17, 'switch', 17, numberDistance, SYM)).toBe(1);
+  });
+  it('the B4 option scores keep alone, +2 / -1', () => {
     const B4 = { keepCloser: 2, keepFurther: -1, switchCloser: 0, switchFurther: 0, four: 4 };
     expect(meetHunch(15, 13, 'keep', 17, numberDistance, B4)).toBe(2);
     expect(meetHunch(15, 13, 'switch', 17, numberDistance, B4)).toBe(0);
     expect(meetHunch(13, 15, 'keep', 17, numberDistance, B4)).toBe(-1);
   });
   it('Pair: right vs wrong; both wrong is 0', () => {
-    expect(meetHunch('a', 'b', 'switch', 'b', pickDistance)).toBe(1);
+    expect(meetHunch('a', 'b', 'switch', 'b', pickDistance, SYM)).toBe(1);
     expect(meetHunch('a', 'b', 'keep', 'b', pickDistance)).toBe(-1);
+    expect(meetHunch('b', 'a', 'keep', 'b', pickDistance)).toBe(2);
     expect(meetHunch('a', 'b', 'keep', 'c', pickDistance)).toBe(0);
   });
   it('the hill peak: most common; a tie to the one nearest the median, then the lower', () => {
@@ -75,6 +82,11 @@ describe('Q1 and Q2: answer blind, then meet the crowd', () => {
     for (let k = 0; k < 4000; k++) drawFour(20, rng).forEach((i) => seen[i]++);
     seen.forEach((n) => expect(n).toBeGreaterThan(600)); // 800 expected each
   });
+  it('R-11: each player meets their own four, the same each time', async () => {
+    const { fourFor } = await import('../src/lib/rules/read');
+    expect(fourFor(3, 'p1', 500)).toEqual(fourFor(3, 'p1', 500));
+    expect(fourFor(3, 'p1', 500)).not.toEqual(fourFor(3, 'p2', 500));
+  });
   it("the four's pick: most common, a tie to the earliest drawn", () => {
     expect(majority(['a', 'b', 'b', 'a'])).toBe('a');
     expect(majority(['c', 'b', 'b', 'a'])).toBe('b');
@@ -88,6 +100,7 @@ describe('Q1 and Q2: answer blind, then meet the crowd', () => {
       { blindRight: true, finalRight: true, switched: false },
     ];
     expect(aschLine(r)).toEqual({ blindRight: 75, finalRight: 50, switched: 25 });
+    expect(aschLine([])).toBeNull();
   });
 });
 
@@ -134,6 +147,34 @@ describe('Q3: draw, select, adjust', () => {
     expect(recipes.size).toBeGreaterThan(1); // the recipe varies
     const sides = new Set(cards.map((c) => selectPiles(c, real).realSide));
     expect(sides.size).toBe(2);
+    // the fakes are roughened by seeded noise, so they are never the clean recipe (K05 6);
+    // whether that is enough to hide them is a tap-test question, not a unit test
+  });
+  it('the fakes carry the noise', async () => {
+    const { makeFake } = await import('../src/lib/rules/read');
+    const P = rules().select;
+    const real = [2, 6, 14, 22, 20, 14, 9, 6, 4, 2, 1, 0];
+    for (const r of P.recipes) {
+      const clean = makeFake(real, r, 1, mulberry32(4), { ...P, noise: 0 });
+      const rough = makeFake(real, r, 1, mulberry32(4));
+      expect(rough).not.toEqual(clean);
+    }
+  });
+  it('R-4: a fake too close to the real pile is replaced by the next recipe', async () => {
+    const { makeFake } = await import('../src/lib/rules/read');
+    const P = rules().select;
+    // a real pile that is already a clean bell: the tidy fake is too close to it, so not used
+    const bell = [1, 3, 7, 12, 16, 17, 16, 12, 7, 3, 1, 5];
+    for (const c of cards) {
+      const s = selectPiles(c, bell);
+      const fake = s.realSide === 'left' ? s.right : s.left;
+      expect(overlap(fake, bell)).toBeLessThanOrEqual(P.maxOverlap);
+    }
+    expect(makeFake(bell, 'shift', 1, mulberry32(1))?.reduce((a, b) => a + b, 0)).toBeCloseTo(100, 6);
+    // a shift drops what falls off the end, so the end bin does not swell
+    const flat = Array(12).fill(100 / 12);
+    const shifted = makeFake(flat, 'shift', 1, mulberry32(2), { ...P, noise: 0 }) as number[];
+    expect(shifted[11]).toBeLessThan(12);
   });
   it('adjust: a shift of 1 to maxShift bins, never 0; the score', () => {
     const M = rules().adjust.maxShift;
@@ -154,9 +195,12 @@ describe('Q4: find yourself', () => {
   it('"You thought 70%; you beat 57%. 13 points too proud": Hunch -13', () => {
     expect(findYourself(70, 57)).toEqual({ gap: 13, hunch: -13 });
     expect(findYourself(40, 57)).toEqual({ gap: -17, hunch: -17 });
+    // the same rounding either side (K05 14)
+    expect(findYourself(70.5, 58).hunch).toBe(-13);
+    expect(findYourself(45.5, 58).hunch).toBe(-13);
   });
   it('"71% thought they beat most of the field": the share above the middle', () => {
     expect(thoughtAboveMiddle([60, 40, 70, 50])).toBe(50);
-    expect(thoughtAboveMiddle([])).toBe(0);
+    expect(thoughtAboveMiddle([])).toBeNull();
   });
 });

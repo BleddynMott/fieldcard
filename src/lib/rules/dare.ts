@@ -13,6 +13,7 @@ import { rules } from './params';
  */
 export function stopPrice(you: number, notchHalf: number, field: number[], p = rules().stopPrice): number {
   if (!(notchHalf > 0)) throw new Error('stopPrice: notchHalf must be positive');
+  if (!(p.window > 0) || !(p.crowdedRatio > p.rareRatio)) throw new Error('stopPrice: window must be positive and crowdedRatio above rareRatio');
   if (Math.abs(you) > notchHalf) return 0;
   const inside = field.filter((f) => Math.abs(f) <= notchHalf);
   if (inside.length === 0) return p.maxPrice;
@@ -83,7 +84,7 @@ export function doubleOrBank(right: boolean, base: number, choice: DareChoice, p
 /** The multiples the pot climbs through: 1, 1 + step, ... up to max. */
 export function ropeLadder(p = rules().rope): number[] {
   const out: number[] = [];
-  const n = Math.round((p.max - 1) / p.step);
+  const n = Math.floor((p.max - 1) / p.step + 1e-9); // never past max (K05 16)
   for (let i = 0; i <= n; i++) out.push(round(1 + i * p.step, p.decimals));
   return out;
 }
@@ -96,9 +97,14 @@ export function snapPoint(fieldRecords: number[], p = rules().rope): number {
   return s[Math.ceil(s.length / 2) - 1];
 }
 
-/** What a player adds to the field: where they let go, or the snap if it snapped on them. */
-export function ropeRecord(release: number | null, snap: number): number {
-  return release !== null && release < snap ? release : snap;
+/**
+ * What a player adds to the field: where they let go; if it snapped on them, R-8: one step above
+ * the snap ('above'), since they were still holding. Recording them at the snap ('at', the signed
+ * wording) makes every record at most the snap, so the lower median can never rise (K05 1).
+ */
+export function ropeRecord(release: number | null, snap: number, p = rules().rope): number {
+  if (release !== null && release < snap) return release;
+  return p.snapped === 'above' ? round(snap + p.step, p.decimals) : snap;
 }
 
 /** Letting go below the snap banks dayPoints x your multiple; otherwise you keep snapKeep of it. */

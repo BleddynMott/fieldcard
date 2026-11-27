@@ -50,7 +50,8 @@ export function countPeak(answers: number[]): number | undefined {
   return modes[0];
 }
 
-/** Pair's four: `four` distinct field players drawn at random (all of them if the field is smaller). */
+/** Pair's four: `four` distinct field players drawn at random (all of them if the field is smaller).
+ *  Use fourFor to seed it per player (R-11), so different players meet different fours. */
 export function drawFour(fieldSize: number, rng: Rng, p = rules().meet): number[] {
   const idx = Array.from({ length: fieldSize }, (_, i) => i);
   const k = Math.min(p.four, fieldSize);
@@ -59,6 +60,11 @@ export function drawFour(fieldSize: number, rng: Rng, p = rules().meet): number[
     [idx[i], idx[j]] = [idx[j], idx[i]];
   }
   return idx.slice(0, k);
+}
+
+/** R-11: the four for one player, seeded by card and the player's own key. */
+export function fourFor(card: number, playerKey: string, fieldSize: number, p = rules().meet): number[] {
+  return drawFour(fieldSize, stream(config.seedName, card, `four:${playerKey}`), p);
 }
 
 /** The crowd's pick among the four: the most common; a tie goes to the earliest drawn. */
@@ -81,10 +87,12 @@ export interface MeetRecord {
   switched: boolean;
 }
 
-/** The Asch line, from today's own records: right blind, right after the crowd, switched (0-100). */
-export function aschLine(records: MeetRecord[]): { blindRight: number; finalRight: number; switched: number } {
+/** The Asch line, from today's own records: right blind, right after the crowd, switched (0-100).
+ *  null for an empty field: no line, rather than a false 0 (K05 23). */
+export function aschLine(records: MeetRecord[]): { blindRight: number; finalRight: number; switched: number } | null {
   const n = records.length;
-  const share = (f: (r: MeetRecord) => boolean) => (n === 0 ? 0 : (records.filter(f).length / n) * 100);
+  if (n === 0) return null;
+  const share = (f: (r: MeetRecord) => boolean) => (records.filter(f).length / n) * 100;
   return { blindRight: share((r) => r.blindRight), finalRight: share((r) => r.finalRight), switched: share((r) => r.switched) };
 }
 
@@ -165,27 +173,49 @@ function meanSd(shares: number[]): { mean: number; sd: number } {
   return { mean, sd: Math.sqrt(v) };
 }
 
-function normalPile(bins: number, mean: number, sd: number): number[] {
-  const s = Math.max(sd, 0.35);
+function normalPile(bins: number, mean: number, sd: number, minSd: number): number[] {
+  const s = Math.max(sd, minSd);
   return normalise(Array.from({ length: bins }, (_, i) => dexp(-((i - mean) * (i - mean)) / (2 * s * s)))) as number[];
 }
 
-function shiftPile(shares: number[], by: number): number[] {
+/** Moves the pile by whole bins; what falls off an end is dropped and the rest renormalised, so
+ *  no end bin swells (K05 6). null if nothing is left. */
+function shiftPile(shares: number[], by: number): number[] | null {
   const out = new Array<number>(shares.length).fill(0);
-  shares.forEach((x, i) => (out[clamp(i + by, 0, shares.length - 1)] += x));
-  return out;
+  shares.forEach((x, i) => {
+    const j = i + by;
+    if (j >= 0 && j < shares.length) out[j] += x;
+  });
+  return normalise(out);
 }
 
-export function makeFake(real: number[], recipe: SelectRecipe, sign: 1 | -1, p = rules().select): number[] {
+/** Leans the pile the other way from the real one: a linear tilt across the bins. */
+function skewPile(shares: number[], mean: number, skew: number): number[] | null {
+  const mid = (shares.length - 1) / 2;
+  const dir = mean > mid ? -1 : 1; // lean away from where the real pile leans
+  return normalise(shares.map((x, i) => x * Math.max(0, 1 + dir * skew * (i - mid))));
+}
+
+/** One fake by its recipe, then roughened by seeded noise so smoothness is not a tell (K05 6). */
+export function makeFake(real: number[], recipe: SelectRecipe, sign: 1 | -1, rng: Rng, p = rules().select): number[] | null {
   const { mean, sd } = meanSd(real);
-  if (recipe === 'tidy') return normalPile(real.length, mean, sd);
-  if (recipe === 'spread') return normalPile(real.length, mean, sd * p.spreadFactor);
-  return shiftPile(real, sign * p.shiftBins);
+  const base =
+    recipe === 'tidy'
+      ? normalPile(real.length, mean, sd, p.minSd)
+      : recipe === 'spread'
+        ? normalPile(real.length, mean, sd * p.spreadFactor, p.minSd)
+        : recipe === 'skew'
+          ? skewPile(real, mean, p.skew)
+          : shiftPile(real, sign * p.shiftBins);
+  if (!base) return null;
+  return normalise(base.map((x) => Math.max(0, x * (1 + p.noise * (2 * rng() - 1)))));
 }
 
 /**
- * Select's two piles for a card. The recipe is seeded; R-4: a fake overlapping the real pile by
- * more than maxOverlap is replaced by the next recipe, then by wider shifts.
+ * Select's two piles for a card. The recipe is seeded. R-4: a fake overlapping the real pile by
+ * more than maxOverlap is replaced by the next recipe in config order; R-4b: if none differs
+ * enough, by wider shifts; if still none (a pile too flat to fake), it throws, and the screen
+ * shows another form that day.
  */
 export function selectPiles(card: number, real: number[], p = rules().select): { left: number[]; right: number[]; realSide: 'left' | 'right'; recipe: SelectRecipe | 'wide-shift' } {
   const rng = stream(config.seedName, card, 'select');
@@ -196,8 +226,8 @@ export function selectPiles(card: number, real: number[], p = rules().select): {
   let recipe: SelectRecipe | 'wide-shift' = p.recipes[start];
   for (let k = 0; k < p.recipes.length && !fake; k++) {
     const r = p.recipes[(start + k) % p.recipes.length];
-    const f = makeFake(real, r, sign);
-    if (overlap(f, real) <= p.maxOverlap) {
+    const f = makeFake(real, r, sign, rng);
+    if (f && overlap(f, real) <= p.maxOverlap) {
       fake = f;
       recipe = r;
     }
@@ -205,7 +235,7 @@ export function selectPiles(card: number, real: number[], p = rules().select): {
   for (let by = p.shiftBins + 1; by < real.length && !fake; by++) {
     for (const s of [sign, -sign]) {
       const f = shiftPile(real, s * by);
-      if (!fake && overlap(f, real) <= p.maxOverlap) {
+      if (!fake && f && overlap(f, real) <= p.maxOverlap) {
         fake = f;
         recipe = 'wide-shift';
       }
@@ -231,12 +261,14 @@ export function adjustScore(shift: number, slide: number, p = rules().adjust): n
 
 /** gap = guess - truth (both 0..100, truth your Hands share beaten); Hunch = -|gap|. */
 export function findYourself(guess: number, truth: number): { gap: number; hunch: number } {
-  const gap = Math.round(clamp(guess, 0, 100) - clamp(truth, 0, 100));
+  const raw = clamp(guess, 0, 100) - clamp(truth, 0, 100);
+  const gap = Math.sign(raw) * Math.round(Math.abs(raw)); // the same rounding either side (K05 14)
   return { gap, hunch: -Math.abs(gap) };
 }
 
-/** "71% thought they beat most of the field": the share of guesses above the middle, 0..100. */
-export function thoughtAboveMiddle(guesses: number[], p = rules().find): number {
-  if (guesses.length === 0) return 0;
+/** "71% thought they beat most of the field": the share of guesses above the middle, 0..100;
+ *  null for an empty field. */
+export function thoughtAboveMiddle(guesses: number[], p = rules().find): number | null {
+  if (guesses.length === 0) return null;
   return (guesses.filter((g) => g > p.middle).length / guesses.length) * 100;
 }

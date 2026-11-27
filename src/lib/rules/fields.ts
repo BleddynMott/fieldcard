@@ -18,7 +18,7 @@ import { normalise, pileOf } from './read';
 export interface Fields {
   card: number;
   simulated: true;
-  stop: { notchHalf: number; offs: FieldEntry<number>[] }; // every go's signed offset, % of track
+  stop: { notchHalf: number; offs: FieldEntry<number>[] }; // R-9: each player's middle stop (the median of three), signed, % of track
   count: { truth: number; answers: FieldEntry<number>[] };
   repeat: { longest: FieldEntry<number>[] };
   rope: { records: FieldEntry<number>[] };
@@ -28,6 +28,7 @@ export interface Fields {
 }
 
 const asField = <T>(xs: T[]): FieldEntry<T>[] => rollingField([], xs);
+const middleOf = (xs: number[]) => xs.slice().sort((a, b) => a - b)[Math.floor((xs.length - 1) / 2)];
 const cache = new Map<number, Fields>();
 
 /** Builds the fields afresh, without the cache; for the tests. */
@@ -49,7 +50,9 @@ function build(card: number): Fields {
   const rng = stream(config.seedName, card, 'fields');
   const n = crowd.players.length;
 
-  const releases = Array.from({ length: n }, () => Math.max(S.rope.min, round(S.rope.mean + S.rope.sd * dgauss(rng), rules().rope.decimals)));
+  const RP = rules().rope;
+  const onLadder = (x: number) => round(1 + Math.round((x - 1) / RP.step) * RP.step, RP.decimals);
+  const releases = Array.from({ length: n }, () => onLadder(Math.max(S.rope.min, S.rope.mean + S.rope.sd * dgauss(rng))));
   const records: number[] = [];
   for (const r of releases) records.push(ropeRecord(r, snapPoint(records)));
 
@@ -65,7 +68,7 @@ function build(card: number): Fields {
   return {
     card,
     simulated: true,
-    stop: { notchHalf: (generateStop(card).notchWidth * 100) / 2, offs: asField(crowd.players.flatMap((p) => p.results.stop.offs)) },
+    stop: { notchHalf: (generateStop(card).notchWidth * 100) / 2, offs: asField(crowd.players.map((p) => middleOf(p.results.stop.offs))) },
     count: { truth: generateCount(card).target, answers: asField(crowd.players.map((p) => p.results.count.guess)) },
     repeat: { longest: asField(crowd.players.map((p) => p.results.repeat.longest)) },
     rope: { records: asField(records) },

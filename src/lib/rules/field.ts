@@ -9,11 +9,12 @@ export interface FieldEntry<T> {
   modelled: boolean;
 }
 
-/** real: oldest first, in finish order. modelled: used from the front, only to fill the gap. */
+/** real: oldest first, in finish order. modelled: oldest first too; only its newest fill the gap,
+ *  so the oldest are dropped first (K05 9). */
 export function rollingField<T>(real: T[], modelled: T[], size = rules().field.size): FieldEntry<T>[] {
   const kept = real.slice(Math.max(0, real.length - size)).map((value) => ({ value, modelled: false }));
   const gap = size - kept.length;
-  const fill = modelled.slice(0, Math.max(0, gap)).map((value) => ({ value, modelled: true }));
+  const fill = (gap > 0 ? modelled.slice(Math.max(0, modelled.length - gap)) : []).map((value) => ({ value, modelled: true }));
   return [...fill, ...kept];
 }
 

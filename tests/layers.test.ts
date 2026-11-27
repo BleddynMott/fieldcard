@@ -10,7 +10,7 @@ import { EVENTS } from '../src/lib/week';
 describe('the field', () => {
   it('the last `size` real finishers; the gap filled from modelled, flagged', () => {
     const f = rollingField([1, 2, 3], [10, 11, 12, 13], 5);
-    expect(values(f)).toEqual([10, 11, 1, 2, 3]);
+    expect(values(f)).toEqual([12, 13, 1, 2, 3]); // yesterday's newest fill the gap; the oldest drop first
     expect(f.map((e) => e.modelled)).toEqual([true, true, false, false, false]);
     expect(modelledShare(f)).toBe(40);
   });
@@ -33,6 +33,14 @@ describe('the field', () => {
     expect(share0).toBeGreaterThan(0.7);
     expect(share0).toBeLessThan(0.8);
     expect(() => fromHabits([0, 0], 1, rng)).toThrow();
+  });
+});
+
+describe('config', () => {
+  it('every number in rules is finite', async () => {
+    const { badNumbers } = await import('../src/lib/rules/params');
+    expect(badNumbers()).toEqual([]);
+    expect(badNumbers({ a: 1, b: { c: Number.NaN } })).toEqual(['rules.b.c']);
   });
 });
 
@@ -66,18 +74,34 @@ describe('Z1 traps', () => {
       expect(n).toBeLessThanOrEqual(sp.notchTo);
     }
   });
-  it('a tie, or no early stops, goes to the middle part', () => {
-    const tie = [
+  it('no early stops: the middle part; a tie: the tied part nearest the middle, then the lower', () => {
+    const sp = stopParams();
+    const tieEnds = [
       { at: 0.1, off: -2 },
       { at: 0.9, off: -2 },
     ];
+    const tieMid = [
+      { at: 0.1, off: -2 },
+      { at: 0.5, off: -2 },
+    ];
     for (let c = 1; c <= 30; c++) {
-      for (const y of [tie, []]) {
-        const n = notchFromYesterday(c, y);
-        expect(n).toBeGreaterThanOrEqual(1 / 3);
-        expect(n).toBeLessThanOrEqual(2 / 3);
-      }
+      const none = notchFromYesterday(c, []);
+      expect(none >= 1 / 3 && none <= 2 / 3).toBe(true);
+      const e = notchFromYesterday(c, tieEnds); // parts 0 and 2 tie, both 1 from the middle: the lower
+      expect(e >= sp.notchFrom && e <= 1 / 3).toBe(true);
+      const m = notchFromYesterday(c, tieMid);
+      expect(m >= 1 / 3 && m <= 2 / 3).toBe(true);
     }
+  });
+  it('each of Stop\'s goes gets its own place in the part', () => {
+    const y = Array.from({ length: 5 }, () => ({ at: 0.5, off: -2 }));
+    expect(new Set([0, 1, 2].map((g) => notchFromYesterday(4, y, g))).size).toBe(3);
+  });
+  it('the trap cache keeps shares apart (K05 4)', () => {
+    const hi = { ...rules().traps, share: 0.9 };
+    const lo = Array.from({ length: 200 }, (_, i) => i + 1).filter((c) => isTrap(c, 'stop')).length;
+    const many = Array.from({ length: 200 }, (_, i) => i + 1).filter((c) => isTrap(c, 'stop', hi)).length;
+    expect(many).toBeGreaterThan(lo);
   });
   it('the decoy: yesterday\'s most-picked wrong answer, a tie to the lowest key', () => {
     expect(mostPickedWrong(['c', 'b', 'c', 'b', 'a'])).toBe('b');
@@ -102,6 +126,9 @@ describe('Z4 personality', () => {
     expect(personality('read', { acts: 15, chances: 20, right: 5 }, field)?.word).toBe('Loner');
     expect(personality('read', { acts: 2, chances: 20, right: 1 }, field)?.word).toBe('Joiner');
   });
+  it('no word with no field to compare with', () => {
+    expect(personality('dare', { acts: 3, chances: 4, right: 1 }, [])).toBeNull();
+  });
   it('no word under minChances', () => {
     expect(personality('dare', { acts: 3, chances: rules().personality.minChances - 1, right: 1 }, field)).toBeNull();
   });
@@ -117,6 +144,8 @@ describe('Z2 crowd twin', () => {
     expect(crowdTwin([1, 1, 1], field)).toEqual({ index: 1, distance: 0, town: 'Lisbon' });
     expect(crowdTwin([1, 0, 1], field)).toEqual({ index: 0, distance: 0 });
     expect(crowdTwin([1, 1], field)).toBeNull();
+    // modelled players are never a twin
+    expect(crowdTwin([1, 0, 1], [{ choices: [1, 0, 1], optedIn: false, modelled: true }, ...field])).toEqual({ index: 1, distance: 0 });
   });
 });
 
@@ -137,17 +166,21 @@ describe('the simulated fields (until G-03)', () => {
         expect(list.every((e) => e.modelled)).toBe(true);
       }
       const v = <T,>(xs: { value: T }[]) => xs.map((e) => e.value);
-      const price = stopPrice(0, f.stop.notchHalf, v(f.stop.offs));
-      expect(price >= 1 && price <= 5).toBe(true);
+      expect(f.stop.offs.length).toBe(400); // one stop per simulated player (K05 3)
+      for (const at of [-f.stop.notchHalf, 0, f.stop.notchHalf / 2]) {
+        const price = stopPrice(at, f.stop.notchHalf, v(f.stop.offs));
+        expect(price >= 1 && price <= 5).toBe(true);
+      }
       repeatPrices(v(f.repeat.longest), roundLengths()).forEach((p) => expect(p >= 1 && p <= rules().repeatBank.maxPrice).toBe(true));
       const snap = snapPoint(v(f.rope.records));
       expect(snap).toBeGreaterThanOrEqual(1);
       expect(snap).toBeLessThanOrEqual(ladder[ladder.length - 1]);
-      expect(longJumpScore(1, v(f.longJump.takeoffs))).toBeGreaterThanOrEqual(0);
+      const lj = longJumpScore(1, v(f.longJump.takeoffs));
+      expect(lj >= 0 && lj <= 100).toBe(true);
       const s0 = f.hideSeek.playground[0];
       for (const x of [hideScore(s0, v(f.hideSeek.seeks)), seekScore(s0, v(f.hideSeek.hides))]) expect(x >= 0 && x <= 100).toBe(true);
       expect(countPeak(v(f.count.answers))).toBeDefined();
-      const above = thoughtAboveMiddle(v(f.find.guesses));
+      const above = thoughtAboveMiddle(v(f.find.guesses)) as number;
       expect(above >= 0 && above <= 100).toBe(true);
     }
     const { simulateFields } = await import('../src/lib/rules/fields');
