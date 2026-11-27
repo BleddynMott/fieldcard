@@ -15,6 +15,8 @@ import {
   ropeHolds,
   ropeLadder,
   ropePoints,
+  ropeRarestPoints,
+  ropeRarity,
   ropeRecord,
   snapPoint,
   stillOn,
@@ -184,9 +186,6 @@ describe('V4 hold your day (the signed median rule, kept for comparison)', () =>
 
 describe('V4 hold your day: R-13, the load rule (the default)', () => {
   const L: RulesParams['rope'] = { step: 0.5, max: 10, snapKeep: 0.5, emptySnap: 2, decimals: 1, snapped: 'above', snapRule: 'load', capacity: 1.5, ceilingShare: 0.1 };
-  it('is the default switch (its numbers are his to tune, so not pinned here)', () => {
-    expect(rules().rope.snapRule).toBe('load');
-  });
   it('the rope holds capacity / multiple of the field, at most all of it', () => {
     expect(ropeHolds(1.5, L)).toBe(1);
     expect(ropeHolds(2, L)).toBe(0.75);
@@ -243,6 +242,42 @@ describe('V4 hold your day: R-13, the load rule (the default)', () => {
     const early = snapPoint([1, 1, 1, 1, 1.5, 1.5, 2, 2, 3, 3], L);
     expect(ropePoints(100, 1, bold, L)).toBeGreaterThan(ropePoints(100, 2, bold, L));
     expect(ropePoints(100, 2, early, L)).toBeGreaterThan(ropePoints(100, 1, early, L));
+  });
+});
+
+describe('V4 hold your day: R-16, his rope (the default): let go where fewest let go', () => {
+  const R: RulesParams['rope'] = { ...rules().rope, snapRule: 'rarest', rarestScale: 0.5, step: 0.5, max: 10, decimals: 1 };
+  it('is the default switch (its numbers are his to tune, so not pinned here)', () => {
+    expect(rules().rope.snapRule).toBe('rarest');
+  });
+  it('an empty field pays 5; a rung nobody chose pays 5; the rung everyone chose pays 1', () => {
+    expect(ropeRarity(2, [], R)).toBe(5);
+    const all2 = Array(10).fill(2);
+    expect(ropeRarity(2, all2, R)).toBe(1);
+    expect(ropeRarity(3, all2, R)).toBe(5);
+  });
+  it('by hand: one record on each of the 19 rungs is an even spread, ratio 1, price 3', () => {
+    // ratio 1: (1.5 - 1) / (1.5 - 0.25) = 0.4 of the way to rare, 1 + 4 x 0.4 = 2.6, rounded to 3
+    const even = ropeLadder(R);
+    expect(even.length).toBe(19);
+    for (const r of even) expect(ropeRarity(r, even, R)).toBe(3);
+  });
+  it('only your own rung counts, not its neighbours', () => {
+    expect(ropeRarity(2.5, Array(10).fill(2), R)).toBe(5);
+  });
+  it('points: day points x price x 0.5, so x0.5 to x2.5; the multiple itself is not paid', () => {
+    const all2 = Array(10).fill(2);
+    expect(ropeRarestPoints(100, 3, all2, R)).toBe(250);
+    expect(ropeRarestPoints(100, 10, all2, R)).toBe(250); // the top pays no more than any empty rung
+    expect(ropeRarestPoints(100, 2, all2, R)).toBe(50);
+  });
+  it('a release off the ladder throws; the rarest rope has no snap', () => {
+    expect(() => ropeRarity(2.2, [], R)).toThrow();
+    expect(() => snapPoint([2], R)).toThrow();
+  });
+  it('no choice wins every time: the same rung pays 5 one day and 1 the next', () => {
+    expect(ropeRarity(1, Array(10).fill(3), R)).toBeGreaterThan(ropeRarity(3, Array(10).fill(3), R));
+    expect(ropeRarity(3, Array(10).fill(1), R)).toBeGreaterThan(ropeRarity(1, Array(10).fill(1), R));
   });
 });
 

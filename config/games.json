@@ -473,7 +473,9 @@
       "decimals": 1,
       "snapped": "above",
       "_snapRule": "R-13 (his 'rethink rope', 28 Nov), OPEN: not sound yet (K05 round 3; probe A3: 'always x3' beats every crowd-reading strategy, x1.5 is risk-free). 'load': it snaps at the first rung where more of the field is still on than it holds there, min(1, capacity / multiple), or at the ceiling, one rung past the record where the bravest ceilingShare start, whichever is lower. 'median': the signed rule, which slides (probe A). 'medianPlus': one rung past the median; steady, but the same best release every day.",
-      "snapRule": "load",
+      "_rarest": "R-16, his rope (28 Nov, 'do mine'), the default: no snap; you're paid by how few of the field let go at your rung, x rarestScale per price point (1 to 5, as Stop's), so x0.5 to x2.5.",
+      "snapRule": "rarest",
+      "rarestScale": 0.5,
       "capacity": 1.5,
       "ceilingShare": 0.1
     },

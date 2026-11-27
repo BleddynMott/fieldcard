@@ -8,7 +8,7 @@ import { describe, it } from 'vitest';
 import { config } from '../src/lib/config';
 import { dexp, dgauss } from '../src/lib/dmath';
 import { mulberry32, type Rng } from '../src/lib/rng';
-import { openStopPrice, ropePoints, ropeRecord, snapPoint, stopPrice } from '../src/lib/rules/dare';
+import { openStopPrice, ropeLadder, ropePoints, ropeRarestPoints, ropeRarity, ropeRecord, snapPoint, stopPrice } from '../src/lib/rules/dare';
 import { rollingField, values } from '../src/lib/rules/field';
 import { trapFor } from '../src/lib/rules/layers';
 import { rules } from '../src/lib/rules/params';
@@ -168,6 +168,47 @@ describe('probe A3: the rope with a mixed crowd of learners', () => {
         log(`A3. ${''.padEnd(30)} best fixed  ${nights.slice(1).map((n) => 'x' + n.best).join(' ')}`);
       }
       log(`A3. ${label.padEnd(30)} earned per 100: ${Object.entries(earned).map(([k, [s, n]]) => `${k} ${n ? Math.round(s / n) : '-'}`).join(', ')} | always ${fixed.map((r, i) => `x${r} ${Math.round(runFixed[i] / 56000)}`).join(', ')} | ceiling set the snap for ${Math.round((100 * byCeiling) / faced)}%`);
+    }
+  });
+});
+
+describe('probe A4: his rope (R-16, let go where fewest let go), 28 days', () => {
+  it('runs', () => {
+    // 2,000 players a day; gut players round x2.2 (sd 0.6) on the ladder. Learners rise to 70%:
+    // half "copy" (last night's emptiest rung, a tie at random), half "spread" (one of last
+    // night's five emptiest, at random). Reported over 3 seeds: what each kind earned per 100
+    // points, and what always letting go at a fixed rung earned. Waiting longer costs nothing here;
+    // in play, holding to x10 takes time. A model, not a measurement.
+    const P = { ...rules().rope, snapRule: 'rarest' as const };
+    const ladder = ropeLadder(P);
+    const onLadder = (x: number) => ladder.reduce((b, r) => (Math.abs(r - x) < Math.abs(b - x) ? r : b), 1);
+    const fixed = [1, 1.5, 2, 2.5, 3, 4, 5, 7, 10];
+    for (const seed of [11, 12, 13]) {
+      const rng = mulberry32(seed);
+      const gut = () => onLadder(Math.max(1.1, 2.2 + 0.6 * dgauss(rng)));
+      let field: number[] = Array.from({ length: 500 }, gut);
+      const earned: Record<string, [number, number]> = { gut: [0, 0], copy: [0, 0], spread: [0, 0] };
+      const always = fixed.map(() => 0);
+      const tops: number[] = [];
+      for (let day = 1; day <= 28; day++) {
+        const learn = Math.min(0.7, (0.7 * (day - 1)) / 13);
+        const night = ladder.map((r) => ropeRarity(r, field, P) + rng() * 1e-3); // tie-break at random
+        const order = ladder.map((r, i) => [r, night[i]] as const).sort((a, b) => b[1] - a[1]).map(([r]) => r);
+        tops.push(order[0]);
+        const today: number[] = [];
+        for (let k = 0; k < 2000; k++) {
+          const f = values(rollingField(today, field, 500));
+          const kind = rng() >= learn ? 'gut' : rng() < 0.5 ? 'copy' : 'spread';
+          const release = kind === 'gut' ? gut() : kind === 'copy' ? order[0] : order[Math.floor(rng() * 5)];
+          earned[kind][0] += ropeRarestPoints(100, release, f, P);
+          earned[kind][1] += 1;
+          fixed.forEach((r, i) => (always[i] += ropeRarestPoints(100, r, f, P)));
+          today.push(release);
+        }
+        field = today.slice(-500);
+      }
+      log(`A4. seed ${seed}: earned per 100: ${Object.entries(earned).map(([k, [s, n]]) => `${k} ${n ? Math.round(s / n) : '-'}`).join(', ')} | always ${fixed.map((r, i) => `x${r} ${Math.round(always[i] / 56000)}`).join(', ')}`);
+      if (seed === 11) log(`A4. seed 11: last night's emptiest rung, day by day: ${tops.map((t) => 'x' + t).join(' ')}`);
     }
   });
 });

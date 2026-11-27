@@ -54,8 +54,9 @@ function build(card: number): Fields {
   const RP = rules().rope;
   const onLadder = (x: number) => round(1 + Math.round((x - 1) / RP.step) * RP.step, RP.decimals);
   const releases = Array.from({ length: n }, () => onLadder(Math.max(S.rope.min, S.rope.mean + S.rope.sd * dgauss(rng))));
+  // R-16: the 'rarest' rope has no snap, so a record is the release itself
   const records: number[] = [];
-  for (const r of releases) records.push(ropeRecord(r, snapPoint(records)));
+  for (const r of releases) records.push(RP.snapRule === 'rarest' ? r : ropeRecord(r, snapPoint(records)));
 
   const playground = generatePlayground(card);
   const weights = playground.map((s) => HS.habit[s.kind]);

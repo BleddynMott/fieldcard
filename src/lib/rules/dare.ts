@@ -155,6 +155,7 @@ export function stillOn(m: number, fieldRecords: number[]): number {
  * - 'medianPlus': one rung past the median. Steady, but the same best release every day (A3).
  */
 export function snapPoint(fieldRecords: number[], p = rules().rope): number {
+  if (p.snapRule === 'rarest') throw new Error("snapPoint: the 'rarest' rope has no snap (R-16); use ropeRarity");
   if (fieldRecords.length === 0) return p.emptySnap;
   const s = fieldRecords.slice().sort((a, b) => a - b);
   const median = s[Math.ceil(s.length / 2) - 1];
@@ -179,6 +180,30 @@ export function ropeRecord(release: number | null, snap: number, p = rules().rop
   if (release !== null && release < snap) return release;
   // capped at the ladder's top, so holders can't lift the snap past x max (K05 round 2, 1)
   return p.snapped === 'above' ? Math.min(round(snap + p.step, p.decimals), p.max) : snap;
+}
+
+/**
+ * R-16, his rope (28 Nov, "do mine": "pick the point to stop that least people have stopped
+ * before, then you can see compared to distribution overlayed on top afterwards"). snapRule
+ * 'rarest': no snap. You let go at a rung, and the price is how few of the field let go at that
+ * same rung, against an even spread over the ladder's rungs. It uses the same rare and crowded
+ * ratios and the same 1-to-5 price as Stop. You bank dayPoints x price x rarestScale (x0.5 to
+ * x2.5 at 0.5). The multiple is only where you let go: paying it as well would make the empty top
+ * rungs a sure jackpot. Field records are releases.
+ */
+export function ropeRarity(release: number, fieldRecords: number[], p = rules().rope, sp = rules().stopPrice): number {
+  const ladder = ropeLadder(p);
+  if (!ladder.includes(release)) throw new Error('ropeRarity: release must be a rung');
+  if (fieldRecords.length === 0) return sp.maxPrice;
+  const share = fieldRecords.filter((r) => r === release).length / fieldRecords.length;
+  const ratio = share * ladder.length;
+  if (ratio <= sp.rareRatio) return sp.maxPrice;
+  if (ratio >= sp.crowdedRatio) return sp.minPrice;
+  return Math.round(sp.minPrice + ((sp.maxPrice - sp.minPrice) * (sp.crowdedRatio - ratio)) / (sp.crowdedRatio - sp.rareRatio));
+}
+
+export function ropeRarestPoints(dayPoints: number, release: number, fieldRecords: number[], p = rules().rope): number {
+  return Math.round(dayPoints * ropeRarity(release, fieldRecords, p) * p.rarestScale);
 }
 
 /** Letting go below the snap banks dayPoints x your multiple; otherwise you keep snapKeep of it. */

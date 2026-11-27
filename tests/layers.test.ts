@@ -156,7 +156,7 @@ describe('the simulated fields (until G-03)', () => {
   const cards = Array.from({ length: 60 }, (_, i) => i + 1);
   it('the same twice for a card, every entry flagged modelled, values in range', async () => {
     const { fieldsFor, simulatedDrawings } = await import('../src/lib/rules/fields');
-    const { stopPrice, repeatPrices, longJumpScore, snapPoint, ropeLadder, openStopPrice } = await import('../src/lib/rules/dare');
+    const { stopPrice, repeatPrices, longJumpScore, snapPoint, ropeLadder, openStopPrice, ropeRarity } = await import('../src/lib/rules/dare');
     const { hideScore, seekScore } = await import('../src/lib/rules/hideseek');
     const { countPeak, thoughtAboveMiddle } = await import('../src/lib/rules/read');
     const { roundLengths } = await import('../src/lib/events/repeat');
@@ -175,9 +175,15 @@ describe('the simulated fields (until G-03)', () => {
         expect(price >= 1 && price <= 5).toBe(true);
       }
       repeatPrices(v(f.repeat.longest), roundLengths()).forEach((p) => expect(p >= 1 && p <= rules().repeatBank.maxPrice).toBe(true));
-      const snap = snapPoint(v(f.rope.records));
+      // R-16 (the default): records are releases on the ladder, and every rung prices 1 to 5
+      expect(v(f.rope.records).every((r) => ladder.includes(r))).toBe(true);
+      for (const r of ladder) {
+        const price = ropeRarity(r, v(f.rope.records));
+        expect(price >= 1 && price <= 5).toBe(true);
+      }
+      // the load rule still runs on the same records: "never snaps" is one step past the top
+      const snap = snapPoint(v(f.rope.records), { ...rules().rope, snapRule: 'load' });
       expect(snap).toBeGreaterThan(1);
-      // R-13: "never snaps" is one step past the top, so letting go at the top banks it
       expect(snap).toBeLessThanOrEqual(ladder[ladder.length - 1] + rules().rope.step);
       expect(f.stop.notchHalf).toBeCloseTo((rules().dareStop.notchWidth * 100) / 2, 9); // R-14
       expect(f.openStop.places.length).toBe(3); // R-15: one field per go

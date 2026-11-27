@@ -14,9 +14,10 @@ export interface RulesParams {
     emptySnap: number;
     decimals: number;
     snapped: 'at' | 'above';
-    snapRule: 'load' | 'median' | 'medianPlus';
+    snapRule: 'rarest' | 'load' | 'median' | 'medianPlus';
     capacity: number;
     ceilingShare: number;
+    rarestScale: number;
   };
   hideSeek: {
     spots: number;
@@ -51,7 +52,8 @@ export const rules = (): RulesParams => (config as unknown as { rules: RulesPara
  *  or a negative ceiling would otherwise run silently as something else. */
 export function badChoices(r: RulesParams = rules()): string[] {
   const bad: string[] = [];
-  if (!['load', 'median', 'medianPlus'].includes(r.rope.snapRule)) bad.push('rope.snapRule');
+  if (!['rarest', 'load', 'median', 'medianPlus'].includes(r.rope.snapRule)) bad.push('rope.snapRule');
+  if (!(r.rope.rarestScale > 0)) bad.push('rope.rarestScale');
   if (!['at', 'above'].includes(r.rope.snapped)) bad.push('rope.snapped');
   if (!(r.rope.capacity > 0)) bad.push('rope.capacity');
   if (!(r.rope.ceilingShare >= 0 && r.rope.ceilingShare < 1)) bad.push('rope.ceilingShare');
