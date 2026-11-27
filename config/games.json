@@ -436,5 +436,112 @@
   },
   "store": {
     "lookBackCards": 3660
+  },
+  "rules": {
+    "_about": "The Dare and Read rules (G-02b; spec G-00c round 4 and G-00d). Points are each rule's own unit until the screen task adds them into Hands and Hunch.",
+    "field": {
+      "size": 500
+    },
+    "stopPrice": {
+      "window": 0.15,
+      "rareRatio": 0.25,
+      "crowdedRatio": 1.5,
+      "minPrice": 1,
+      "maxPrice": 5
+    },
+    "repeatBank": {
+      "maxPrice": 10,
+      "decimals": 1
+    },
+    "double": {
+      "bankRight": 1,
+      "doubleRight": 2,
+      "doubleWrong": -1
+    },
+    "rope": {
+      "step": 0.1,
+      "max": 10,
+      "snapKeep": 0.5,
+      "emptySnap": 2,
+      "decimals": 1
+    },
+    "hideSeek": {
+      "spots": 12,
+      "minGap": 0.14,
+      "seekRadius": 0.16,
+      "edge": 0.08,
+      "placeTries": 200,
+      "kinds": [
+        "shed",
+        "tree",
+        "bench",
+        "bin",
+        "hedge",
+        "goal",
+        "slide",
+        "wall",
+        "bush",
+        "cones",
+        "van",
+        "steps"
+      ],
+      "habit": [
+        3,
+        3,
+        1,
+        2,
+        3,
+        1,
+        1,
+        2,
+        3,
+        1,
+        2,
+        1
+      ]
+    },
+    "meet": {
+      "hunchCloser": 1,
+      "hunchFurther": -1,
+      "four": 4
+    },
+    "draw": {
+      "bins": 12,
+      "minPoints": 2
+    },
+    "select": {
+      "recipes": [
+        "tidy",
+        "spread",
+        "shift"
+      ],
+      "spreadFactor": 1.7,
+      "shiftBins": 2,
+      "maxOverlap": 85
+    },
+    "adjust": {
+      "maxShift": 3
+    },
+    "find": {
+      "middle": 50
+    },
+    "traps": {
+      "share": 0.3,
+      "strengthFrom": 0.4,
+      "strengthTo": 1,
+      "thirds": 3,
+      "earlyAt": -1
+    },
+    "personality": {
+      "minChances": 5,
+      "dare": [
+        "Bold",
+        "Careful"
+      ],
+      "read": [
+        "Loner",
+        "Joiner"
+      ]
+    }
   }
 }

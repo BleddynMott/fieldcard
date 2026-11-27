@@ -1,0 +1,30 @@
+// Typed access to config/games.json "rules" (G-02b). Every number the Dare and Read rules use is there.
+import { config } from '../config';
+
+export interface RulesParams {
+  field: { size: number };
+  stopPrice: { window: number; rareRatio: number; crowdedRatio: number; minPrice: number; maxPrice: number };
+  repeatBank: { maxPrice: number; decimals: number };
+  double: { bankRight: number; doubleRight: number; doubleWrong: number };
+  rope: { step: number; max: number; snapKeep: number; emptySnap: number; decimals: number };
+  hideSeek: {
+    spots: number;
+    minGap: number;
+    seekRadius: number;
+    edge: number;
+    placeTries: number;
+    kinds: string[];
+    habit: number[];
+  };
+  meet: { hunchCloser: number; hunchFurther: number; four: number };
+  draw: { bins: number; minPoints: number };
+  select: { recipes: SelectRecipe[]; spreadFactor: number; shiftBins: number; maxOverlap: number };
+  adjust: { maxShift: number };
+  find: { middle: number };
+  traps: { share: number; strengthFrom: number; strengthTo: number; thirds: number; earlyAt: number };
+  personality: { minChances: number; dare: [string, string]; read: [string, string] };
+}
+
+export type SelectRecipe = 'tidy' | 'spread' | 'shift';
+
+export const rules = (): RulesParams => (config as unknown as { rules: RulesParams }).rules;
