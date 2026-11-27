@@ -6,7 +6,11 @@
 
 **Round 2, his words, 27 Nov:** "i like E the most, but D does the best job at getting that idae of real people and a crowd behind it".
 
-**Open now:** `design/directions/look-g04-r3.html`. G is E's studio with D's people in it, beside E on the same three screens (ids 1E to 3G). Type `G` or `E`, a mix by id (e.g. `G, but 3E`), or `none` and what is wrong. My recommendation: G.
+**Round 3, his words, 27 Nov:** "Currently i think E is better, because I think the tactile quality of the big yellow lights clicking on as your result builds would be interesting. Also think there's avenue in future to have like the spotlight on the crowd seraching over it.. I think the poeople models used in G don't fit the vibe fo the game asthey've been pulled from the other which is the main issue as to why it doesn't look good. Could be clearer about how we present people in cinema seats as an option"
+
+**Open now:** `design/directions/look-g04-r4.html`. E's studio, kept. Three ways to show people in cinema seats on Stop (2H from the stage with only players seated, 2J a full house with a searching spotlight, 2K from your own seat), a home with searching spotlights (1H) and big lamps for Hold your day (3H). Type the ids you want, e.g. `2H, 1H, 3H`, or `none` and what is wrong. My recommendation: `2H, 1H, 3H`.
+
+**Round 3 page:** `design/directions/look-g04-r3.html`. G is E's studio with D's people in it, beside E on the same three screens (ids 1E to 3G). Type `G` or `E`, a mix by id (e.g. `G, but 3E`), or `none` and what is wrong. My recommendation: G.
 
 **Round 2 page:** `design/directions/look-g04-r2.html` (in a browser, at desktop width). Three new looks on three screens each (home, Stop with the crowd, Hold your day), ids 1D to 3F.
 
@@ -163,6 +167,7 @@ Each line is checkable on a drawn screen.
 - 27 Nov, round 2. He rejected round 1 (his words are in the Summary). What I took from it: (a) B and C were flat fills with primitives on top, with no light, depth or drawn detail; (b) marbles and a mountain were pictures chosen first and tied to the game afterwards. Round 2 answers both: each look is one lit place with depth, and the crowd is the subject of the picture. Themes were chosen by asking where a crowd already shows itself on a line: people queuing on a field, an audience voting, birds on wires.
 - 27 Nov, round 2. Drew `design/directions/look-g04-r2.html`: D The Field, E Studio night, F First light, on home, Stop and Hold your day. Checked by rendering each row in headless Chrome and reading the screenshots. Fixed: gradient ids shared between phones, the notch off-centre from its queues in 2D, the flock's shape in 1F.
 - 27 Nov, round 3. His words on round 2 are in the Summary. Drew `design/directions/look-g04-r3.html`: G, the studio with drawn people. Home: the stands are full and face out, and you are a person in the spot. Stop: only players sit in the stands, each above the bulb they stopped on. Hold your day: a lit staircase; whoever let go stays on their step. Checked by rendering each row and reading the screenshots; fixed the people standing in front of the wrong step's number.
+- 27 Nov, round 4. His words on round 3 are in the Summary. E is the look; G's ink-outlined people are dropped. Drew `design/directions/look-g04-r4.html`: people as lit head-and-shoulders in red cinema seats, drawn without outlines in the studio's light; a player is someone holding a lit teal card. Checked by rendering each row and reading the screenshots.
 
 ## Rulings
 
@@ -182,3 +187,6 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 12. **Round 2's type is new in E and F** (Bungee and Doto; Fraunces). D uses Bowlby One and Outfit, already picked. None is in `tokens.css`.
 13. **Round 3 compares G with E only.** He named E as the one he likes and D as the source of the people; F was not mentioned, so it is not redrawn.
 14. **G's crowd is teal in three shades,** read as one colour against the studio's reds. Skin and hair vary so they read as people; clothes do not.
+15. **Round 4 treats E as picked for the studio, not yet for every screen.** He said "currently" E is better. The crowd's treatment is still open, so `PICK.md` and `tokens.css` stay unchanged.
+16. **The crowd's one colour is the teal of the cards they hold.** Hair, skin and clothes vary so they read as people; none of those carries meaning.
+17. **The searching spotlight is drawn still** (2J, 1H). He called it a future avenue; no motion is specified here.
