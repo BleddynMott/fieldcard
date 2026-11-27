@@ -20,8 +20,9 @@ const f3 = (x: number) => (x >= 0 ? ' ' : '') + x.toFixed(3);
 describe('probe A: the rope over 14 days, both record rules', () => {
   it('runs', () => {
     // 2,000 players a day. "Gut" players let go at a target round x2.2 (sd 0.6, at least x1.1).
-    // "Learners" aim 2% to 15% below yesterday's final snap; they rise from 0% to 70% over 14
-    // days. Releases sit on the ladder (step 0.5). Day 1's dawn field is 500 gut players.
+    // "Learners" let go one rung below yesterday's final snap (K05 round 2, 3: on a 0.5 ladder,
+    // "a few % below" rounds back onto the snap); they rise from 0% to 70% over 14 days.
+    // Releases sit on the ladder (step 0.5). Day 1's dawn field is 500 gut players.
     const R = rules().rope;
     const onLadder = (x: number) => 1 + Math.round((Math.max(1, x) - 1) / R.step) * R.step;
     for (const snapped of ['at', 'above'] as const) {
@@ -37,7 +38,7 @@ describe('probe A: the rope over 14 days, both record rules', () => {
         const today: number[] = [];
         for (let k = 0; k < 2000; k++) {
           const snap = snapPoint(values(rollingField(today, field, 500)), P);
-          const release = onLadder(rng() < learn ? ySnap * (1 - (0.02 + 0.13 * rng())) : gut());
+          const release = rng() < learn ? Math.max(1, ySnap - R.step) : onLadder(gut());
           pay += ropePoints(100, release, snap, P);
           today.push(ropeRecord(release, snap, P));
         }

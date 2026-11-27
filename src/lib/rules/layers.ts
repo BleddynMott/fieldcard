@@ -50,11 +50,13 @@ export interface YesterdayStop {
 }
 
 /**
- * R-5 (revised, K05 22): the notch for go `go` goes in the part of the track (of `thirds`) where
- * yesterday's field was most often early, at a seeded place inside it, within Stop's notch range.
- * A tie goes to the tied part nearest the middle, then the lower; no early stops, the middle.
+ * R-5 (revised, K05 22 and round 2 4): the first go's notch goes in the part of the track (of
+ * `thirds`) where yesterday's field was most often early, at a seeded place inside it, within
+ * Stop's notch range. A tie goes to the tied part nearest the middle, then the lower; no early
+ * stops, the middle. Only the first go: an end part is too narrow to hold three notches
+ * notchApartMin apart, so the other goes are drawn as G-02 draws them, kept apart from this one.
  */
-export function notchFromYesterday(card: number, yesterday: YesterdayStop[], go = 0, p = rules().traps, sp = stopParams()): number {
+export function notchFromYesterday(card: number, yesterday: YesterdayStop[], p = rules().traps, sp = stopParams()): number {
   const counts = new Array<number>(p.thirds).fill(0);
   for (const s of yesterday) if (s.off <= p.earlyAt) counts[clamp(Math.floor(s.at * p.thirds), 0, p.thirds - 1)] += 1;
   const top = Math.max(...counts);
@@ -63,7 +65,7 @@ export function notchFromYesterday(card: number, yesterday: YesterdayStop[], go 
   const part = top === 0 ? mid : tops.sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid) || a - b)[0];
   const lo = Math.max(part / p.thirds, sp.notchFrom);
   const hi = Math.min((part + 1) / p.thirds, sp.notchTo);
-  const rng = stream(config.seedName, card, `trap-notch:${go}`);
+  const rng = stream(config.seedName, card, 'trap-notch');
   if (hi <= lo) return sp.notchFrom + (sp.notchTo - sp.notchFrom) * rng();
   return lo + (hi - lo) * rng();
 }
@@ -117,7 +119,7 @@ export interface TwinCandidate {
   choices: number[]; // the same choices, in the same order, as yours
   town?: string;
   optedIn: boolean;
-  modelled?: boolean;
+  modelled: boolean; // required, so a caller can't forget it (K05 round 2)
 }
 
 /** The nearest real field player by your choices (Euclidean); modelled players are never a twin

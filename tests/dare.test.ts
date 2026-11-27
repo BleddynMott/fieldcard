@@ -152,6 +152,19 @@ describe('V4 hold your day', () => {
     expect(run(AT)).toBe(1.5);
     expect(run(P)).toBeGreaterThanOrEqual(3);
   });
+  it('R-8 is capped: holders cannot lift the snap past the ladder top (K05 round 2, 1)', () => {
+    const field: number[] = Array(500).fill(2);
+    let top = 0;
+    for (let k = 0; k < 20000; k++) {
+      const snap = snapPoint(field.slice(-500), P);
+      top = Math.max(top, snap);
+      field.push(ropeRecord(null, snap, P)); // nobody ever lets go
+    }
+    expect(top).toBe(P.max);
+    expect(ropeRecord(null, P.max, P)).toBe(P.max);
+    // at the top, letting go at the top is at the snap, so it snaps: holding to x max never banks
+    expect(ropePoints(100, P.max, P.max, P)).toBe(50);
+  });
   it('braver than: the share who let go before you, ties half', () => {
     expect(braverThan(1.5, [1, 1.5, 2, 3])).toBe(37.5);
   });

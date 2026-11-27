@@ -93,10 +93,6 @@ describe('Z1 traps', () => {
       expect(m >= 1 / 3 && m <= 2 / 3).toBe(true);
     }
   });
-  it('each of Stop\'s goes gets its own place in the part', () => {
-    const y = Array.from({ length: 5 }, () => ({ at: 0.5, off: -2 }));
-    expect(new Set([0, 1, 2].map((g) => notchFromYesterday(4, y, g))).size).toBe(3);
-  });
   it('the trap cache keeps shares apart (K05 4)', () => {
     const hi = { ...rules().traps, share: 0.9 };
     const lo = Array.from({ length: 200 }, (_, i) => i + 1).filter((c) => isTrap(c, 'stop')).length;
@@ -137,9 +133,9 @@ describe('Z4 personality', () => {
 describe('Z2 crowd twin', () => {
   it('the nearest by your choices; a tie to the earliest; the town only if they opted in', () => {
     const field = [
-      { choices: [1, 0, 1], optedIn: false, town: 'Leeds' },
-      { choices: [1, 1, 1], optedIn: true, town: 'Lisbon' },
-      { choices: [1, 1, 1], optedIn: true, town: 'Cardiff' },
+      { choices: [1, 0, 1], optedIn: false, town: 'Leeds', modelled: false },
+      { choices: [1, 1, 1], optedIn: true, town: 'Lisbon', modelled: false },
+      { choices: [1, 1, 1], optedIn: true, town: 'Cardiff', modelled: false },
     ];
     expect(crowdTwin([1, 1, 1], field)).toEqual({ index: 1, distance: 0, town: 'Lisbon' });
     expect(crowdTwin([1, 0, 1], field)).toEqual({ index: 0, distance: 0 });
@@ -180,8 +176,9 @@ describe('the simulated fields (until G-03)', () => {
       const s0 = f.hideSeek.playground[0];
       for (const x of [hideScore(s0, v(f.hideSeek.seeks)), seekScore(s0, v(f.hideSeek.hides))]) expect(x >= 0 && x <= 100).toBe(true);
       expect(countPeak(v(f.count.answers))).toBeDefined();
-      const above = thoughtAboveMiddle(v(f.find.guesses)) as number;
-      expect(above >= 0 && above <= 100).toBe(true);
+      const above = thoughtAboveMiddle(v(f.find.guesses));
+      expect(above).not.toBeNull();
+      expect((above as number) >= 0 && (above as number) <= 100).toBe(true);
     }
     const { simulateFields } = await import('../src/lib/rules/fields');
     for (const c of [1, 7, 30]) expect(JSON.stringify(simulateFields(c))).toBe(JSON.stringify(fieldsFor(c)));

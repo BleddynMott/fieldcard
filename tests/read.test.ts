@@ -170,6 +170,9 @@ describe('Q3: draw, select, adjust', () => {
       const fake = s.realSide === 'left' ? s.right : s.left;
       expect(overlap(fake, bell)).toBeLessThanOrEqual(P.maxOverlap);
     }
+    // the tidy fake of a bell is the bell again: it is always replaced (K05 round 2, 10)
+    expect(overlap(makeFake(bell, 'tidy', 1, mulberry32(9), { ...P, noise: 0 }) as number[], bell)).toBeGreaterThan(P.maxOverlap);
+    expect(cards.some((c) => selectPiles(c, bell).recipe === 'tidy')).toBe(false);
     expect(makeFake(bell, 'shift', 1, mulberry32(1))?.reduce((a, b) => a + b, 0)).toBeCloseTo(100, 6);
     // a shift drops what falls off the end, so the end bin does not swell
     const flat = Array(12).fill(100 / 12);

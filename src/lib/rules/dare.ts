@@ -104,7 +104,8 @@ export function snapPoint(fieldRecords: number[], p = rules().rope): number {
  */
 export function ropeRecord(release: number | null, snap: number, p = rules().rope): number {
   if (release !== null && release < snap) return release;
-  return p.snapped === 'above' ? round(snap + p.step, p.decimals) : snap;
+  // capped at the ladder's top, so holders can't lift the snap past x max (K05 round 2, 1)
+  return p.snapped === 'above' ? Math.min(round(snap + p.step, p.decimals), p.max) : snap;
 }
 
 /** Letting go below the snap banks dayPoints x your multiple; otherwise you keep snapKeep of it. */
