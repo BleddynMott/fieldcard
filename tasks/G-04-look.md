@@ -2,6 +2,23 @@
 
 ## Summary (read this first)
 
+### Restart point for a fresh chat (27 Nov, after round 8)
+
+**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd. Latest page: `design/directions/look-g04-r8.html`, eleven screens. Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged. No K05 review has been run since round 1.
+
+**His words on round 8, not yet acted on:** "Better, but you tried to correct the broken thing by just adding stuff. So put the lamp on a stand with wires, which isn't quite right For example, the plus and minus buttons on the counter are really flat. It's all about thinking what we were aiming for making the original ones, aiming for the same thing rather than making things in the same style. Also, the counter shouldn't be plus and minus because you might want to do a few, so to think of a thematically accurate one that would allow counting. I like the flip chart numbers, but just have to think how we can interface with it on the screen in a really cool way"
+
+**My reading of the aim (mine, not his words; check it with him).** The screens he liked (1E's lamp, the bulbs under the crowd, the big yellow lights clicking on) share this: darkness first; light is the picture; one big thing you touch, and it behaves like a machine (clicks, flips, slides); the crowd is there in the dark; nothing on screen that is not used. Round 8 broke it by adding props (stands, wires, cabinets).
+
+**Next step, planned and not started.**
+1. Count: keep the flap numbers; replace plus and minus. Three inputs I meant to draw side by side: flick each flap digit up or down; a big dimmer lever sliding along a brass arc while the flaps flutter; tap each figure on stage to tally it.
+2. Repeat (7): drop the stands and wires. Five giant footlights set in the stage lip, the lit one washing a closed curtain with its colour.
+3. Then carry the same aim over 4, 6, 8, 9, 10, 11, and bring 2, 3 and 5 into line.
+
+**How he works on this task.** He judges at a glance and answers in a line. Draw two or three screens to test an idea before a full set. One page, rows by screen, ids on everything. Screenshot with headless Chrome and read the result before showing him.
+
+---
+
 **Round 1 was rejected, 27 Nov.** His words: "Really poor. The 2 new ones look, you just like stuck together a bunch of shapes, or like I could just make it in Figma with a flat background and shapes just stuck on top. The themes don't really make sense and are quite boring". Round 1's summary is kept below as written.
 
 **Round 2, his words, 27 Nov:** "i like E the most, but D does the best job at getting that idae of real people and a crowd behind it".
