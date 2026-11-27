@@ -11,8 +11,9 @@ import { rules, type SelectRecipe } from './params';
 export type Meet = 'keep' | 'switch';
 
 /**
- * Hunch for one meeting. If blind and crowd agree, 0. Otherwise +1 when your final answer is the
- * closer of the two to the truth, -1 when it is further, 0 when equally close.
+ * Hunch for one meeting. If blind and crowd agree, 0. Otherwise, when your final answer is the
+ * closer of the two to the truth, keepCloser or switchCloser; when further, keepFurther or
+ * switchFurther; equally close, 0. As signed all four are +1 / -1 (config rules.meet).
  */
 export function meetHunch<T>(
   blind: T,
@@ -27,9 +28,9 @@ export function meetHunch<T>(
   const other = final === 'keep' ? crowd : blind;
   const dm = distance(mine, truth);
   const dO = distance(other, truth);
-  if (dm < dO) return p.hunchCloser;
-  if (dm > dO) return p.hunchFurther;
-  return 0;
+  if (dm === dO) return 0;
+  if (final === 'keep') return dm < dO ? p.keepCloser : p.keepFurther;
+  return dm < dO ? p.switchCloser : p.switchFurther;
 }
 
 export const numberDistance = (a: number, b: number) => Math.abs(a - b);

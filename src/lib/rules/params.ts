@@ -16,13 +16,19 @@ export interface RulesParams {
     kinds: string[];
     habit: number[];
   };
-  meet: { hunchCloser: number; hunchFurther: number; four: number };
+  meet: { keepCloser: number; keepFurther: number; switchCloser: number; switchFurther: number; four: number };
   draw: { bins: number; minPoints: number };
   select: { recipes: SelectRecipe[]; spreadFactor: number; shiftBins: number; maxOverlap: number };
   adjust: { maxShift: number };
   find: { middle: number };
   traps: { share: number; strengthFrom: number; strengthTo: number; thirds: number; earlyAt: number };
   personality: { minChances: number; dare: [string, string]; read: [string, string] };
+  sim: {
+    rope: { mean: number; sd: number; min: number };
+    longJump: { mean: number; sd: number; decimals: number };
+    seekJitter: number;
+    drawing: { weightFrom: number; weightTo: number; noise: number };
+  };
 }
 
 export type SelectRecipe = 'tidy' | 'spread' | 'shift';

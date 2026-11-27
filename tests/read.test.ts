@@ -38,6 +38,14 @@ describe('Q1 and Q2: answer blind, then meet the crowd', () => {
   it('trusting a good crowd scores too: switching to the right answer is +1', () => {
     expect(meetHunch(12, 17, 'switch', 17, numberDistance)).toBe(1);
   });
+  it('the signed rule is symmetric (+1 / -1 for keep and switch); the B4 option scores keep alone', () => {
+    const P = rules().meet;
+    expect([P.keepCloser, P.keepFurther, P.switchCloser, P.switchFurther]).toEqual([1, -1, 1, -1]);
+    const B4 = { keepCloser: 2, keepFurther: -1, switchCloser: 0, switchFurther: 0, four: 4 };
+    expect(meetHunch(15, 13, 'keep', 17, numberDistance, B4)).toBe(2);
+    expect(meetHunch(15, 13, 'switch', 17, numberDistance, B4)).toBe(0);
+    expect(meetHunch(13, 15, 'keep', 17, numberDistance, B4)).toBe(-1);
+  });
   it('Pair: right vs wrong; both wrong is 0', () => {
     expect(meetHunch('a', 'b', 'switch', 'b', pickDistance)).toBe(1);
     expect(meetHunch('a', 'b', 'keep', 'b', pickDistance)).toBe(-1);

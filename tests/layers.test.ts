@@ -119,3 +119,42 @@ describe('Z2 crowd twin', () => {
     expect(crowdTwin([1, 1], field)).toBeNull();
   });
 });
+
+describe('the simulated fields (until G-03)', () => {
+  const cards = Array.from({ length: 60 }, (_, i) => i + 1);
+  it('the same twice for a card, every entry flagged modelled, values in range', async () => {
+    const { fieldsFor, simulatedDrawings } = await import('../src/lib/rules/fields');
+    const { stopPrice, repeatPrices, longJumpScore, snapPoint, ropeLadder } = await import('../src/lib/rules/dare');
+    const { hideScore, seekScore } = await import('../src/lib/rules/hideseek');
+    const { countPeak, thoughtAboveMiddle } = await import('../src/lib/rules/read');
+    const { roundLengths } = await import('../src/lib/events/repeat');
+    const ladder = ropeLadder();
+    for (const c of cards) {
+      const f = fieldsFor(c);
+      expect(f.simulated).toBe(true);
+      for (const list of [f.stop.offs, f.count.answers, f.repeat.longest, f.rope.records, f.longJump.takeoffs, f.hideSeek.hides, f.hideSeek.seeks, f.find.guesses]) {
+        expect(list.length).toBeGreaterThan(0);
+        expect(list.every((e) => e.modelled)).toBe(true);
+      }
+      const v = <T,>(xs: { value: T }[]) => xs.map((e) => e.value);
+      const price = stopPrice(0, f.stop.notchHalf, v(f.stop.offs));
+      expect(price >= 1 && price <= 5).toBe(true);
+      repeatPrices(v(f.repeat.longest), roundLengths()).forEach((p) => expect(p >= 1 && p <= rules().repeatBank.maxPrice).toBe(true));
+      const snap = snapPoint(v(f.rope.records));
+      expect(snap).toBeGreaterThanOrEqual(1);
+      expect(snap).toBeLessThanOrEqual(ladder[ladder.length - 1]);
+      expect(longJumpScore(1, v(f.longJump.takeoffs))).toBeGreaterThanOrEqual(0);
+      const s0 = f.hideSeek.playground[0];
+      for (const x of [hideScore(s0, v(f.hideSeek.seeks)), seekScore(s0, v(f.hideSeek.hides))]) expect(x >= 0 && x <= 100).toBe(true);
+      expect(countPeak(v(f.count.answers))).toBeDefined();
+      const above = thoughtAboveMiddle(v(f.find.guesses));
+      expect(above >= 0 && above <= 100).toBe(true);
+    }
+    const { simulateFields } = await import('../src/lib/rules/fields');
+    for (const c of [1, 7, 30]) expect(JSON.stringify(simulateFields(c))).toBe(JSON.stringify(fieldsFor(c)));
+    const d = simulatedDrawings(3, 'count', [1, 2, 2, 3, 3, 3, 4], 0, 6, 20);
+    expect(d.length).toBe(20);
+    d.forEach((x) => expect(x.reduce((a, b) => a + b, 0)).toBeCloseTo(100, 6));
+    expect(JSON.stringify(simulatedDrawings(3, 'count', [1, 2, 2, 3, 3, 3, 4], 0, 6, 20))).toBe(JSON.stringify(d));
+  });
+});

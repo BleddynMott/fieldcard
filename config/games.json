@@ -501,8 +501,11 @@
       ]
     },
     "meet": {
-      "hunchCloser": 1,
-      "hunchFurther": -1,
+      "_about": "Hunch when you and the crowd disagree. As signed (G-00d): keep and switch both +1 closer / -1 further. Probe B4 (tasks/G-02b.md) tested switch 0/0 and keep +2/-1: his call.",
+      "keepCloser": 1,
+      "keepFurther": -1,
+      "switchCloser": 1,
+      "switchFurther": -1,
       "four": 4
     },
     "draw": {
@@ -542,6 +545,25 @@
         "Loner",
         "Joiner"
       ]
+    },
+    "sim": {
+      "_about": "The simulated fields for the new rules, until G-03 brings real players. Every reveal that uses them says 'simulated crowd'. Made-up numbers, set by the agent (G-02b R-6).",
+      "rope": {
+        "mean": 2.2,
+        "sd": 0.6,
+        "min": 1.1
+      },
+      "longJump": {
+        "mean": 3,
+        "sd": 2.5,
+        "decimals": 1
+      },
+      "seekJitter": 0.05,
+      "drawing": {
+        "weightFrom": 0.3,
+        "weightTo": 0.9,
+        "noise": 0.04
+      }
     }
   }
 }
