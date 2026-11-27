@@ -2,6 +2,29 @@
 
 ## Summary (read this first)
 
+**Round 1 was rejected, 27 Nov.** His words: "Really poor. The 2 new ones look, you just like stuck together a bunch of shapes, or like I could just make it in Figma with a flat background and shapes just stuck on top. The themes don't really make sense and are quite boring". Round 1's summary is kept below as written.
+
+**Open now:** `design/directions/look-g04-r2.html` (in a browser, at desktop width). Three new looks on three screens each (home, Stop with the crowd, Hold your day), ids 1D to 3F.
+
+| | look | the place | why it fits | weakest point |
+|---|---|---|---|---|
+| D | **The Field** | his Sports day lawn, from standing height in low sun | the dare is leaving the pack; the crowd are people standing where they stopped | the people are small on a phone; nearest to what he already has |
+| E | **Studio night** | a quiz-show studio, seen from the audience | bank or double and "we asked 100 people" are already a quiz show's moves | bulbs and curtains are a familiar picture; drops the sports-day world |
+| F | **First light** | starlings over the field at dawn | follow the flock or break from it; birds on wires are a crowd on a line | "Hold your day" has no rope in it; Stop, Count, Repeat and Pair have no reason to be birds |
+
+**My recommendation: D.** It keeps the look he picked, and it is the only one where every screen so far shows the stake as where you stand against real people. 2F is the best single picture on the page.
+
+**What you type** (one line):
+1. `D` (my recommendation), `E` or `F`: that look gets the other four screens
+2. a mix by id, e.g. `D, but 2F`
+3. `none`, and what is wrong
+
+**Not run:** no K05 review of round 2. Round 1 had its one review; round 2 is a redraw after his rejection and he is at the keyboard to judge it. Say `review` if you want one before picking.
+
+---
+
+### Round 1 summary (rejected)
+
 **Open:** `design/directions/look-g04.html` (in a browser, at desktop width). Three looks for the dare game, each drawn on the same seven screens with the same numbers. Compare along a row; every screen has an id (1A to 7C).
 
 | | look | in one line | strongest screen | weakest point |
@@ -133,6 +156,8 @@ Each line is checkable on a drawn screen.
     - 65, 67: no change needed.
   - **One round only,** as he asked. No second round was run on the fix.
 - 27 Nov. CI after the fixes: `ci-checks: all passed`. Committed on `g04-look`. Waiting for his pick.
+- 27 Nov, round 2. He rejected round 1 (his words are in the Summary). What I took from it: (a) B and C were flat fills with primitives on top, with no light, depth or drawn detail; (b) marbles and a mountain were pictures chosen first and tied to the game afterwards. Round 2 answers both: each look is one lit place with depth, and the crowd is the subject of the picture. Themes were chosen by asking where a crowd already shows itself on a line: people queuing on a field, an audience voting, birds on wires.
+- 27 Nov, round 2. Drew `design/directions/look-g04-r2.html`: D The Field, E Studio night, F First light, on home, Stop and Hold your day. Checked by rendering each row in headless Chrome and reading the screenshots. Fixed: gradient ids shared between phones, the notch off-centre from its queues in 2D, the flock's shape in 1F.
 
 ## Rulings
 
@@ -146,3 +171,7 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 6. **Names of the looks** (Finals day, For keeps, The Ridge) are working labels for this page. The game stays Fieldcard and the event names stay.
 7. **Not done here:** `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged. Whichever look he picks gets its own task to move the tokens and redraw the reference screenshots.
 8. **The page is a local file, not published anywhere.**
+9. **Round 2 draws three screens, not seven.** Round 1 spent 21 screens on looks he rejected at a glance. Home, Stop and Hold your day are enough to judge a look; the pick gets the other four.
+10. **Round 2 drops A, B and C.** He called the two new ones poor and did not ask for A again. D is Sports day carried forward, so the picked look is still on the page.
+11. **Screen 3 shows the players who have already let go, where they let go.** This is new and is a game rule, not only a look: it tells the player how close the snap is. His to rule on; the look does not depend on it.
+12. **Round 2's type is new in E and F** (Bungee and Doto; Fraunces). D uses Bowlby One and Outfit, already picked. None is in `tokens.css`.
