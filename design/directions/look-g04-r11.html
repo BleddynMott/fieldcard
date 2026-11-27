@@ -1,0 +1,1354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fieldcard · the studio look, round 11, Find yourself and the peek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Bungee&family=Doto:wght@900&family=Fraunces:ital,opsz,wght@0,9..144,600..900;1,9..144,600..900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* Mock-up page: values are written literally here (design/directions/ is exempt). Nothing here is in tokens.css yet. */
+*{box-sizing:border-box}
+body{margin:0;background:#e9e6df;color:#22201c;font:400 16px/1.45 Outfit,system-ui,sans-serif;padding:28px 28px 80px}
+h1{font:800 28px/1.1 Outfit,sans-serif;margin:0 0 8px}
+h2{font:800 20px/1.2 Outfit,sans-serif;margin:44px 0 6px}
+p{max-width:760px;margin:6px 0}
+.pick{display:inline-block;background:#22201c;color:#fffdf7;border-radius:10px;padding:10px 16px;font-weight:600;margin:10px 0}
+.pick code{background:#3d3a35;border-radius:5px;padding:1px 7px;font:600 15px ui-monospace,Menlo,monospace}
+table{border-collapse:collapse;margin:10px 0;max-width:1180px}
+td,th{text-align:left;vertical-align:top;padding:7px 14px 7px 0;border-bottom:1px solid #cfcabd;font-size:15px}
+th{font-weight:800}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-top:8px}
+.cell b{display:block;font:800 17px Outfit,sans-serif;margin:0 0 6px}
+.ph{width:390px;height:720px;border-radius:30px;overflow:hidden;position:relative;box-shadow:0 10px 30px #0002}
+.ph svg{display:block;width:390px;height:720px}
+.ph::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.5;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .42  0 0 0 0 .4  0 0 0 .55 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
+.ph.E::after{mix-blend-mode:overlay;opacity:.35}
+.note{font-size:14px;color:#4a443c;max-width:390px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="intro">
+<h1>Fieldcard: the studio look, round 11 (Find yourself again, and the peek)</h1>
+<p>Your words on round 10: "All looks good, but the19 and 19b are only ones that are a bit underwhelming. Also perhaps for one of the games would be interesting to ask if they want to see yesterdays answer distribution? Like a dare, as it could mess up their game or it coudl help them but mostly will just make them overthink it".</p>
+<div class="pick">To answer, type one line: <code>go</code> · or ids and what to change · or <code>none</code> and what is wrong</div>
+</div>
+
+<section data-s="1">
+<h2>Find yourself, redrawn</h2>
+<p>You are on the stage with a follow spot, and the whole field is in the house, best at the front. You swing the spot to where you think you are sitting.</p>
+<div class="row">
+  <div class="cell"><b>19a · Find yourself</b><div class="ph E"><svg viewBox="0 0 390 720" id="u19a"></svg></div><div class="note">Drag the spot up and down the house. The people in it light up.</div></div>
+  <div class="cell"><b>19b · Find yourself: the reveal</b><div class="ph E"><svg viewBox="0 0 390 720" id="u19b"></svg></div><div class="note">A white spot finds where you really are. The cards show where everyone thought they sat.</div></div>
+  </div>
+</section>
+
+<section data-s="2">
+<h2>The peek, on Stop's open track</h2>
+<p>I put it on the open track because the rules model already says what happens there: people who copy yesterday's empty spot do worst. So the peek is true, and it is still a trap.</p>
+<div class="row">
+  <div class="cell"><b>2p · Stop: the peek is offered</b><div class="ph E"><svg viewBox="0 0 390 720" id="u2p"></svg></div><div class="note">Yesterday's cards are almost there in the dark.</div></div>
+  <div class="cell"><b>2q · Stop: play, having peeked</b><div class="ph E"><svg viewBox="0 0 390 720" id="u2q"></svg></div><div class="note">Yesterday's crowd stays up, dim, while you play today's.</div></div>
+  </div>
+</section>
+
+<h2>What to type</h2>
+<p><code>go</code> · or ids and what to change · or <code>none</code> and what is wrong.</p>
+<script>
+// seeded random, so the page draws the same every time
+function R(seed){let a=seed;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const gauss=r=>(r()+r()+r()+r()-2)/1.15;
+// gradient and filter ids are made unique per phone, so one hidden phone cannot break another
+const put=(id,html)=>{const el=document.getElementById(id);if(!el)return;el.innerHTML=html.replace(/id="([a-z0-9]+)"/g,(m,a)=>`id="${a}_${id}"`).replace(/url\(#([a-z0-9]+)\)/g,(m,a)=>`url(#${a}_${id})`)};
+const T=(x,y,str,st)=>`<text x="${x}" y="${y}" style="${st}">${str}</text>`;
+
+/* ================= D · The Field ================= */
+const INK='#22201c',CHALK='#fffdf7',YOU='#f5c518';
+const DP={hz:250,y0:520,cx:195,hw:260,k:1.6};
+const proj=(X,Z)=>{const s=1/(1+DP.k*Z);return{x:DP.cx+X*DP.hw*s,y:DP.hz+(DP.y0-DP.hz)*s,s}};
+const CROWD_D=['#4f6d8f','#5b7a9d','#456283'], SKIN=['#f3d9bd','#e2b48c','#c98d62','#8d5a3b','#f0c9a4'], HAIR=['#22201c','#5a3a22','#8a5a2b','#22201c','#b9843d'];
+function person(x,y,s,o={}){
+  const w=v=>(v/Math.sqrt(s)).toFixed(2);
+  let g=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(3)})">`;
+  g+=`<path d="M-4 0 Q14 -5 40 -9 Q44 -6 40 -3 Q16 3 -3 3Z" fill="#17331a" opacity=".3"/>`;
+  g+=`<g transform="rotate(${o.lean||0})" stroke="${INK}" stroke-width="${w(1.7)}" stroke-linecap="round" stroke-linejoin="round">`;
+  g+=`<path d="M-3 -11 L-4.5 -1 M3 -11 L4.5 -1" fill="none" stroke-width="${w(3.2)}"/>`;
+  g+=o.up?`<path d="M-6 -23 L-11 -35 M6 -23 L11 -35" fill="none" stroke-width="${w(3)}"/>`
+     :o.hold?`<path d="M-6 -22 L-9 -15 L-3 -14 M6 -22 L9 -15 L3 -14" fill="none" stroke-width="${w(2.6)}"/>`
+     :`<path d="M-7.5 -22 L-9 -13 M7.5 -22 L9 -13" fill="none" stroke-width="${w(2.6)}"/>`;
+  g+=`<rect x="-7" y="-27" width="14" height="17" rx="6" fill="${o.fill}"/>`;
+  g+=`<circle cx="0" cy="-33" r="5.6" fill="${o.skin||SKIN[0]}"/>`;
+  g+=`<path d="M-5.6 -33.5 A5.6 5.6 0 0 1 5.6 -33.5 Q0 -37.5 -5.6 -33.5Z" fill="${o.hair||INK}" stroke="none"/>`;
+  return g+`</g></g>`;
+}
+function fieldBG(r,o={}){
+  const {hz,cx}=DP;let h=`<defs>
+  <linearGradient id="dsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f9e9c6"/><stop offset=".7" stop-color="#fbf3df"/><stop offset="1" stop-color="#fff8e6"/></linearGradient>
+  <radialGradient id="dsun" cx=".12" cy=".3" r=".9"><stop offset="0" stop-color="#fff3c9" stop-opacity=".95"/><stop offset=".35" stop-color="#ffe7b0" stop-opacity=".35"/><stop offset="1" stop-color="#ffe7b0" stop-opacity="0"/></radialGradient>
+  <linearGradient id="dhaze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2c4" stop-opacity=".55"/><stop offset=".35" stop-color="#fff2c4" stop-opacity=".08"/><stop offset="1" stop-color="#0d2a12" stop-opacity=".32"/></linearGradient>
+  <linearGradient id="dlow" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff0b8" stop-opacity=".28"/><stop offset=".6" stop-color="#fff0b8" stop-opacity="0"/><stop offset="1" stop-color="#0d2a12" stop-opacity=".18"/></linearGradient>
+  </defs>`;
+  h+=`<rect width="390" height="${hz}" fill="url(#dsky)"/><rect width="390" height="${hz}" fill="url(#dsun)"/>`;
+  // far trees, two layers
+  const trees=(base,amp,fill,stroke,seed)=>{const q=R(seed);let d=`M-10 ${hz+2} L-10 ${base}`;for(let x=-10;x<400;){const w=18+q()*26,a=amp*(.5+q()*.7);d+=` q${w/2} ${-a} ${w} 0`;x+=w}return `<path d="${d} L400 ${hz+2}Z" fill="${fill}" ${stroke?`stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"`:''}/>`};
+  h+=trees(hz-22,22,'#a9c79a',0,7)+trees(hz-6,18,'#3f7a3d',1,3);
+  // mown stripes running away to the vanishing point
+  for(let i=-16;i<16;i++){h+=`<path d="M${cx} ${hz} L${cx+i*62} 720 L${cx+(i+1)*62} 720Z" fill="${i&1?'#4f8f4a':'#5e9e56'}"/>`}
+  h+=`<rect y="${hz}" width="390" height="${720-hz}" fill="url(#dhaze)"/><rect y="${hz}" width="390" height="${720-hz}" fill="url(#dlow)"/>`;
+  h+=`<path d="M0 ${hz} H390" stroke="${INK}" stroke-width="3"/>`;
+  // bunting
+  if(o.bunting!==false){const cols=['#c8643b','#fffdf7','#e9c98f','#fffdf7'];let b=`<path d="M-5 14 Q195 62 395 10" fill="none" stroke="${INK}" stroke-width="2"/>`;
+    for(let i=0;i<13;i++){const t=(i+.5)/13,x=-5+400*t,y=(1-t)*(1-t)*14+2*t*(1-t)*62+t*t*10;b+=`<path d="M${x-10} ${y-1} L${x+10} ${y-1} L${x} ${y+19}Z" fill="${cols[i%4]}" stroke="${INK}" stroke-width="2" stroke-linejoin="round" transform="rotate(${(t-.5)*-14} ${x} ${y})"/>`}h+=b}
+  return h;
+}
+const dText=`font:400 30px 'Bowlby One';fill:${INK}`;
+const dChalk=(sz)=>`font:400 ${sz}px 'Bowlby One';fill:${CHALK};stroke:${INK};stroke-width:6;paint-order:stroke;stroke-linejoin:round`;
+function dButton(y,label){return `<rect x="45" y="${y+7}" width="300" height="60" rx="30" fill="${INK}"/><rect x="45" y="${y}" width="300" height="60" rx="30" fill="${CHALK}" stroke="${INK}" stroke-width="3"/>`+T(195,y+39,label,`font:400 21px 'Bowlby One';fill:${INK};text-anchor:middle`)}
+
+// 1D home
+(function(){const r=R(11);let h=fieldBG(r);
+  // sign board on posts
+  h+=`<g transform="rotate(-3 195 150)"><path d="M112 190 V262 M278 190 V258" stroke="${INK}" stroke-width="7"/><rect x="62" y="110" width="266" height="92" rx="12" fill="${INK}"/><rect x="62" y="102" width="266" height="92" rx="12" fill="${CHALK}" stroke="${INK}" stroke-width="4"/>${T(195,152,'FIELDCARD',`font:400 37px 'Bowlby One';fill:${INK};text-anchor:middle`)}${T(195,178,'Card 43 · Fri 27 Nov',`font:600 14px Outfit;fill:#7a6a55;text-anchor:middle`)}</g>`;
+  const ps=[];const cl=[[-.75,.55,.2],[.7,.3,.22],[.25,1.3,.3],[-.5,1.6,.3],[.95,1.1,.2]];
+  for(let i=0;i<86;i++){const c=cl[i%5];const X=c[0]+gauss(r)*c[2],Z=Math.max(.02,c[1]+gauss(r)*c[2]*1.2);ps.push({X,Z,fill:CROWD_D[i%3],skin:SKIN[(i*7)%5],hair:HAIR[(i*3)%5]})}
+  ps.push({X:0,Z:-.07,you:1});ps.sort((a,b)=>b.Z-a.Z);
+  for(const p of ps){const q=proj(p.X,p.Z);h+=p.you?person(q.x,q.y,q.s*1.55,{fill:YOU,up:1,skin:SKIN[1],hair:HAIR[1]}):person(q.x,q.y,q.s*1.05,p)}
+  h+=dButton(612,'Play card 43')+T(195,702,'Day 12',`font:800 13px Outfit;fill:${CHALK};text-anchor:middle;letter-spacing:2px`);
+  put('s1D',h)})();
+
+// 2D stop
+(function(){const r=R(5);let h=fieldBG(r);
+  h+=T(24,96,'Stop on the notch.',dText)+T(24,124,"Where it's thin pays more.",`font:600 16px Outfit;fill:#4a443c`);
+  // the painted notch and the line
+  const a=proj(-.15,-.1),b=proj(.15,-.1),c=proj(.15,.03),d=proj(-.15,.03);
+  h+=`<path d="M${a.x} ${a.y} L${b.x} ${b.y} L${c.x} ${c.y} L${d.x} ${d.y}Z" fill="${CHALK}" opacity=".93"/>`;
+  h+=`<path d="M-5 520 H395" stroke="${CHALK}" stroke-width="5" opacity=".95"/>`;
+  [[-.1,'5'],[0,'1'],[.1,'5']].forEach(([X,n])=>{const q=proj(X,-.075);h+=T(q.x,q.y+2,n,`font:400 19px 'Bowlby One';fill:${INK};text-anchor:middle`)});
+  const bins=[[-.4,1],[-.3,2],[-.2,4],[-.1,5],[0,14],[.1,4],[.2,2],[.3,1],[.4,1]];const ps=[];
+  bins.forEach(([X,n],bi)=>{for(let j=0;j<n;j++)ps.push({X:X+gauss(r)*.012,Z:.07+j*.078+r()*.012,fill:CROWD_D[(bi+j)%3],skin:SKIN[(bi*3+j)%5],hair:HAIR[(bi+j*2)%5]})});
+  ps.sort((p,q)=>q.Z-p.Z);for(const p of ps){const q=proj(p.X,p.Z);h+=person(q.x,q.y,q.s*.95,p)}
+  // you, running in along the line
+  h+=`<g opacity=".8" fill="${CHALK}"><circle cx="14" cy="515" r="5" opacity=".35"/><circle cx="26" cy="511" r="7" opacity=".45"/><circle cx="40" cy="514" r="5" opacity=".55"/></g>`;
+  h+=`<path d="M8 492 H34 M2 502 H30" stroke="${CHALK}" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
+  h+=person(58,523,1.3,{fill:YOU,lean:13,skin:SKIN[1],hair:HAIR[1]});
+  h+=T(195,640,'Tap to stop',dChalk(34)+';text-anchor:middle');
+  h+=T(195,684,'1.2% off  ·  Go 2 of 3',`font:800 14px Outfit;fill:${CHALK};text-anchor:middle;letter-spacing:1px`);
+  put('s2D',h)})();
+
+// 3D hold your day
+(function(){const r=R(21);let h=fieldBG(r,{bunting:false});
+  h+=T(24,62,'Hold your day.',dText)+T(24,92,'64 × 1.6',`font:800 20px Outfit;fill:#4a443c`)+T(24,196,'102',`font:400 100px 'Bowlby One';fill:${INK}`);
+  const lines=[['×1.0',-.08],['×1.2',.08],['×1.4',.28],['×1.6',.55],['×1.8',.9],['×2.0',1.4],['×2.4',2.4]];
+  lines.forEach(([lab,Z],i)=>{const q=proj(0,Z);h+=`<path d="M-5 ${q.y} H395" stroke="${CHALK}" stroke-width="${Math.max(1.2,4.5*q.s)}" opacity="${i>3?.55:.9}"/>`;
+    h+=T(10,q.y-3-3*q.s,lab,`font:400 ${Math.max(10,19*q.s).toFixed(1)}px 'Bowlby One';fill:${CHALK};opacity:${i>3?.75:1}`)});
+  const ps=[];
+  // still holding, abreast on your line
+  const Zh=.55;for(let i=-6;i<=6;i++){if(i===0)continue;ps.push({X:i*.145+gauss(r)*.01,Z:Zh+r()*.01,hold:1,fill:CROWD_D[(i+6)%3],skin:SKIN[(i+7)%5],hair:HAIR[(i+9)%5]})}
+  ps.push({X:0,Z:Zh-.01,you:1});
+  // let go: planted on the line they left at
+  [[.28,[-.62,-.2,.33,.7,.5]],[.08,[-.45,.55]]].forEach(([Z,xs],k)=>xs.forEach((X,j)=>ps.push({X,Z:Z+.015,fill:CROWD_D[(j+k)%3],skin:SKIN[(j*2+k)%5],hair:HAIR[(j+k*3)%5]})));
+  ps.sort((p,q)=>q.Z-p.Z);
+  // rope behind the holders' hands
+  const ql=proj(-.9,Zh),qr=proj(.9,Zh),ry=ql.y-21*ql.s*1.5;
+  let rope=`M${ql.x} ${ry}`;for(let i=-5;i<=6;i++){const x1=proj((i-1)*.145+(i===-5?-.03:0),Zh).x,x2=proj(i*.145,Zh).x;rope+=` Q${(x1+x2)/2} ${ry+3} ${x2} ${ry}`}
+  let drawn=false;
+  for(const p of ps){const q=proj(p.X,p.Z);
+    if(!drawn&&p.Z<Zh+.02){h+=`<path d="${rope}" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round"/><path d="${rope}" fill="none" stroke="#c9a26b" stroke-width="3.2" stroke-linecap="round"/><path d="${rope}" fill="none" stroke="#a9824e" stroke-width="3.2" stroke-dasharray="2 5"/>`;drawn=true}
+    h+=p.you?person(q.x,q.y,q.s*1.75,{fill:YOU,hold:1,skin:SKIN[1],hair:HAIR[1]}):person(q.x,q.y,q.s*1.5,p)}
+  h+=dButton(606,'Let go to bank')+T(195,700,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:${CHALK};text-anchor:middle`);
+  put('s3D',h)})();
+
+/* ================= E · Studio night ================= */
+const E_BG='#1b0e17',E_CREAM='#ffe9cf',E_CROWD='#73e0e6';
+function eDefs(){return `<defs>
+ <radialGradient id="eglow" cx=".5" cy=".1" r=".9"><stop offset="0" stop-color="#7a3350"/><stop offset=".5" stop-color="#3a1a2c"/><stop offset="1" stop-color="${E_BG}"/></radialGradient>
+ <radialGradient id="ebulb"><stop offset="0" stop-color="#fffaf0"/><stop offset=".55" stop-color="#ffd9b0"/><stop offset="1" stop-color="#e88f5a"/></radialGradient>
+ <radialGradient id="eyou"><stop offset="0" stop-color="#fffbe0"/><stop offset=".5" stop-color="${YOU}"/><stop offset="1" stop-color="#c8900a"/></radialGradient>
+ <radialGradient id="eoff"><stop offset="0" stop-color="#6a4a48"/><stop offset="1" stop-color="#2e1a20"/></radialGradient>
+ <radialGradient id="evig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></radialGradient>
+ <linearGradient id="ecurt" x1="0" y1="0" x2="34" y2="0" gradientUnits="userSpaceOnUse" spreadMethod="repeat"><stop offset="0" stop-color="#5a0d1e"/><stop offset=".3" stop-color="#b3243a"/><stop offset=".5" stop-color="#d23a4c"/><stop offset=".75" stop-color="#8a1528"/><stop offset="1" stop-color="#5a0d1e"/></linearGradient>
+ <linearGradient id="eshade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></linearGradient>
+ <linearGradient id="ebeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2dc" stop-opacity=".34"/><stop offset="1" stop-color="#fff2dc" stop-opacity="0"/></linearGradient>
+ <linearGradient id="efloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2238"/><stop offset="1" stop-color="#120810"/></linearGradient>
+ <filter id="eb6" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6"/></filter>
+ <filter id="eb3" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2.5"/></filter>
+ <filter id="eb14" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+ <pattern id="escan" width="3" height="3" patternUnits="userSpaceOnUse"><rect width="3" height="1" fill="#000" opacity=".22"/></pattern>
+ </defs><rect width="390" height="720" fill="url(#eglow)"/>`}
+const eEnd=()=>`<rect width="390" height="720" fill="url(#escan)"/><rect width="390" height="720" fill="url(#evig)"/>`;
+function bulb(x,y,r,kind){ // kind: on | you | off | dim
+  if(kind==='off')return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#eoff)"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.22}" fill="#fff" opacity=".25"/>`;
+  const c=kind==='you'?YOU:'#ffb884',f=kind==='you'?'eyou':'ebulb',o=kind==='dim'?.35:1;
+  return `<g opacity="${o}"><circle cx="${x}" cy="${y}" r="${r*2.6}" fill="${c}" opacity=".5" filter="url(#eb6)"/><circle cx="${x}" cy="${y}" r="${r}" fill="url(#${f})"/></g>`}
+function member(x,y,s,lit,r){ // one of the audience, seen from behind
+  let g=`<g transform="translate(${x} ${y}) scale(${s})">`;
+  g+=`<path d="M-9 12 Q-9 1 0 0 Q9 1 9 12Z" fill="#24121f"/><circle cx="0" cy="-5" r="5.4" fill="#2b1626"/>`;
+  g+=`<path d="M-4.6 -8 A5.4 5.4 0 0 1 4.6 -8" fill="none" stroke="#ff9f86" stroke-width="1.1" opacity=".55"/><path d="M-8 4 Q-6 1.2 -1 .6" fill="none" stroke="#ff9f86" stroke-width=".9" opacity=".35"/>`;
+  if(lit){const t=(r()-.5)*14;g+=`<g transform="rotate(${t} 6 -8)"><path d="M6 2 V-9" stroke="#24121f" stroke-width="2.2"/><rect x="1" y="-19" width="10" height="11" rx="1.5" fill="${E_CROWD}" opacity=".8" filter="url(#eb3)"/><rect x="1.5" y="-18.5" width="9" height="10" rx="1.5" fill="#d9fbfb"/><rect x="1.5" y="-18.5" width="9" height="10" rx="1.5" fill="${E_CROWD}" opacity=".55"/></g>`}
+  return g+'</g>'}
+const eTitle=sz=>`font:400 ${sz}px Bungee;fill:${E_CREAM}`;
+const glowText=(x,y,s,st,col)=>`<text x="${x}" y="${y}" style="${st};fill:${col}" filter="url(#eb6)" opacity=".8">${s}</text><text x="${x}" y="${y}" style="${st};fill:${col}">${s}</text>`;
+function eButton(y,label){return `<rect x="45" y="${y+7}" width="300" height="58" rx="29" fill="#0b0409"/><rect x="45" y="${y}" width="300" height="58" rx="29" fill="${E_CREAM}"/><rect x="51" y="${y+5}" width="288" height="22" rx="11" fill="#fff" opacity=".45"/>`+T(195,y+38,label,`font:400 19px Bungee;fill:#2a1220;text-anchor:middle`)}
+
+// 1E home
+(function(){const r=R(8);let h=eDefs();
+  // back wall rings, then the sign
+  for(let i=5;i>0;i--)h+=`<circle cx="195" cy="330" r="${i*52}" fill="none" stroke="#ff9f6b" stroke-width="14" opacity="${.035+.012*(5-i)}"/>`;
+  h+=`<path d="M150 -10 L240 -10 L290 470 L100 470Z" fill="url(#ebeam)" filter="url(#eb14)"/>`;
+  h+=`<rect x="44" y="118" width="302" height="112" rx="20" fill="#12070f"/><rect x="50" y="124" width="290" height="100" rx="16" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  const per=[];for(let x=62;x<=328;x+=19)per.push([x,124],[x,224]);for(let y=143;y<=205;y+=20.6)per.push([50,y],[340,y]);
+  per.forEach(([x,y],i)=>{h+=bulb(x,y,4.6,(i%3===0)?'off':'on')});
+  h+=glowText(195,183,'FIELDCARD',`font:400 35px Bungee;text-anchor:middle`,E_CREAM);
+  h+=T(195,208,'CARD 43 · FRI 27 NOV',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+  // stage floor and your podium in the spot
+  h+=`<path d="M0 470 H390 V720 H0Z" fill="url(#efloor)"/><ellipse cx="195" cy="492" rx="120" ry="20" fill="#fff2dc" opacity=".22" filter="url(#eb6)"/>`;
+  h+=`<path d="M160 392 H230 L222 486 H168Z" fill="#3a1a2c" stroke="#7b3d4a" stroke-width="2"/><rect x="152" y="382" width="86" height="14" rx="5" fill="#532640"/>`;
+  h+=`<circle cx="195" cy="372" r="34" fill="${YOU}" opacity=".5" filter="url(#eb14)"/><path d="M173 382 A22 22 0 0 1 217 382Z" fill="url(#eyou)"/><ellipse cx="188" cy="369" rx="7" ry="4" fill="#fff" opacity=".6"/>`;
+  h+=`<path d="M176 420 H214" stroke="${YOU}" stroke-width="3" opacity=".8"/>`;
+  // curtains
+  h+=`<path d="M0 0 H96 Q70 260 104 520 L0 560Z" fill="url(#ecurt)"/><path d="M390 0 H294 Q320 260 286 520 L390 560Z" fill="url(#ecurt)"/>`;
+  h+=`<path d="M0 0 H96 Q70 260 104 520 L0 560Z" fill="url(#eshade)"/><path d="M390 0 H294 Q320 260 286 520 L390 560Z" fill="url(#eshade)"/>`;
+  let sw='';for(let i=0;i<5;i++)sw+=`<path d="M${i*78} 0 Q${i*78+39} 66 ${i*78+78} 0Z" fill="url(#ecurt)"/><path d="M${i*78} 0 Q${i*78+39} 66 ${i*78+78} 0" fill="none" stroke="#ffb884" stroke-width="2" opacity=".5"/>`;h+=sw;
+  // audience in front of you
+  [[520,1.5,15],[566,2,11],[624,2.7,8]].forEach(([y,s,n],k)=>{for(let i=0;i<n;i++){const x=(i+.5+(k&1?.25:-.1))*(390/n)+(r()-.5)*6;h+=member(x,y+r()*5,s,r()<.22,r)}});
+  h+=`<rect y="560" width="390" height="160" fill="url(#eshade)" opacity=".7"/>`;
+  h+=eButton(606,'Play card 43')+T(195,700,'DAY 12',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  put('s1E',h+eEnd())})();
+
+// 2E stop
+(function(){const r=R(4);let h=eDefs();
+  h+=`<path d="M-40 -10 L60 -10 L330 520 L150 520Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".7"/><path d="M430 -10 L330 -10 L120 520 L300 520Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".5"/>`;
+  h+=T(24,70,'Stop on',eTitle(30))+T(24,104,'the notch.',eTitle(30))+T(24,132,"Where it's thin pays more.",`font:600 16px Outfit;fill:#e7c4b4`);
+  const cols=19,x0=30,dx=18.33,lit=[0,0,0,0,0,0,0,1,1,2,4,5,12,4,2,1,0,0,0];
+  // tiered audience: back rows first
+  for(let row=12;row>=0;row--){const y=440-row*20.5,s=1.02-row*.018;h+=`<rect x="0" y="${y+9}" width="390" height="13" fill="#000" opacity=".28"/>`;
+    for(let c=0;c<cols;c++){const x=x0+c*dx+((row&1)?3:-3)*0;h+=member(x,y,s,row<lit[c],r)}}
+  h+=`<rect x="0" y="150" width="390" height="120" fill="url(#eshade)" opacity=".55" transform="rotate(180 195 210)"/>`;
+  // stage edge, the light bar, the notch
+  h+=`<path d="M0 462 H390 V720 H0Z" fill="url(#efloor)"/><path d="M0 462 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+  const by=500;h+=`<rect x="14" y="${by-13}" width="362" height="26" rx="13" fill="#12070f" stroke="#5a2a3c" stroke-width="1.5"/>`;
+  h+=`<rect x="${x0+11*dx-10}" y="${by-16}" width="${2*dx+20}" height="32" rx="16" fill="none" stroke="${E_CREAM}" stroke-width="2.5"/>`;
+  for(let c=0;c<cols;c++){const x=x0+c*dx;h+=bulb(x,by,5.6,c===4?'you':'off');if(c===3||c===2)h+=`<circle cx="${x}" cy="${by}" r="5.6" fill="${YOU}" opacity="${c===3?.5:.22}"/>`}
+  h+=`<circle cx="${x0+4*dx}" cy="${by}" r="20" fill="${YOU}" opacity=".45" filter="url(#eb6)"/>`;
+  h+=`<ellipse cx="${x0+4*dx}" cy="${by+34}" rx="26" ry="7" fill="${YOU}" opacity=".3" filter="url(#eb6)"/>`;
+  ['5','1','5'].forEach((n,i)=>{h+=T(x0+(11+i)*dx,by+40,n,`font:900 19px Doto,monospace;fill:${E_CREAM};text-anchor:middle`)});
+  h+=glowText(195,634,'Tap to stop',`font:400 30px Bungee;text-anchor:middle`,E_CREAM);
+  h+=T(195,680,'1.2% OFF · GO 2 OF 3',`font:900 14px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+  put('s2E',h+eEnd())})();
+
+// 3E hold your day
+(function(){const r=R(15);let h=eDefs();
+  h+=`<path d="M40 -10 L170 -10 L200 600 L10 600Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".8"/>`;
+  h+=T(24,66,'Hold your day.',eTitle(29));
+  const rungs=['×1.0','×1.2','×1.4','×1.6','×1.8','×2.0','×2.2','×2.4','×2.6','×2.8','×3.0'],gone=[0,5,9,6];
+  h+=`<path d="M34 104 V566 M178 104 V566" stroke="#5a2a3c" stroke-width="6" stroke-linecap="round"/>`;
+  rungs.forEach((lab,i)=>{const y=540-i*41,on=i<=3,cur=i===3;
+    h+=`<rect x="34" y="${y-15}" width="144" height="30" rx="8" fill="${cur?YOU:on?'#8a6a12':'#2a1220'}" stroke="${on?'#ffe9a0':'#5a2a3c'}" stroke-width="1.5"/>`;
+    if(cur)h+=`<rect x="34" y="${y-15}" width="144" height="30" rx="8" fill="${YOU}" opacity=".7" filter="url(#eb6)"/><rect x="34" y="${y-15}" width="144" height="30" rx="8" fill="url(#eyou)"/>`;
+    h+=T(106,y+7,lab,`font:900 ${cur?22:18}px Doto,monospace;fill:${cur?'#2a1220':on?'#ffe9a0':'#7b5060'};text-anchor:middle`);
+    for(let k=0;k<(gone[i]||0);k++)h+=member(200+k*19,y+1,.92,true,r);
+    if(i>3&&i<7)h+=T(200,y+6,'?',`font:900 16px Doto,monospace;fill:#7b5060`)});
+  h+=T(366,196,'64 × 1.6',`font:900 17px Doto,monospace;fill:#ffb884;text-anchor:end;letter-spacing:1px`);
+  h+=glowText(368,170,'102',`font:900 88px Doto,monospace;text-anchor:end`,YOU);
+  h+=eButton(600,'Let go to bank')+T(195,694,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:#e7c4b4;text-anchor:middle`);
+  put('s3E',h+eEnd())})();
+
+/* ================= F · First light ================= */
+const F_INK='#1b2144',F_CREAM='#fff4e6';
+function fBG(r,landY){let h=`<defs>
+ <linearGradient id="fsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb4d6"/><stop offset=".45" stop-color="#d9cfe0"/><stop offset=".72" stop-color="#f6cdb8"/><stop offset=".86" stop-color="#f7a98c"/><stop offset="1" stop-color="#f08a78"/></linearGradient>
+ <radialGradient id="fsun" cx=".68" cy=".9" r=".55"><stop offset="0" stop-color="#fff6ea" stop-opacity=".95"/><stop offset=".25" stop-color="#ffd9c4" stop-opacity=".5"/><stop offset="1" stop-color="#ffd9c4" stop-opacity="0"/></radialGradient>
+ <linearGradient id="fmist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe6da" stop-opacity="0"/><stop offset="1" stop-color="#ffe6da" stop-opacity=".85"/></linearGradient>
+ <filter id="fb" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+ <filter id="fb2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2"/></filter>
+ </defs><rect width="390" height="${landY+20}" fill="url(#fsky)"/><rect width="390" height="${landY+20}" fill="url(#fsun)"/>`;
+  h+=`<circle cx="266" cy="${landY-26}" r="30" fill="#fff8ee"/>`;
+  // long clouds
+  [[70,landY-190,150],[280,landY-150,120],[150,landY-110,210]].forEach(([x,y,w])=>{h+=`<ellipse cx="${x}" cy="${y}" rx="${w}" ry="7" fill="#fff6ee" opacity=".5" filter="url(#fb)"/>`});
+  // hills fading into the mist
+  const hill=(base,amp,fill,seed,step)=>{const q=R(seed);let d=`M-10 ${landY+30} L-10 ${base}`;for(let x=-10;x<400;x+=step)d+=` q${step/2} ${-(amp*(.3+q()))} ${step} ${(q()-.5)*amp*.5}`;return `<path d="${d} L400 ${landY+30}Z" fill="${fill}"/>`};
+  h+=hill(landY-34,26,'#b9a6c6',2,90)+`<rect y="${landY-70}" width="390" height="70" fill="url(#fmist)" opacity=".7"/>`;
+  h+=hill(landY-16,18,'#7c6f9f',5,70)+`<rect y="${landY-40}" width="390" height="46" fill="url(#fmist)" opacity=".5"/>`;
+  // the field in front, with a hedge line and a gate
+  h+=`<path d="M-10 ${landY} q60 -10 130 -4 t150 -2 t130 4 V730 H-10Z" fill="${F_INK}"/>`;
+  const q=R(9);let hedge='';for(let x=-6;x<400;x+=7+q()*9)hedge+=`<ellipse cx="${x}" cy="${landY-3+q()*4}" rx="${6+q()*7}" ry="${5+q()*7}" fill="${F_INK}"/>`;h+=hedge;
+  for(let i=0;i<9;i++)h+=`<path d="M-10 ${landY+30+i*i*2.6} Q195 ${landY+22+i*i*2.6} 400 ${landY+34+i*i*2.6}" fill="none" stroke="#4a4f86" stroke-width="1" opacity="${.5-i*.04}"/>`;
+  return h}
+function flyer(x,y,s,rot,col,flap){return `<path d="M-6 ${flap} Q-3 -3.5 0 0 Q3 -3.5 6 ${flap}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)}) scale(${s.toFixed(2)})" fill="none" stroke="${col}" stroke-width="1.7" stroke-linecap="round"/>`}
+function youBird(x,y,s,rot){return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><circle r="15" fill="${YOU}" opacity=".45" filter="url(#fb)"/><path d="M-13 -2 Q-7 -11 0 -1 Q7 -11 13 -2 Q7 -5 2 2 L0 6 L-2 2 Q-7 -5 -13 -2Z" fill="${YOU}" stroke="${F_INK}" stroke-width="1.3" stroke-linejoin="round"/></g>`}
+function percher(x,y,s,flip,col){return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${(flip?-s:s).toFixed(2)} ${s.toFixed(2)})" fill="${col}"><path d="M-3.8 -4 Q-5 -11 0 -12 Q5 -11 4.2 -4 Q3 1 0 1 Q-3 1 -3.8 -4Z"/><circle cx="1.6" cy="-13.2" r="3.1"/><path d="M4.2 -13.6 L7.4 -12.8 L4.3 -12Z"/><path d="M-2.5 -1 L-5.5 7 L-1.5 6Z"/></g>`}
+const fTitle=sz=>`font:italic 900 ${sz}px Fraunces;fill:${F_INK}`;
+function fButton(y,label){return `<rect x="45" y="${y}" width="300" height="58" rx="29" fill="${F_CREAM}"/>`+T(195,y+37,label,`font:italic 900 22px Fraunces;fill:${F_INK};text-anchor:middle`)}
+
+// 1F home
+(function(){const r=R(31);let h=fBG(r,560);
+  h+=T(26,104,'Fieldcard',fTitle(62))+T(30,134,'Card 43 · Fri 27 Nov',`font:600 15px Outfit;fill:#3a3f6e`);
+  // the flock: a long turning ribbon, dense in its belly
+  let b='';for(let i=0;i<1150;i++){const t=Math.pow(r(),.9),cx=30+310*t,cy=430-200*Math.sin(Math.PI*t*.82)+10*t,w=7+64*Math.pow(Math.sin(Math.PI*t),1.25);
+    const n=gauss(r),x=cx+n*w*.5+gauss(r)*6,y=cy+n*w+gauss(r)*5,dep=r();
+    b+=flyer(x,y,.25+dep*.55,-20+gauss(r)*20-45*Math.cos(Math.PI*t*.82),F_INK,-2+r()*5).replace('stroke-width','opacity="'+(.45+dep*.5).toFixed(2)+'" stroke-width')}
+  h+=b;
+  h+=`<path d="M262 262 Q292 236 322 214" fill="none" stroke="${YOU}" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" opacity=".9"/>`+youBird(332,206,1.5,-30);
+  h+=fButton(606,'Play card 43')+T(195,698,'DAY 12',`font:800 12px Outfit;fill:#aab0e0;text-anchor:middle;letter-spacing:3px`);
+  put('s1F',h)})();
+
+// 2F stop
+(function(){const r=R(13);let h=fBG(r,580);
+  h+=T(26,84,'Stop on the notch.',fTitle(36))+T(28,112,"Where it's thin pays more.",`font:600 16px Outfit;fill:#3a3f6e`);
+  for(let i=0;i<26;i++)h+=flyer(r()*390,150+r()*90,.3+r()*.4,gauss(r)*25,F_INK,-2+r()*5).replace('stroke-width','opacity=".5" stroke-width');
+  const wires=7,wy=k=>486-k*30,sag=(x,k)=>wy(k)+11*(1-Math.pow((x-195)/185,2));
+  // poles
+  [8,382].forEach(x=>{h+=`<path d="M${x} 230 V600" stroke="${F_INK}" stroke-width="7"/>`;[0,2,4,6].forEach(k=>{h+=`<path d="M${x-14} ${wy(k)-2} H${x+14}" stroke="${F_INK}" stroke-width="4"/>`})});
+  for(let k=0;k<wires;k++)h+=`<path d="M8 ${wy(k)} Q195 ${wy(k)+22} 382 ${wy(k)}" fill="none" stroke="${F_INK}" stroke-width="1.6"/>`;
+  // the notch: a sleeve on the lowest wire, with three tags
+  const nx=[232,256,280];h+=`<path d="M${nx[0]-12} ${sag(nx[0]-12,0)} Q${nx[1]} ${sag(nx[1],0)+.6} ${nx[2]+12} ${sag(nx[2]+12,0)}" fill="none" stroke="#e8553d" stroke-width="6" stroke-linecap="round"/>`;
+  nx.forEach((x,i)=>{const y=sag(x,0);h+=`<path d="M${x} ${y+2} V${y+14}" stroke="${F_INK}" stroke-width="1.2"/><path d="M${x-9} ${y+18} L${x} ${y+12} L${x+9} ${y+18} V${y+40} H${x-9}Z" fill="${F_CREAM}" stroke="${F_INK}" stroke-width="1.3"/>`+T(x,y+35,['5','1','5'][i],`font:900 16px Fraunces;fill:${F_INK};text-anchor:middle`)});
+  const xs=[112,136,160,184,208,232,256,280,304,328],cnt=[1,1,2,3,3,4,7,3,2,1];
+  xs.forEach((x,i)=>{for(let k=0;k<cnt[i];k++){const xx=x+gauss(r)*2.2;h+=percher(xx,sag(xx,k)+.5,1.05+r()*.12,r()<.45,F_INK)}});
+  // you, coming in under the wires
+  h+=`<path d="M10 548 Q40 528 66 534" fill="none" stroke="${YOU}" stroke-width="2.2" stroke-dasharray="1 7" stroke-linecap="round"/>`+youBird(84,532,1.35,8);
+  h+=T(195,648,'Tap to stop',`font:italic 900 34px Fraunces;fill:${F_CREAM};text-anchor:middle`);
+  h+=T(195,688,'1.2% off  ·  Go 2 of 3',`font:600 14px Outfit;fill:#aab0e0;text-anchor:middle;letter-spacing:1px`);
+  put('s2F',h)})();
+
+// 3F hold your day
+(function(){const r=R(41);let h=fBG(r,560);
+  h+=T(26,78,'Hold your day.',fTitle(36))+T(364,170,'102',`font:900 92px Fraunces;fill:${F_INK};text-anchor:end`)+T(362,198,'64 × 1.6',`font:800 18px Outfit;fill:#3a3f6e;text-anchor:end`);
+  // height marks up the left edge
+  [['×1.0',520],['×1.2',458],['×1.4',396],['×1.6',334],['×1.8',272],['×2.0',210]].forEach(([l,y],i)=>{h+=`<path d="M0 ${y} H${i===3?30:16}" stroke="${F_INK}" stroke-width="${i===3?3:1.5}" opacity="${i>3?.45:1}"/>`+T(i===3?36:22,y+5,l,`font:${i===3?'900 18px':'600 13px'} Fraunces;fill:${F_INK};opacity:${i>3?.5:1}`)});
+  // the wire at the bottom, where the ones who let go sit
+  h+=`<path d="M-5 512 Q195 530 395 512" fill="none" stroke="${F_INK}" stroke-width="1.6"/>`;
+  const wy=x=>512+9*(1-Math.pow((x-195)/200,2));
+  for(let i=0;i<20;i++){const x=70+i*14.5+gauss(r)*2;h+=percher(x,wy(x)+.5,1+r()*.12,r()<.5,F_INK)}
+  // some on the way down
+  [[150,470,35],[214,440,50],[262,474,30],[118,420,60],[300,430,40]].forEach(([x,y,a])=>{h+=`<path d="M${x+14} ${y-34} Q${x+10} ${y-16} ${x+2} ${y-6}" fill="none" stroke="${F_INK}" stroke-width="1" stroke-dasharray="1 5" stroke-linecap="round" opacity=".7"/>`+flyer(x,y,1.25,a,F_INK,2)});
+  // still up with you
+  for(let i=0;i<64;i++){const x=215+gauss(r)*70,y=334+gauss(r)*17,d=r();h+=flyer(x,y,.55+d*.6,-8+gauss(r)*10,F_INK,-2+r()*4).replace('stroke-width','opacity="'+(.55+d*.45).toFixed(2)+'" stroke-width')}
+  h+=`<path d="M176 380 Q186 356 198 342" fill="none" stroke="${YOU}" stroke-width="2.2" stroke-dasharray="1 7" stroke-linecap="round"/>`+youBird(204,330,1.6,-18);
+  h+=fButton(600,'Let go to bank')+T(195,694,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:#c9cdf0;text-anchor:middle`);
+  put('s3F',h)})();
+
+
+/* ================= G · Studio night, with people ================= */
+const G_CROWD=['#3fb4bf','#55c8d0','#2f9aa6'];
+const gP=(i)=>({fill:G_CROWD[i%3],skin:SKIN[(i*7+2)%5],hair:HAIR[(i*3+1)%5]});
+function gCurtains(){let h=`<path d="M0 0 H62 Q42 260 72 520 L0 560Z" fill="url(#ecurt)"/><path d="M390 0 H328 Q348 260 318 520 L390 560Z" fill="url(#ecurt)"/><path d="M0 0 H62 Q42 260 72 520 L0 560Z" fill="url(#eshade)"/><path d="M390 0 H328 Q348 260 318 520 L390 560Z" fill="url(#eshade)"/>`;
+  for(let i=0;i<5;i++)h+=`<path d="M${i*78} 0 Q${i*78+39} 60 ${i*78+78} 0Z" fill="url(#ecurt)"/><path d="M${i*78} 0 Q${i*78+39} 60 ${i*78+78} 0" fill="none" stroke="#ffb884" stroke-width="2" opacity=".5"/>`;return h}
+// one tier of the stands: empty seat backs, then whoever sits there, then the rail in front of them
+function tier(y,xs,who,s,r,dim){let h='';
+  xs.forEach(x=>{h+=`<rect x="${x-8*s}" y="${y-22*s}" width="${16*s}" height="${24*s}" rx="${5*s}" fill="#3b1d30" stroke="#5a2a42" stroke-width="1"/>`});
+  xs.forEach((x,i)=>{if(who(i))h+=person(x,y+12*s,s,{...gP(Math.floor(r()*60)),up:r()<.18})});
+  h+=`<rect x="0" y="${y}" width="390" height="${9*s}" fill="#2a1322"/><rect x="0" y="${y}" width="390" height="1.6" fill="#ff9f86" opacity=".45"/>`;
+  if(dim)h+=`<rect x="0" y="${y-40*s}" width="390" height="${50*s}" fill="#12060e" opacity="${dim}"/>`;
+  return h}
+
+// 1G home
+(function(){const r=R(18);let h=eDefs();
+  for(let i=5;i>0;i--)h+=`<circle cx="195" cy="300" r="${i*52}" fill="none" stroke="#ff9f6b" stroke-width="14" opacity="${.03+.01*(5-i)}"/>`;
+  h+=`<rect x="44" y="92" width="302" height="112" rx="20" fill="#12070f"/><rect x="50" y="98" width="290" height="100" rx="16" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  const per=[];for(let x=62;x<=328;x+=19)per.push([x,98],[x,198]);for(let y=117;y<=180;y+=20.6)per.push([50,y],[340,y]);
+  per.forEach(([x,y],i)=>{h+=bulb(x,y,4.6,(i%3===0)?'off':'on')});
+  h+=glowText(195,157,'FIELDCARD',`font:400 35px Bungee;text-anchor:middle`,E_CREAM);
+  h+=T(195,182,'CARD 43 · FRI 27 NOV',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+  // the stands, full, facing out
+  for(let row=6;row>=0;row--){const s=.86+ (6-row)*.035,y=438-row*29,n=13,dx=27*s;const xs=[];for(let i=0;i<n+2;i++)xs.push(195+(i-(n+1)/2)*dx+((row&1)?dx/2:0));
+    h+=tier(y,xs,()=>r()<.93,s,r,row*.06)}
+  h+=`<path d="M0 448 H390 V720 H0Z" fill="url(#efloor)"/><path d="M0 448 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+  h+=gCurtains();
+  // you, in the spot
+  h+=`<path d="M150 -10 L240 -10 L300 590 L90 590Z" fill="url(#ebeam)" filter="url(#eb14)"/>`;
+  h+=`<ellipse cx="195" cy="582" rx="96" ry="17" fill="#fff2dc" opacity=".3" filter="url(#eb6)"/><ellipse cx="195" cy="582" rx="60" ry="10" fill="${YOU}" opacity=".25" filter="url(#eb6)"/>`;
+  h+=person(195,584,2.7,{fill:YOU,up:1,skin:SKIN[1],hair:HAIR[1]});
+  h+=eButton(618,'Play card 43')+T(195,704,'DAY 12',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  put('s1G',h+eEnd())})();
+
+// 2G stop
+(function(){const r=R(6);let h=eDefs();
+  h+=T(24,70,'Stop on',eTitle(30))+T(24,104,'the notch.',eTitle(30))+T(24,132,"Where it's thin pays more.",`font:600 16px Outfit;fill:#e7c4b4`);
+  const cols=15,x0=27,dx=24,cnt=[0,0,0,0,1,2,4,5,12,4,2,1,1,0,0],xs=[];for(let c=0;c<cols;c++)xs.push(x0+c*dx);
+  for(let row=11;row>=0;row--){const y=446-row*23.5;h+=tier(y,xs,c=>row<cnt[c],1.02,r,row*.022)}
+  h+=`<path d="M210 -10 L260 -10 L262 440 L176 440Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".55"/>`;
+  h+=`<path d="M0 458 H390 V720 H0Z" fill="url(#efloor)"/><path d="M0 458 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+  const by=500;h+=`<rect x="10" y="${by-14}" width="370" height="28" rx="14" fill="#12070f" stroke="#5a2a3c" stroke-width="1.5"/>`;
+  h+=`<rect x="${x0+7*dx-13}" y="${by-18}" width="${2*dx+26}" height="36" rx="18" fill="none" stroke="${E_CREAM}" stroke-width="2.5"/>`;
+  for(let c=0;c<cols;c++){const x=x0+c*dx;h+=bulb(x,by,6.6,c===2?'you':'off');if(c<2)h+=`<circle cx="${x}" cy="${by}" r="6.6" fill="${YOU}" opacity="${c===1?.5:.22}"/>`}
+  h+=`<circle cx="${x0+2*dx}" cy="${by}" r="22" fill="${YOU}" opacity=".45" filter="url(#eb6)"/><ellipse cx="${x0+2*dx}" cy="${by+34}" rx="26" ry="7" fill="${YOU}" opacity=".3" filter="url(#eb6)"/>`;
+  ['5','1','5'].forEach((n,i)=>{h+=T(x0+(7+i)*dx,by+44,n,`font:900 22px Doto,monospace;fill:${E_CREAM};text-anchor:middle`)});
+  h+=glowText(195,634,'Tap to stop',`font:400 30px Bungee;text-anchor:middle`,E_CREAM);
+  h+=T(195,680,'1.2% OFF · GO 2 OF 3',`font:900 14px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+  put('s2G',h+eEnd())})();
+
+// 3G hold your day
+(function(){const r=R(27);let h=eDefs();
+  h+=T(24,62,'Hold your day.',eTitle(29));
+  h+=T(26,150,'64 × 1.6',`font:900 18px Doto,monospace;fill:#ffb884;letter-spacing:1px`);
+  h+=glowText(368,168,'102',`font:900 84px Doto,monospace;text-anchor:end`,YOU);
+  const labs=['×1.0','×1.2','×1.4','×1.6','×1.8','×2.0','×2.2','×2.4'],st=[];let yb=580;
+  labs.forEach((lab,i)=>{const k=1-.045*i,hw=186*k,hh=31*k,t=17*k,hw2=186*(1-.045*(i+1));st.push({lab,i,yb,hw,hh,t,hw2,k});yb-=hh+t});
+  const who={1:[-.72,.5],2:[-.55,-.2,.2,.62,.86]};
+  for(const q of st.slice().reverse()){const on=q.i<=3,cur=q.i===3,top=q.yb-q.hh;
+    // tread, then the lit riser
+    h+=`<path d="M${195-q.hw} ${top} L${195-q.hw2} ${top-q.t} L${195+q.hw2} ${top-q.t} L${195+q.hw} ${top}Z" fill="${on?'#5a3142':'#2a1524'}"/>`;
+    h+=`<rect x="${195-q.hw}" y="${top}" width="${q.hw*2}" height="${q.hh}" rx="3" fill="${cur?YOU:on?'#7d5f14':'#1f0f1a'}" stroke="${on?'#ffe9a0':'#4a2437'}" stroke-width="1.3"/>`;
+    if(cur)h+=`<rect x="${195-q.hw}" y="${top}" width="${q.hw*2}" height="${q.hh}" fill="${YOU}" opacity=".75" filter="url(#eb6)"/><rect x="${195-q.hw}" y="${top}" width="${q.hw*2}" height="${q.hh}" rx="3" fill="url(#eyou)"/>`;
+    h+=T(195-q.hw+10,top+q.hh*.74,q.lab,`font:900 ${(cur?21:17)*q.k}px Doto,monospace;fill:${cur?'#2a1220':on?'#ffe9a0':'#6b4458'}`);
+    // people stand on the tread below their own lit riser, so the riser behind them carries their number
+    const up=st[q.i+1];if(up){const fy=top-q.t*.45,s=.95*up.k,cu=up.i===3;
+      if(cu){for(let j=-6;j<=6;j++){const x=195+j*(q.hw2*2-96)/12.5+30;h+=j===0?'':person(x,fy,s,{...gP(j+9),hold:1})}
+        h+=`<ellipse cx="225" cy="${fy}" rx="26" ry="6" fill="${YOU}" opacity=".5" filter="url(#eb6)"/>`+person(225,fy+1,s*1.22,{fill:YOU,up:1,skin:SKIN[1],hair:HAIR[1]})}
+      else (who[up.i]||[]).forEach((X,j)=>{h+=person(195+X*(q.hw2-30)+22,fy,s,gP(j+up.i*4))})}
+  }
+  h+=`<path d="M170 -10 L260 -10 L330 430 L100 430Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".5"/>`;
+  h+=eButton(600,'Let go to bank')+T(195,694,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:#e7c4b4;text-anchor:middle`);
+  put('s3G',h+eEnd())})();
+
+
+/* ================= H · Studio night, people in cinema seats ================= */
+const H_SKIN=['#e8b594','#c98d68','#a36a48','#7a4a32','#f0c7a6'],H_TOP=['#6b3a5a','#4a3a6b','#7a3340','#3d4a66','#5a5040','#7a5a3a'],H_HAIR=['#3a2418','#7a4a22','#b98a4a','#1c1418','#8a3a2a','#c9c0b4'];
+const H_CUT=['M-6.2 -1 A6.2 6.2 0 0 1 6.2 -1 Q3 -4.6 -6.2 -1Z','M-6.9 5 Q-8.6 -7 0 -7 Q8.6 -7 6.9 5 L5 0 Q0 -4.2 -5 0Z','M-6.2 -1 A6.2 6.2 0 0 1 6.2 -1 Q3 -4.6 -6.2 -1Z M-2.9 -8 a2.9 2.9 0 1 0 5.8 0 a2.9 2.9 0 1 0 -5.8 0','M-6.2 0 A6.2 6.2 0 0 1 6.2 0 Q6 -3 2 -5 Q-3 -5.4 -6.2 0Z',''];
+const hWho=r=>({skin:H_SKIN[Math.floor(r()*5)],top:H_TOP[Math.floor(r()*6)],hair:H_HAIR[Math.floor(r()*6)],cut:Math.floor(r()*5)});
+const seatDef=`<defs><linearGradient id="eseat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b3243a"/><stop offset="1" stop-color="#4f0b1a"/></linearGradient><linearGradient id="ewarm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0d8" stop-opacity=".5"/><stop offset="1" stop-color="#fff0d8" stop-opacity=".05"/></linearGradient></defs>`;
+// a cinema seat seen from the stage; folded up when empty
+function frontSeat(x,y,s,empty){let g=`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-12 3 V-13 Q-12 -21 -4 -21 H4 Q12 -21 12 -13 V3Z" fill="url(#eseat)"/><path d="M-9 -19.4 Q0 -21.6 9 -19.4" fill="none" stroke="#ff9a9a" stroke-width="1" opacity=".5"/><path d="M-13.5 -7 V4 M13.5 -7 V4" stroke="#1d0810" stroke-width="3" stroke-linecap="round"/>`;
+  if(empty)g+=`<rect x="-9.5" y="-6" width="19" height="8" rx="2.5" fill="#c22d45"/><path d="M-7.5 -4.4 H7.5" stroke="#ff9a9a" stroke-width="1" opacity=".5"/>`;return g+'</g>'}
+// someone in that seat, in the studio's light. mode: 'card' (a player), 'warm' (in the spotlight), 'dark'
+function bust(x,y,s,w,mode){const d=mode==='dark',sk=d?'#2e1828':w.skin,tp=d?'#25131f':w.top,hr=d?'#1a0c16':w.hair;
+  let g=`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-11 0 Q-11 -10 -4 -11 L4 -11 Q11 -10 11 0Z" fill="${tp}"/><rect x="-2.3" y="-14" width="4.6" height="4.5" fill="${sk}"/><circle cx="0" cy="-18" r="6.2" fill="${sk}"/>`;
+  if(!d)g+=`<path d="M-6.2 -18 A6.2 6.2 0 0 0 6.2 -18 Q0 -14 -6.2 -18Z" fill="#000" opacity=".16"/>`;
+  g+=`<path transform="translate(0 -18)" d="${H_CUT[w.cut]}" fill="${hr}"/>`;
+  g+=`<path d="M-10.4 -4 Q-10 -9.6 -4 -10.5" fill="none" stroke="#ffb69a" stroke-width="1" opacity="${d?.4:.7}"/><path d="M-5 -22 A6.2 6.2 0 0 1 4 -23" fill="none" stroke="#ffd9c4" stroke-width=".9" opacity="${d?.35:.6}"/>`;
+  if(mode==='card')g+=`<ellipse cx="0" cy="-14.5" rx="5" ry="3" fill="${E_CROWD}" opacity=".4"/><rect x="-5.5" y="-9" width="11" height="8" rx="1.6" fill="${E_CROWD}" opacity=".85" filter="url(#eb3)"/><rect x="-5" y="-8.5" width="10" height="7" rx="1.6" fill="#c9f7f8"/><rect x="-5" y="-8.5" width="10" height="7" rx="1.6" fill="${E_CROWD}" opacity=".5"/>`;
+  return g+'</g>'}
+// the same seat from behind
+function backSeat(x,y,s,w,mode){let g=`<g transform="translate(${x.toFixed(1)} ${y}) scale(${s})">`;
+  if(mode){const d=mode==='dark',tp=d?'#25131f':w.top,hr=d?'#1a0c16':w.hair;
+    if(mode==='card')g+=`<path d="M8 -12 V-28" stroke="${tp}" stroke-width="3.2" stroke-linecap="round"/><rect x="2.5" y="-41" width="11" height="13" rx="1.6" fill="${E_CROWD}" opacity=".85" filter="url(#eb3)"/><rect x="3" y="-40.5" width="10" height="12" rx="1.6" fill="#c9f7f8"/><rect x="3" y="-40.5" width="10" height="12" rx="1.6" fill="${E_CROWD}" opacity=".5"/>`;
+    g+=`<path d="M-11 -4 Q-11 -15 -4 -16 L4 -16 Q11 -15 11 -4Z" fill="${tp}"/><circle cx="0" cy="-22" r="6.4" fill="${hr}"/>`;
+    if(w.cut===1)g+=`<path d="M-7 -22 Q-8 -13 -5 -13 H5 Q8 -13 7 -22Z" fill="${hr}"/>`;if(w.cut===2)g+=`<circle cx="0" cy="-29.5" r="3" fill="${hr}"/>`;
+    g+=`<path d="M-5.2 -26 A6.4 6.4 0 0 1 5.2 -26" fill="none" stroke="#ffc9b0" stroke-width="1.1" opacity="${d?.45:.85}"/><path d="M-10.4 -9 Q-10 -14.6 -4 -15.5" fill="none" stroke="#ffb69a" stroke-width="1" opacity="${d?.3:.6}"/>`}
+  g+=`<path d="M-12.5 5 V-5 Q-12.5 -13 -5 -13 H5 Q12.5 -13 12.5 -5 V5Z" fill="url(#eseat)"/><path d="M-9.5 -11.4 Q0 -13.6 9.5 -11.4" fill="none" stroke="#ff9a9a" stroke-width="1" opacity=".55"/><path d="M-12.5 5 V-5 Q-12.5 -13 -5 -13 H5 Q12.5 -13 12.5 -5 V5Z" fill="#000" opacity=".25"/>`;
+  return g+'</g>'}
+function lightBar(by,xs,you,notch,r6){let h=`<rect x="${xs[0]-18}" y="${by-r6-7}" width="${xs[xs.length-1]-xs[0]+36}" height="${2*r6+14}" rx="${r6+7}" fill="#12070f" stroke="#5a2a3c" stroke-width="1.5"/>`;
+  h+=`<rect x="${xs[notch]-r6-7}" y="${by-r6-11}" width="${xs[notch+2]-xs[notch]+2*r6+14}" height="${2*r6+22}" rx="${r6+11}" fill="none" stroke="${E_CREAM}" stroke-width="2.5"/>`;
+  xs.forEach((x,c)=>{h+=bulb(x,by,r6,c===you?'you':'off');if(c<you&&c>=you-2)h+=`<circle cx="${x}" cy="${by}" r="${r6}" fill="${YOU}" opacity="${c===you-1?.5:.22}"/>`});
+  return h+`<circle cx="${xs[you]}" cy="${by}" r="${r6*3.2}" fill="${YOU}" opacity=".45" filter="url(#eb6)"/>`}
+const stopWords=()=>T(24,70,'Stop on',eTitle(30))+T(24,104,'the notch.',eTitle(30))+T(24,132,"Where it's thin pays more.",`font:600 16px Outfit;fill:#e7c4b4`);
+const stopFoot=()=>glowText(195,640,'Tap to stop',`font:400 30px Bungee;text-anchor:middle`,E_CREAM)+T(195,684,'1.2% OFF · GO 2 OF 3',`font:900 14px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+
+// 2H and 2J: the house from the stage
+function house(id,full,seed){const r=R(seed);let h=eDefs()+seatDef+stopWords();
+  const cols=13,dx=27,x0=33,cnt=[0,0,0,1,2,4,5,10,4,2,1,0,0],xs=[];for(let c=0;c<cols;c++)xs.push(x0+c*dx);
+  const sp={x:92,y:300,rx:62,ry:74};
+  for(let row=9;row>=0;row--){const y=446-row*27;h+=`<rect x="0" y="${y+3}" width="390" height="6" fill="#170911"/>`;
+    xs.forEach((x,c)=>{const pl=row<cnt[c],w=hWho(r);const inS=full&&Math.pow((x-sp.x)/sp.rx,2)+Math.pow((y-12-sp.y)/sp.ry,2)<1;
+      h+=frontSeat(x,y,1,!pl&&!full);if(pl||full)h+=bust(x,y+1,.98,w,pl?'card':inS?'warm':'dark')});
+    h+=`<rect x="0" y="${y-24}" width="390" height="30" fill="#12060e" opacity="${(row*.03+(full?.0:.0)).toFixed(2)}"/>`}
+  if(full)h+=`<path d="M30 -10 L70 -10 L${sp.x+sp.rx} ${sp.y+30} L${sp.x-sp.rx} ${sp.y+30}Z" fill="url(#ewarm)" filter="url(#eb14)" opacity=".8"/><ellipse cx="${sp.x}" cy="${sp.y}" rx="${sp.rx}" ry="${sp.ry}" fill="none" stroke="#fff0d8" stroke-width="1.5" opacity=".35"/><path d="M${sp.x+78} ${sp.y-30} q16 -6 26 -22 M${sp.x+80} ${sp.y-8} q12 -2 22 -10" fill="none" stroke="#fff0d8" stroke-width="1.5" stroke-linecap="round" opacity=".4"/>`;
+  h+=`<path d="M0 462 H390 V720 H0Z" fill="url(#efloor)"/><path d="M0 462 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+  h+=lightBar(506,xs,2,6,7.4)+`<ellipse cx="${xs[2]}" cy="544" rx="26" ry="7" fill="${YOU}" opacity=".3" filter="url(#eb6)"/>`;
+  ['5','1','5'].forEach((n,i)=>{h+=T(xs[6+i],556,n,`font:900 22px Doto,monospace;fill:${E_CREAM};text-anchor:middle`)});
+  put(id,h+stopFoot()+eEnd())}
+house('s2H',false,6);house('s2J',true,9);
+
+// rows of seats seen from behind, far to near
+function backRows(r,rows,cols,fn){let h='';rows.forEach(([y,s],ri)=>{h+=`<rect x="0" y="${y+4*s}" width="390" height="${10*s}" fill="#150810"/>`;
+  for(let c=0;c<cols;c++){const x=195+(c-(cols-1)/2)*27*s;if(x<-20||x>410){r();r();r();r();continue}h+=backSeat(x,y,s,hWho(r),fn(ri,c,x,y))}
+  h+=`<rect x="0" y="${y-44*s}" width="390" height="${52*s}" fill="#12060e" opacity="${(.3-ri*.045).toFixed(2)}"/>`});return h}
+
+// 2K: the house from your seat
+(function(){const r=R(12);let h=eDefs()+seatDef+stopWords();
+  const cols=13,cnt=[0,0,0,1,1,2,3,7,3,1,1,0,0],s0=.66,xs=[];for(let c=0;c<cols;c++)xs.push(195+(c-6)*27*s0);
+  h+=`<path d="M0 262 H390 V230 H0Z" fill="#3a1a2c"/><path d="M0 230 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+  h+=lightBar(202,xs,2,6,5.2);
+  ['5','1','5'].forEach((n,i)=>{h+=T(xs[6+i],178,n,`font:900 17px Doto,monospace;fill:${E_CREAM};text-anchor:middle`)});
+  h+=`<path d="M0 262 H390 V720 H0Z" fill="#1c0c16"/>`;
+  const rows=[];for(let i=0;i<7;i++){const s=s0+i*.2+i*i*.012;rows.push([292+i*44+i*i*2.6,s])}
+  h+=backRows(r,rows,13,(ri,c)=>ri<cnt[c]?'card':null);
+  h+=`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`;
+  put('s2K',h+stopFoot()+eEnd())})();
+
+// 1H home: you are in the house, and the spotlights are searching
+(function(){const r=R(33);let h=eDefs()+seatDef;
+  for(let i=5;i>0;i--)h+=`<circle cx="195" cy="300" r="${i*52}" fill="none" stroke="#ff9f6b" stroke-width="14" opacity="${.035+.012*(5-i)}"/>`;
+  h+=`<path d="M150 -10 L240 -10 L290 440 L100 440Z" fill="url(#ebeam)" filter="url(#eb14)"/>`;
+  h+=`<rect x="44" y="104" width="302" height="112" rx="20" fill="#12070f"/><rect x="50" y="110" width="290" height="100" rx="16" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  const per=[];for(let x=62;x<=328;x+=19)per.push([x,110],[x,210]);for(let y=129;y<=192;y+=20.6)per.push([50,y],[340,y]);
+  per.forEach(([x,y],i)=>{h+=bulb(x,y,4.6,(i%3===0)?'off':'on')});
+  h+=glowText(195,169,'FIELDCARD',`font:400 35px Bungee;text-anchor:middle`,E_CREAM)+T(195,194,'CARD 43 · FRI 27 NOV',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+  h+=`<path d="M0 430 H390 V720 H0Z" fill="url(#efloor)"/><ellipse cx="195" cy="446" rx="110" ry="16" fill="#fff2dc" opacity=".22" filter="url(#eb6)"/>`;
+  h+=`<path d="M164 356 H226 L219 440 H171Z" fill="#3a1a2c" stroke="#7b3d4a" stroke-width="2"/><rect x="156" y="346" width="78" height="13" rx="5" fill="#532640"/>`;
+  h+=`<circle cx="195" cy="338" r="32" fill="${YOU}" opacity=".5" filter="url(#eb14)"/><path d="M175 346 A20 20 0 0 1 215 346Z" fill="url(#eyou)"/><ellipse cx="189" cy="334" rx="6" ry="3.5" fill="#fff" opacity=".6"/>`;
+  h+=`<path d="M0 0 H86 Q62 240 94 470 L0 500Z" fill="url(#ecurt)"/><path d="M390 0 H304 Q328 240 296 470 L390 500Z" fill="url(#ecurt)"/><path d="M0 0 H86 Q62 240 94 470 L0 500Z" fill="url(#eshade)"/><path d="M390 0 H304 Q328 240 296 470 L390 500Z" fill="url(#eshade)"/>`;
+  for(let i=0;i<5;i++)h+=`<path d="M${i*78} 0 Q${i*78+39} 66 ${i*78+78} 0Z" fill="url(#ecurt)"/><path d="M${i*78} 0 Q${i*78+39} 66 ${i*78+78} 0" fill="none" stroke="#ffb884" stroke-width="2" opacity=".5"/>`;
+  const spots=[[96,520,70,34],[300,585,84,40]],inS=(x,y)=>spots.some(([cx,cy,rx,ry])=>Math.pow((x-cx)/rx,2)+Math.pow((y-22-cy)/ry,2)<1);
+  const rows=[[500,1],[548,1.3],[606,1.65],[678,2.05],[768,2.5]];
+  h+=backRows(r,rows,19,(ri,c,x,y)=>r()<.08?null:inS(x,y)?(r()<.3?'card':'warm'):'dark');
+  spots.forEach(([cx,cy,rx,ry],i)=>{const tx=i?330:40;h+=`<path d="M${tx-14} -10 L${tx+14} -10 L${cx+rx} ${cy} L${cx-rx} ${cy}Z" fill="url(#ewarm)" filter="url(#eb14)" opacity=".75"/><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#fff0d8" opacity=".13" filter="url(#eb6)"/>`});
+  h+=`<rect y="580" width="390" height="140" fill="url(#eshade)" opacity=".8"/>`;
+  h+=eButton(612,'Play card 43')+T(195,702,'DAY 12',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  put('s1H',h+eEnd())})();
+
+// 3H hold your day: one big lamp per step
+(function(){const r=R(19);let h=eDefs()+seatDef;
+  h+=T(24,62,'Hold your day.',eTitle(29));
+  h+=glowText(368,160,'102',`font:900 84px Doto,monospace;text-anchor:end`,YOU)+T(366,188,'64 × 1.6',`font:900 17px Doto,monospace;fill:#ffb884;text-anchor:end;letter-spacing:1px`);
+  const labs=['×1.0','×1.2','×1.4','×1.6','×1.8','×2.0','×2.2','×2.4'],gone=[0,5,9,6],X=72;
+  h+=`<rect x="${X-34}" y="170" width="68" height="420" rx="34" fill="#0f050c"/><rect x="${X-30}" y="174" width="60" height="412" rx="30" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  labs.forEach((lab,i)=>{const y=556-i*50,on=i<=3,cur=i===3,warm=i===4;
+    h+=`<circle cx="${X}" cy="${y}" r="23" fill="#12070f" stroke="#7b3d4a" stroke-width="1.5"/>`;
+    if(on){h+=`<circle cx="${X}" cy="${y}" r="${cur?46:32}" fill="${YOU}" opacity="${cur?.6:.35}" filter="url(#eb14)"/><circle cx="${X}" cy="${y}" r="20" fill="url(#eyou)"/><ellipse cx="${X-7}" cy="${y-8}" rx="6" ry="3.6" fill="#fff" opacity=".7" transform="rotate(-30 ${X-7} ${y-8})"/>`;
+      if(cur)for(let k=0;k<10;k++){const a=k*Math.PI/5+.3;h+=`<path d="M${X+29*Math.cos(a)} ${y+29*Math.sin(a)} L${X+37*Math.cos(a)} ${y+37*Math.sin(a)}" stroke="#fff3b0" stroke-width="2.4" stroke-linecap="round"/>`}}
+    else{h+=`<circle cx="${X}" cy="${y}" r="20" fill="url(#eoff)"/><ellipse cx="${X-7}" cy="${y-8}" rx="5" ry="3" fill="#fff" opacity=".16" transform="rotate(-30 ${X-7} ${y-8})"/>`;
+      if(warm)h+=`<circle cx="${X}" cy="${y}" r="22" fill="#ff9a3c" opacity=".35" filter="url(#eb6)"/><path d="M${X-6} ${y+3} q3 -9 6 0 q3 -9 6 0" fill="none" stroke="#ffb45e" stroke-width="2" stroke-linecap="round"/>`}
+    h+=T(X+38,y+6,lab,`font:900 ${cur?22:17}px Doto,monospace;fill:${cur?YOU:on?'#e9c34a':warm?'#b9785a':'#6b4458'}`);
+    for(let k=0;k<(gone[i]||0);k++){const x=176+k*23;h+=frontSeat(x,y+16,.9,false)+bust(x,y+17,.88,hWho(r),'card')}});
+  h+=eButton(606,'Let go to bank')+T(195,698,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:#e7c4b4;text-anchor:middle`);
+  put('s3H',h+eEnd())})();
+
+
+/* ================= Round 5 · five ways to show the crowd ================= */
+const CN=[0,0,0,1,2,4,5,10,4,2,1,0,0],CX=CN.map((_,c)=>33+c*27),rowY=row=>446-row*27;
+const cDef=`<defs>
+ <radialGradient id="ecool" cx=".4" cy=".35"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#a8eef2"/><stop offset="1" stop-color="#3aa8b3"/></radialGradient>
+ <linearGradient id="etin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a6eef1"/><stop offset=".45" stop-color="#4fbfc9"/><stop offset="1" stop-color="#1f7a85"/></linearGradient>
+ <linearGradient id="ebrass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6c079"/><stop offset=".5" stop-color="#a87c3a"/><stop offset="1" stop-color="#5a3c18"/></linearGradient>
+ <radialGradient id="escrim" cx=".5" cy=".95" r="1"><stop offset="0" stop-color="#ffe2b0"/><stop offset=".35" stop-color="#f0a060"/><stop offset=".7" stop-color="#9a4038"/><stop offset="1" stop-color="#3a1424"/></radialGradient>
+ <radialGradient id="ebox" cx=".5" cy=".75" r=".8"><stop offset="0" stop-color="#e2fdfd"/><stop offset=".5" stop-color="#5fd0d8"/><stop offset="1" stop-color="#1c6b75"/></radialGradient>
+ <linearGradient id="efoot" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffd9b0" stop-opacity=".3"/><stop offset=".6" stop-color="#ffd9b0" stop-opacity="0"/></linearGradient>
+ <linearGradient id="etop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c040a" stop-opacity=".85"/><stop offset="1" stop-color="#0c040a" stop-opacity="0"/></linearGradient>
+ <filter id="esoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.3"/></filter>
+ </defs>`;
+const BUST='M-10 0 Q-10 -9.5 -4 -11 Q-6.6 -13.5 -6.6 -18 A6.6 6.6 0 0 1 6.6 -18 Q6.6 -13.5 4 -11 Q10 -9.5 10 0Z';
+function crowdScreen(id,inner,seed,opt={}){let h=eDefs()+seatDef+cDef+stopWords()+inner(R(seed));
+  if(!opt.own){h+=`<path d="M0 462 H390 V720 H0Z" fill="url(#efloor)"/><path d="M0 462 H390" stroke="#7b3d4a" stroke-width="2"/>`+lightBar(506,CX,2,6,7.4)+`<ellipse cx="${CX[2]}" cy="544" rx="26" ry="7" fill="${YOU}" opacity=".3" filter="url(#eb6)"/>`;
+    ['5','1','5'].forEach((n,i)=>{h+=T(CX[6+i],556,n,`font:900 22px Doto,monospace;fill:${E_CREAM};text-anchor:middle`)})}
+  put(id,h+stopFoot()+eEnd())}
+const screws=(x1,y1,x2,y2)=>[[x1,y1],[x2,y1],[x1,y2],[x2,y2]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.2" fill="url(#ebrass)"/><path d="M${x-2} ${y-1} L${x+2} ${y+1}" stroke="#3a2410" stroke-width="1"/>`).join('');
+
+// C1 lamp board
+crowdScreen('sC1',r=>{let h=`<rect x="10" y="164" width="370" height="296" rx="12" fill="url(#ebrass)"/><rect x="14" y="168" width="362" height="288" rx="9" fill="#1c0e15"/><rect x="14" y="168" width="362" height="288" rx="9" fill="url(#efoot)"/>`+screws(24,178,366,446);
+  for(let row=9;row>=0;row--)CX.forEach((x,c)=>{const y=rowY(row)-8,on=row<CN[c];
+    h+=`<circle cx="${x}" cy="${y}" r="9.6" fill="#0d0509" stroke="#6b4a2a" stroke-width="1.2"/>`;
+    h+=on?`<circle cx="${x}" cy="${y}" r="19" fill="${E_CROWD}" opacity=".42" filter="url(#eb6)"/><circle cx="${x}" cy="${y}" r="7.6" fill="url(#ecool)"/>`
+        :`<circle cx="${x}" cy="${y}" r="7.6" fill="url(#eoff)" opacity=".75"/><circle cx="${x-2.4}" cy="${y-2.6}" r="1.7" fill="#fff" opacity=".18"/>`});
+  return h+`<rect x="14" y="168" width="362" height="120" rx="9" fill="url(#etop)" opacity=".5"/>`},3);
+
+// C2 tin figures on rails
+crowdScreen('sC2',r=>{let h=`<rect x="10" y="164" width="370" height="296" rx="6" fill="#1f0f18"/>`;
+  for(let x=10;x<380;x+=37)h+=`<path d="M${x} 164 V460" stroke="#0e060b" stroke-width="1.5" opacity=".7"/>`;
+  for(let row=9;row>=0;row--){const y=rowY(row);
+    CX.forEach((x,c)=>{if(row<CN[c]){const t=(r()-.5)*5;h+=`<path d="${BUST}" transform="translate(${x+4} ${y+1}) scale(1.08)" fill="#000" opacity=".55" filter="url(#esoft)"/><g transform="translate(${x} ${y}) rotate(${t.toFixed(1)}) scale(1.08)"><path d="${BUST}" fill="url(#etin)" stroke="#0d3238" stroke-width="1"/><path d="M-6 -3 Q-6 -8 -2 -9" fill="none" stroke="#fff" stroke-width="1.2" opacity=".55"/><path d="M-3.5 -21 A5 5 0 0 1 1 -23" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/><path d="M2 -6 l4 3 M-1 -15 l2 1" stroke="#0d3238" stroke-width=".8" opacity=".5"/></g>`}
+      else h+=`<rect x="${x-9}" y="${y-2.5}" width="18" height="2.6" rx="1" fill="#2f5a60" opacity=".7"/>`});
+    h+=`<rect x="10" y="${y}" width="370" height="4" fill="url(#ebrass)"/><rect x="10" y="${y+4}" width="370" height="5" fill="#000" opacity=".4"/>`;
+    CX.forEach(x=>{h+=`<rect x="${x-3}" y="${y-1}" width="6" height="6" rx="1" fill="#6b4a22"/>`})}
+  return h+`<rect x="10" y="164" width="370" height="296" fill="url(#efoot)"/><rect x="10" y="164" width="370" height="130" fill="url(#etop)" opacity=".55"/><rect x="10" y="164" width="370" height="296" rx="6" fill="none" stroke="url(#ebrass)" stroke-width="3"/>`},7);
+
+// C3 shadow house
+crowdScreen('sC3',r=>{let h=`<rect x="10" y="164" width="370" height="296" rx="4" fill="url(#escrim)"/>`;
+  for(let x=24;x<380;x+=22+r()*14)h+=`<path d="M${x} 164 Q${x+3} 310 ${x-2} 460" fill="none" stroke="#5a1a1a" stroke-width="${1+r()*2}" opacity=".12"/>`;
+  let sh='';for(let row=9;row>=0;row--)CX.forEach((x,c)=>{if(row<CN[c]){const s=1.2+row*.035;sh+=`<path d="${BUST}" transform="translate(${(x+(r()-.5)*3).toFixed(1)} ${rowY(row)+6}) scale(${s.toFixed(2)})" fill="#1a0810"/>`}});
+  h+=`<g filter="url(#esoft)" opacity=".93">${sh}<rect x="10" y="450" width="370" height="12" fill="#1a0810"/></g>`;
+  h+=`<rect x="10" y="164" width="370" height="296" rx="4" fill="none" stroke="url(#ebrass)" stroke-width="4"/>`;
+  h+=`<path d="M10 164 H130 Q70 200 52 300 Q40 240 10 250Z M380 164 H260 Q320 200 338 300 Q350 240 380 250Z" fill="url(#ecurt)"/><path d="M10 164 H130 Q70 200 52 300 Q40 240 10 250Z M380 164 H260 Q320 200 338 300 Q350 240 380 250Z" fill="url(#eshade)" opacity=".6"/>`;
+  return h},11);
+
+// C4 boxes in the theatre wall
+crowdScreen('sC4',r=>{let h=`<rect x="10" y="164" width="370" height="296" fill="#1d0d17"/>`;
+  CX.forEach(x=>{h+=`<path d="M${x+13.5} 168 V458" stroke="#b08a4a" stroke-width="1.2" opacity=".28"/>`});
+  for(let row=9;row>=0;row--){const y=rowY(row);
+    CX.forEach((x,c)=>{const arch=`M${x-10} ${y+1} V${y-11} A10 10 0 0 1 ${x+10} ${y-11} V${y+1}Z`;
+      if(row<CN[c]){const w=r();h+=`<path d="${arch}" fill="${E_CROWD}" opacity=".5" filter="url(#eb6)"/><path d="${arch}" fill="url(#ebox)"/><path d="${BUST}" transform="translate(${(x+(w-.5)*5).toFixed(1)} ${y+1}) scale(.7)" fill="#0d2a31"/>`+(w>.6?`<path d="${BUST}" transform="translate(${(x-5).toFixed(1)} ${y+1}) scale(.55)" fill="#123a42"/>`:'')+`<path d="${arch}" fill="none" stroke="#e6c079" stroke-width="1.3"/>`}
+      else h+=`<path d="${arch}" fill="#12070e"/><path d="${arch}" fill="none" stroke="#b08a4a" stroke-width="1" opacity=".4"/>`});
+    h+=`<rect x="10" y="${y+1}" width="370" height="3.2" fill="url(#ebrass)"/><path d="M12 ${y+6.6} H378" stroke="#b08a4a" stroke-width="1.6" stroke-dasharray="1 4" opacity=".55"/>`}
+  return h+`<rect x="10" y="164" width="370" height="296" fill="url(#efoot)"/><rect x="10" y="164" width="370" height="140" fill="url(#etop)" opacity=".6"/><rect x="10" y="164" width="370" height="296" fill="none" stroke="url(#ebrass)" stroke-width="3"/>`},5);
+
+// C5 cards up, from your seat, drawn straight-on
+crowdScreen('sC5',r=>{const cn=[0,0,0,1,2,3,4,8,3,2,1,0,0];let h=`<path d="M0 150 H390 V250 H0Z" fill="url(#efloor)"/><path d="M0 250 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+  ['5','1','5'].forEach((n,i)=>{h+=T(CX[6+i],176,n,`font:900 20px Doto,monospace;fill:${E_CREAM};text-anchor:middle`)});
+  h+=lightBar(206,CX,2,6,7)+`<path d="M0 250 H390 V720 H0Z" fill="#160912"/>`;
+  for(let row=0;row<9;row++){const y=300+row*37;h+=`<rect x="0" y="${y+5}" width="390" height="12" fill="#0e050b"/>`;
+    for(let c=-1;c<15;c++){const x=25+c*27,pl=c>=0&&c<13&&row<cn[c];h+=backSeat(x,y,1.04,hWho(r),pl?'card':'dark')}
+    h+=`<rect x="0" y="${y-46}" width="390" height="54" fill="#0c040a" opacity="${Math.min(.62,row*.085).toFixed(2)}"/>`;
+    // the cards stay bright however dark the row is
+    for(let c=0;c<13;c++)if(row<cn[c])h+=`<rect x="${25+c*27+2.6}" y="${y-42.6}" width="11.4" height="13.5" rx="1.6" fill="${E_CROWD}" opacity=".7" filter="url(#eb3)"/><rect x="${25+c*27+3.1}" y="${y-42.1}" width="10.4" height="12.5" rx="1.6" fill="#c9f7f8" opacity=".9"/>`}
+  return h+`<path d="M150 150 L240 150 L330 420 L60 420Z" fill="url(#ewarm)" filter="url(#eb14)" opacity=".35"/><rect y="560" width="390" height="160" fill="url(#eshade)"/>`},14,{own:1});
+
+
+/* ================= Round 6 · each crowd direction as a small kit, used on four screens ================= */
+const yBust=(x,y,sc)=>`<path d="${BUST}" transform="translate(${x} ${y}) scale(${sc})"`;
+const KIT={
+ C1:{board:(x1,y1,x2,y2)=>`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" rx="12" fill="url(#ebrass)"/><rect x="${x1+4}" y="${y1+4}" width="${x2-x1-8}" height="${y2-y1-8}" rx="9" fill="#1c0e15"/>`+screws(x1+14,y1+14,x2-14,y2-14),
+  cell:(x,y,st)=>{const cy=y-9;let h=`<circle cx="${x}" cy="${cy}" r="9.6" fill="#0d0509" stroke="#6b4a2a" stroke-width="1.2"/>`;
+    if(st==='off')return h+`<circle cx="${x}" cy="${cy}" r="7.6" fill="url(#eoff)" opacity=".75"/><circle cx="${x-2.4}" cy="${cy-2.6}" r="1.7" fill="#fff" opacity=".18"/>`;
+    const you=st==='you';return h+`<circle cx="${x}" cy="${cy}" r="${you?24:19}" fill="${you?YOU:E_CROWD}" opacity="${you?.6:.42}" filter="url(#eb6)"/><circle cx="${x}" cy="${cy}" r="${you?8.6:7.6}" fill="url(#${you?'eyou':'ecool'})"/>`},
+  row:()=>'',strip:(x1,y,x2)=>`<rect x="${x1}" y="${y-22}" width="${x2-x1}" height="26" rx="13" fill="#1c0e15" stroke="#6b4a2a" stroke-width="1"/>`,
+  over:(x1,y1,x2,y2)=>`<rect x="${x1+4}" y="${y1+4}" width="${x2-x1-8}" height="110" rx="9" fill="url(#etop)" opacity=".45"/>`},
+ C2:{board:(x1,y1,x2,y2)=>{let h=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" rx="6" fill="#1f0f18"/>`;for(let x=x1;x<x2;x+=37)h+=`<path d="M${x} ${y1} V${y2}" stroke="#0e060b" stroke-width="1.5" opacity=".7"/>`;return h},
+  cell:(x,y,st,r)=>{if(st==='off')return `<rect x="${x-9}" y="${y-2.5}" width="18" height="2.6" rx="1" fill="#2f5a60" opacity=".7"/>`;const you=st==='you',t=((r()-.5)*5).toFixed(1);
+    return yBust(x+4,y+1,1.08)+` fill="#000" opacity=".55" filter="url(#esoft)"/>`+(you?`<circle cx="${x}" cy="${y-12}" r="20" fill="${YOU}" opacity=".5" filter="url(#eb6)"/>`:'')+`<g transform="translate(${x} ${y}) rotate(${t}) scale(1.08)"><path d="${BUST}" fill="url(#${you?'eyou':'etin'})" stroke="${you?'#6b4a05':'#0d3238'}" stroke-width="1"/><path d="M-6 -3 Q-6 -8 -2 -9" fill="none" stroke="#fff" stroke-width="1.2" opacity=".55"/><path d="M-3.5 -21 A5 5 0 0 1 1 -23" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/></g>`},
+  row:(y,x1,x2,i,xs)=>`<rect x="${x1}" y="${y}" width="${x2-x1}" height="4" fill="url(#ebrass)"/><rect x="${x1}" y="${y+4}" width="${x2-x1}" height="5" fill="#000" opacity=".4"/>`+xs.map(x=>`<rect x="${x-3}" y="${y-1}" width="6" height="6" rx="1" fill="#6b4a22"/>`).join(''),
+  strip:()=>'',over:(x1,y1,x2,y2)=>`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="url(#efoot)"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="120" fill="url(#etop)" opacity=".5"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" rx="6" fill="none" stroke="url(#ebrass)" stroke-width="3"/>`},
+ C3:{board:(x1,y1,x2,y2,r)=>{let h=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" rx="4" fill="url(#escrim)"/>`;for(let x=x1+14;x<x2;x+=22+r()*14)h+=`<path d="M${x} ${y1} Q${x+3} ${(y1+y2)/2} ${x-2} ${y2}" fill="none" stroke="#5a1a1a" stroke-width="${1+r()*2}" opacity=".12"/>`;return h},
+  cell:(x,y,st,r,i)=>{if(st==='off')return '';const s=(1.2+(i||0)*.035).toFixed(2),xx=(x+(r()-.5)*3).toFixed(1);
+    return st==='you'?`<circle cx="${x}" cy="${y-8}" r="22" fill="${YOU}" opacity=".75" filter="url(#eb6)"/>`+yBust(xx,y+6,s)+` fill="#8a6205" stroke="${YOU}" stroke-width="1.6"/>`:yBust(xx,y+6,s)+` fill="#1a0810" opacity=".93" filter="url(#esoft)"/>`},
+  row:()=>'',strip:(x1,y,x2)=>`<rect x="${x1}" y="${y-30}" width="${x2-x1}" height="36" rx="3" fill="url(#escrim)"/><rect x="${x1}" y="${y-30}" width="${x2-x1}" height="36" rx="3" fill="none" stroke="url(#ebrass)" stroke-width="1.5"/>`,
+  over:(x1,y1,x2,y2)=>`<rect x="${x1}" y="${y2-10}" width="${x2-x1}" height="10" fill="#1a0810"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" rx="4" fill="none" stroke="url(#ebrass)" stroke-width="4"/><path d="M${x1} ${y1} h110 q-56 34 -72 124 q-10 -56 -38 -48Z M${x2} ${y1} h-110 q56 34 72 124 q10 -56 38 -48Z" fill="url(#ecurt)"/><path d="M${x1} ${y1} h110 q-56 34 -72 124 q-10 -56 -38 -48Z M${x2} ${y1} h-110 q56 34 72 124 q10 -56 38 -48Z" fill="url(#eshade)" opacity=".6"/>`},
+ C4:{board:(x1,y1,x2,y2)=>`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="#1d0d17"/>`,
+  cell:(x,y,st,r)=>{const arch=`M${x-10} ${y+1} V${y-11} A10 10 0 0 1 ${x+10} ${y-11} V${y+1}Z`;
+    if(st==='off')return `<path d="${arch}" fill="#12070e"/><path d="${arch}" fill="none" stroke="#b08a4a" stroke-width="1" opacity=".4"/>`;const you=st==='you',w=r();
+    return `<path d="${arch}" fill="${you?YOU:E_CROWD}" opacity="${you?.7:.5}" filter="url(#eb6)"/><path d="${arch}" fill="url(#${you?'eyou':'ebox'})"/>`+yBust((x+(w-.5)*5).toFixed(1),y+1,.7)+` fill="${you?'#4a3402':'#0d2a31'}"/>`+(w>.6&&!you?yBust(x-5,y+1,.55)+` fill="#123a42"/>`:'')+`<path d="${arch}" fill="none" stroke="#e6c079" stroke-width="1.3"/>`},
+  row:(y,x1,x2)=>`<rect x="${x1}" y="${y+1}" width="${x2-x1}" height="3.2" fill="url(#ebrass)"/><path d="M${x1+2} ${y+6.6} H${x2-2}" stroke="#b08a4a" stroke-width="1.6" stroke-dasharray="1 4" opacity=".55"/>`,
+  strip:(x1,y,x2)=>`<rect x="${x1}" y="${y-24}" width="${x2-x1}" height="26" fill="#1d0d17"/>`,
+  over:(x1,y1,x2,y2)=>`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="url(#efoot)"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="130" fill="url(#etop)" opacity=".55"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="none" stroke="url(#ebrass)" stroke-width="3"/>`},
+ C5:{down:1,board:()=>'',
+  card:(x,y,you)=>`<rect x="${x-5.4}" y="${y-42.6}" width="11.4" height="13.5" rx="1.6" fill="${you?YOU:E_CROWD}" opacity=".8" filter="url(#eb3)"/><rect x="${x-4.9}" y="${y-42.1}" width="10.4" height="12.5" rx="1.6" fill="${you?'#fff3b0':'#c9f7f8'}" opacity=".95"/>`,
+  cell:(x,y,st,r)=>backSeat(x-8,y,1.04,hWho(r),st==='off'?'dark':'card'),
+  row:(y,x1,x2,i)=>`<rect x="${x1}" y="${y-46}" width="${x2-x1}" height="54" fill="#0c040a" opacity="${Math.min(.62,(i||0)*.085).toFixed(2)}"/>`,
+  strip:()=>'',over:()=>''}
+};
+// a grid of the crowd. counts[c] players in column c; you={c} adds you on top of that column
+function grid(K,r,xs,counts,you){const k=KIT[K];let h='';
+  if(k.down){const rows=9;h+=`<path d="M0 250 H390 V720 H0Z" fill="#160912"/>`;
+    for(let i=0;i<rows;i++){const y=300+i*37;h+=`<rect x="0" y="${y+5}" width="390" height="12" fill="#0e050b"/>`;const tops=[];
+      for(let c=-1;c<xs.length+1;c++){const x=c<0?xs[0]-27:c>=xs.length?xs[xs.length-1]+27:xs[c],n=c<0||c>=xs.length?0:Math.min(8,Math.round(counts[c]*.8)+(counts[c]>0&&counts[c]<2?0:0)),isYou=you&&you.c===c&&i===n,on=i<n||isYou;
+        h+=k.cell(x,y,on?'on':'off',r);if(on)tops.push(k.card(x,y,isYou))}
+      h+=k.row(y,0,390,i)+tops.join('')}
+    return h+`<path d="M150 250 L240 250 L330 520 L60 520Z" fill="url(#ewarm)" filter="url(#eb14)" opacity=".3"/><rect y="540" width="390" height="180" fill="url(#eshade)"/>`}
+  const x1=10,x2=380,y1=164,y2=460;h+=k.board(x1,y1,x2,y2,r);let late='';
+  for(let i=9;i>=0;i--){const y=446-i*27;xs.forEach((x,c)=>{const isYou=you&&you.c===c&&i===counts[c];const st=isYou?'you':i<counts[c]?'on':'off';const g=k.cell(x,y,st,r,i);if(isYou)late+=g;else h+=g});h+=k.row(y,x1,x2,i,xs)}
+  return h+k.over(x1,y1,x2,y2)+late}
+const base=()=>eDefs()+seatDef+cDef;
+const floor=()=>`<path d="M0 462 H390 V720 H0Z" fill="url(#efloor)"/><path d="M0 462 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+const topStage=()=>`<path d="M0 150 H390 V250 H0Z" fill="url(#efloor)"/><path d="M0 250 H390" stroke="#7b3d4a" stroke-width="2"/>`;
+const pays=(y,sz)=>['5','1','5'].map((n,i)=>T(CX[6+i],y,n,`font:900 ${sz}px Doto,monospace;fill:${E_CREAM};text-anchor:middle`)).join('');
+
+Object.keys(KIT).forEach((K,ki)=>{const down=KIT[K].down;
+  // 1 · Stop
+  (function(){const r=R(40+ki);let h=base()+stopWords();
+    if(down)h+=topStage()+pays(176,20)+lightBar(206,CX,2,6,7)+grid(K,r,CX,CN);
+    else h+=grid(K,r,CX,CN)+floor()+lightBar(506,CX,2,6,7.4)+`<ellipse cx="${CX[2]}" cy="544" rx="26" ry="7" fill="${YOU}" opacity=".3" filter="url(#eb6)"/>`+pays(556,22);
+    put(`s${K}_1`,h+stopFoot()+eEnd())})();
+  // 2 · Count: keep or switch
+  (function(){const r=R(60+ki);const cnt=[0,1,1,2,3,5,8,10,7,4,2,1,0];let h=base()+T(24,74,'Most say 27.',eTitle(31))+T(24,108,'You said 23.',`font:800 20px Outfit;fill:${YOU}`);
+    const tiles=y=>CX.map((x,c)=>{const n=20+c,you=c===3,most=c===7;return (you?`<rect x="${x-12}" y="${y-15}" width="24" height="28" rx="6" fill="${YOU}" opacity=".7" filter="url(#eb6)"/>`:'')+`<rect x="${x-12}" y="${y-15}" width="24" height="28" rx="6" fill="${you?'url(#eyou)':'#12070f'}" stroke="${most?E_CREAM:you?'#ffe9a0':'#5a2a3c'}" stroke-width="${most?2.5:1.3}"/>`+T(x,y+5,n,`font:900 14px Doto,monospace;fill:${you?'#2a1220':most?E_CREAM:'#a8808e'};text-anchor:middle`)}).join('');
+    if(down)h+=topStage()+tiles(204)+grid(K,r,CX,cnt);else h+=grid(K,r,CX,cnt)+floor()+tiles(498);
+    const y=down?600:566;
+    h+=`<rect x="24" y="${y+7}" width="164" height="58" rx="29" fill="#0b0409"/><rect x="24" y="${y}" width="164" height="58" rx="29" fill="url(#eyou)"/><rect x="30" y="${y+5}" width="152" height="20" rx="10" fill="#fff" opacity=".4"/>`+T(106,y+37,'Keep 23',`font:400 18px Bungee;fill:#2a1220;text-anchor:middle`);
+    h+=`<rect x="202" y="${y+7}" width="164" height="58" rx="29" fill="#0b0409"/><rect x="202" y="${y}" width="164" height="58" rx="29" fill="${E_CREAM}"/><rect x="208" y="${y+5}" width="152" height="20" rx="10" fill="#fff" opacity=".45"/>`+T(284,y+37,'Switch to 27',`font:400 16px Bungee;fill:#2a1220;text-anchor:middle`);
+    put(`s${K}_2`,h+eEnd())})();
+  // 3 · Hold your day
+  (function(){const r=R(80+ki),k=KIT[K];let h=base()+T(24,62,'Hold your day.',eTitle(29));
+    h+=glowText(368,160,'102',`font:900 84px Doto,monospace;text-anchor:end`,YOU)+T(366,188,'64 × 1.6',`font:900 17px Doto,monospace;fill:#ffb884;text-anchor:end;letter-spacing:1px`);
+    const labs=['×1.0','×1.2','×1.4','×1.6','×1.8','×2.0','×2.2','×2.4'],gone=[0,5,8,6],X=62;
+    h+=`<rect x="${X-34}" y="170" width="68" height="420" rx="34" fill="#0f050c"/><rect x="${X-30}" y="174" width="60" height="412" rx="30" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+    labs.forEach((lab,i)=>{const y=556-i*50,on=i<=3,cur=i===3,warm=i===4;
+      h+=`<circle cx="${X}" cy="${y}" r="23" fill="#12070f" stroke="#7b3d4a" stroke-width="1.5"/>`;
+      if(on){h+=`<circle cx="${X}" cy="${y}" r="${cur?46:32}" fill="${YOU}" opacity="${cur?.6:.35}" filter="url(#eb14)"/><circle cx="${X}" cy="${y}" r="20" fill="url(#eyou)"/><ellipse cx="${X-7}" cy="${y-8}" rx="6" ry="3.6" fill="#fff" opacity=".7" transform="rotate(-30 ${X-7} ${y-8})"/>`;
+        if(cur)for(let q=0;q<10;q++){const a=q*Math.PI/5+.3;h+=`<path d="M${X+29*Math.cos(a)} ${y+29*Math.sin(a)} L${X+37*Math.cos(a)} ${y+37*Math.sin(a)}" stroke="#fff3b0" stroke-width="2.4" stroke-linecap="round"/>`}}
+      else{h+=`<circle cx="${X}" cy="${y}" r="20" fill="url(#eoff)"/><ellipse cx="${X-7}" cy="${y-8}" rx="5" ry="3" fill="#fff" opacity=".16" transform="rotate(-30 ${X-7} ${y-8})"/>`;
+        if(warm)h+=`<circle cx="${X}" cy="${y}" r="22" fill="#ff9a3c" opacity=".35" filter="url(#eb6)"/><path d="M${X-6} ${y+3} q3 -9 6 0 q3 -9 6 0" fill="none" stroke="#ffb45e" stroke-width="2" stroke-linecap="round"/>`}
+      h+=T(X+36,y+6,lab,`font:900 ${cur?21:16}px Doto,monospace;fill:${cur?YOU:on?'#e9c34a':warm?'#b9785a':'#6b4458'}`);
+      const n=gone[i]||0;if(n){const xs=[];for(let q=0;q<8;q++)xs.push(180+q*26);const yy=y+13,x1=164,x2=380;
+        h+=k.strip(x1,yy,x2);xs.forEach((x,q)=>{const st=q<n?'on':'off';if(k.down){if(st==='on')h+=k.cell(x,yy+6,'on',r)+k.card(x,yy+6,false)}else h+=k.cell(x,yy,st,r,0)});if(!k.down)h+=k.row(yy,x1,x2,0,xs)}});
+    h+=eButton(606,'Let go to bank')+T(195,698,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:#e7c4b4;text-anchor:middle`);
+    put(`s${K}_3`,h+eEnd())})();
+  // 4 · Stop, the reveal
+  (function(){const r=R(100+ki);const cnt=[0,0,0,0,1,2,3,7,9,6,4,2,1];let h=base()+T(24,70,'61% stopped',eTitle(30))+T(24,104,'late.',eTitle(30))+T(24,132,'Why? People wait to see the marker arrive.',`font:600 15px Outfit;fill:#e7c4b4`);
+    const bar=(y,r6)=>{let b=`<rect x="${CX[0]-18}" y="${y-r6-7}" width="${CX[12]-CX[0]+36}" height="${2*r6+14}" rx="${r6+7}" fill="#12070f" stroke="#5a2a3c" stroke-width="1.5"/><rect x="${CX[6]-r6-7}" y="${y-r6-11}" width="${CX[8]-CX[6]+2*r6+14}" height="${2*r6+22}" rx="${r6+11}" fill="none" stroke="${E_CREAM}" stroke-width="2.5"/>`;
+      CX.forEach((x,c)=>{b+=bulb(x,y,r6,c===6?'you':'off')});return b+`<circle cx="${CX[6]}" cy="${y}" r="${r6*3.2}" fill="${YOU}" opacity=".45" filter="url(#eb6)"/>`};
+    const lateMark=y=>`<path d="M${CX[8]-10} ${y} H${CX[12]+10}" stroke="${E_CROWD}" stroke-width="3" stroke-linecap="round"/>`+T((CX[8]+CX[12])/2,y+18,'LATE',`font:900 13px Doto,monospace;fill:${E_CROWD};text-anchor:middle;letter-spacing:3px`);
+    if(down)h+=topStage()+lateMark(168)+bar(210,7)+grid(K,r,CX,cnt,{c:6});else h+=grid(K,r,CX,cnt,{c:6})+floor()+bar(506,7.4)+lateMark(536);
+    const y=down?600:584;h+=glowText(40,y+46,'+5',`font:900 60px Doto,monospace`,YOU);
+    h+=`<rect x="206" y="${y+7}" width="160" height="58" rx="29" fill="#0b0409"/><rect x="206" y="${y}" width="160" height="58" rx="29" fill="${E_CREAM}"/><rect x="212" y="${y+5}" width="148" height="20" rx="10" fill="#fff" opacity=".45"/>`+T(286,y+38,'Next',`font:400 19px Bungee;fill:#2a1220;text-anchor:middle`);
+    put(`s${K}_4`,h+eEnd())})();
+});
+
+
+/* ================= Round 7 · the full run in the studio look ================= */
+const GEL={stop:'#e8557a',count:'#5a7cf0',repeat:'#49c28a',pair:'#f08a3c'};
+const stageSet=(gel,y2)=>`<rect width="390" height="${y2}" fill="${gel}" opacity=".16"/><ellipse cx="195" cy="${y2-30}" rx="240" ry="150" fill="${gel}" opacity=".3" filter="url(#eb14)"/><path d="M0 ${y2} H390 V${y2+40} H0Z" fill="url(#efloor)"/><path d="M0 ${y2} H390" stroke="#7b3d4a" stroke-width="2"/><path d="M0 ${y2+40} H390 V720 H0Z" fill="#160912"/>`;
+function darkHouse(r,y0,n,fn){let h='';for(let i=0;i<n;i++){const y=y0+i*40;h+=`<rect x="0" y="${y+5}" width="390" height="12" fill="#0e050b"/>`;const tops=[];
+  for(let c=-1;c<15;c++){const x=25+c*27,up=fn?fn(i,c):false;h+=backSeat(x-8,y,1.04,hWho(r),up?'card':'dark');if(up)tops.push(KIT.C5.card(x,y,false))}
+  h+=`<rect x="0" y="${y-46}" width="390" height="54" fill="#0c040a" opacity="${(.12+i*.1).toFixed(2)}"/>`+tops.join('')}return h}
+const tag=(label,gel)=>`<circle cx="32" cy="34" r="10" fill="${gel}" opacity=".6" filter="url(#eb6)"/><circle cx="32" cy="34" r="5.5" fill="${gel}"/><circle cx="30.4" cy="32.4" r="1.6" fill="#fff" opacity=".7"/>`+T(46,39,label,`font:900 14px Doto,monospace;fill:${E_CREAM};letter-spacing:3px`);
+const foot=(y)=>`<rect y="${y}" width="390" height="${720-y}" fill="url(#eshade)"/>`;
+
+// 4 · Count: a troupe on stage
+(function(){const r=R(52);let h=base()+stageSet(GEL.count,430)+tag('COUNT',GEL.count)+T(24,88,'How many?',eTitle(31));
+  h+=`<path d="M120 -10 L270 -10 L370 420 L20 420Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".8"/>`;
+  const pts=[];let guard=0;while(pts.length<23&&guard++<4000){const x=38+r()*314,y=150+r()*176;if(pts.every(p=>Math.hypot(p[0]-x,(p[1]-y)*1.6)>30))pts.push([x,y])}
+  pts.sort((a,b)=>a[1]-b[1]);const kit=['#f1dcc0','#e39aa0','#9db3e0'];
+  pts.forEach(([x,y],i)=>{const s=.8+(y-150)/176*.5,c=kit[i%3];h+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(2)})"><ellipse cx="3" cy="1" rx="11" ry="3.2" fill="#000" opacity=".45"/><path d="M-7 0 Q-9 -16 -4 -22 Q0 -25 4 -22 Q9 -16 7 0Z" fill="${c}"/><path d="M-7 0 Q-9 -16 -4 -22 Q0 -25 4 -22 Q9 -16 7 0Z" fill="url(#eshade)" opacity=".45"/><circle cx="0" cy="-29" r="5.6" fill="${c}"/><path d="M-4.4 -32 A5.6 5.6 0 0 1 3 -34" fill="none" stroke="#fff" stroke-width="1.3" opacity=".7"/><path d="M-5.6 -6 H5.6" stroke="#2a1220" stroke-width="1.6" opacity=".5"/></g>`});
+  // flap counter, yours
+  const cy=362;h+=`<rect x="126" y="${cy-8}" width="138" height="76" rx="12" fill="#0f050c" stroke="url(#ebrass)" stroke-width="3"/>`;
+  ['2','3'].forEach((d,i)=>{const x=140+i*58;h+=`<rect x="${x}" y="${cy}" width="52" height="60" rx="6" fill="#1c0e15"/><rect x="${x}" y="${cy}" width="52" height="60" rx="6" fill="${YOU}" opacity=".08"/>`+glowText(x+26,cy+47,d,`font:900 50px Doto,monospace;text-anchor:middle`,YOU)+`<path d="M${x} ${cy+30} H${x+52}" stroke="#000" stroke-width="2" opacity=".7"/>`});
+  [[86,'−'],[304,'+']].forEach(([x,t])=>{h+=`<circle cx="${x}" cy="${cy+34}" r="25" fill="#0b0409"/><circle cx="${x}" cy="${cy+30}" r="25" fill="${E_CREAM}"/><ellipse cx="${x}" cy="${cy+20}" rx="16" ry="8" fill="#fff" opacity=".45"/>`+T(x,cy+42,t,`font:800 34px Outfit;fill:#2a1220;text-anchor:middle`)});
+  h+=darkHouse(r,520,3)+foot(540)+eButton(612,'Lock in 23');
+  put('sN4',h+eEnd())})();
+
+// 6 · Double or bank
+(function(){const r=R(71);let h=base()+stageSet(GEL.count,470)+tag('COUNT',GEL.count)+T(24,88,'Sure about 23?',eTitle(29));
+  const plate=(x,lamps,name,win,lose,loseCol)=>{let g=`<rect x="${x}" y="134" width="164" height="300" rx="16" fill="#0b0409"/><rect x="${x}" y="126" width="164" height="300" rx="16" fill="url(#ebrass)"/><rect x="${x+5}" y="131" width="154" height="290" rx="12" fill="#22101a"/>`+screws(x+16,142,x+148,410);
+    const lx=lamps===1?[x+82]:[x+52,x+112];lx.forEach(cx=>{g+=`<circle cx="${cx}" cy="196" r="29" fill="#12070f" stroke="#7b3d4a" stroke-width="1.5"/><circle cx="${cx}" cy="196" r="44" fill="${YOU}" opacity=".45" filter="url(#eb14)"/><circle cx="${cx}" cy="196" r="25" fill="url(#eyou)"/><ellipse cx="${cx-9}" cy="186" rx="7" ry="4" fill="#fff" opacity=".7" transform="rotate(-30 ${cx-9} 186)"/>`});
+    g+=T(x+82,268,name,`font:400 23px Bungee;fill:${E_CREAM};text-anchor:middle`);
+    g+=glowText(x+82,330,win,`font:900 46px Doto,monospace;text-anchor:middle`,YOU)+T(x+82,352,'IF RIGHT',`font:900 12px Doto,monospace;fill:#e9c34a;text-anchor:middle;letter-spacing:2px`);
+    g+=T(x+82,390,lose,`font:900 24px Doto,monospace;fill:${loseCol};text-anchor:middle`)+T(x+82,408,'IF WRONG',`font:900 12px Doto,monospace;fill:${loseCol};text-anchor:middle;letter-spacing:2px;opacity:.8`);return g};
+  h+=plate(24,1,'Bank','+10','0','#a8808e')+plate(202,2,'Double','+20','−10','#ff8a7a');
+  h+=darkHouse(r,556,3)+foot(560)+glowText(195,676,'Tap one',`font:400 24px Bungee;text-anchor:middle`,E_CREAM);
+  put('sN6',h+eEnd())})();
+
+// 7 · Repeat: five glass domes
+(function(){const r=R(83);let h=base()+stageSet(GEL.repeat,430)+tag('REPEAT',GEL.repeat)+T(24,88,'Watch. Then repeat.',eTitle(25));
+  for(let i=0;i<6;i++)h+=`<circle cx="${130+i*26}" cy="132" r="7" fill="${i<3?E_CREAM:'#2a1220'}" stroke="#7b3d4a" stroke-width="1.5"/>`+(i<3?`<circle cx="${130+i*26}" cy="132" r="12" fill="${E_CREAM}" opacity=".35" filter="url(#eb6)"/>`:'');
+  h+=`<path d="M20 392 Q195 300 370 392 L370 418 Q195 330 20 418Z" fill="url(#ebrass)"/><path d="M20 418 Q195 330 370 418 V430 H20Z" fill="#0f050c"/>`;
+  const col=['#e8557a','#f08a3c','#49c28a','#5a7cf0','#b06ae0'],pos=[[52,352],[122,312],[195,298],[268,312],[338,352]];
+  pos.forEach(([x,y],i)=>{const on=i===2,c=col[i];h+=`<ellipse cx="${x}" cy="${y+4}" rx="36" ry="9" fill="#0f050c"/><ellipse cx="${x}" cy="${y+2}" rx="33" ry="7.5" fill="url(#ebrass)"/>`;
+    if(on)h+=`<circle cx="${x}" cy="${y-24}" r="70" fill="${c}" opacity=".55" filter="url(#eb14)"/>`;
+    h+=`<path d="M${x-29} ${y} A29 34 0 0 1 ${x+29} ${y}Z" fill="${c}" opacity="${on?1:.28}"/><path d="M${x-29} ${y} A29 34 0 0 1 ${x+29} ${y}Z" fill="url(#eshade)" opacity="${on?.15:.7}"/>`;
+    if(on)h+=`<path d="M${x-16} ${y-3} A16 20 0 0 1 ${x+16} ${y-3}Z" fill="#fff" opacity=".55" filter="url(#eb3)"/>`;
+    h+=`<path d="M${x-20} ${y-12} Q${x-17} ${y-26} ${x-6} ${y-30}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="${on?.85:.3}"/>`});
+  h+=`<path d="M155 -10 L235 -10 L260 300 L130 300Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".5"/>`;
+  h+=darkHouse(r,520,3)+foot(540)+glowText(195,640,'3 of 6',`font:900 34px Doto,monospace;text-anchor:middle`,E_CREAM)+T(195,684,'ROUND 4',`font:900 14px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  put('sN7',h+eEnd())})();
+
+// 8 · Pair: a wall of shutters
+(function(){const r=R(97);let h=base()+stageSet(GEL.pair,444)+tag('PAIR',GEL.pair)+T(24,88,'Find the pair.',eTitle(29));
+  const shape=(k,x,y,c)=>[`<path d="M${x+9} ${y-20} A21 21 0 1 0 ${x+9} ${y+20} A16 16 0 1 1 ${x+9} ${y-20}Z" fill="${c}"/>`,
+    `<path d="M${x} ${y-22} L${x+6} ${y-7} L${x+22} ${y-7} L${x+9} ${y+3} L${x+14} ${y+19} L${x} ${y+9} L${x-14} ${y+19} L${x-9} ${y+3} L${x-22} ${y-7} L${x-6} ${y-7}Z" fill="${c}"/>`][k];
+  const open={1:0,6:0},done={3:1,8:1};
+  for(let i=0;i<12;i++){const cx=66+(i%4)*86,cy=160+Math.floor(i/4)*92,x=cx-38,y=cy-40;
+    h+=`<rect x="${x-3}" y="${y+1}" width="82" height="86" rx="9" fill="#0b0409"/><rect x="${x-3}" y="${y-3}" width="82" height="86" rx="9" fill="url(#ebrass)"/>`;
+    if(i in open){h+=`<rect x="${x+2}" y="${y+2}" width="72" height="76" rx="6" fill="#ffe2b0"/><rect x="${x+2}" y="${y+2}" width="72" height="76" rx="6" fill="url(#escrim)" opacity=".55"/><circle cx="${cx}" cy="${cy}" r="44" fill="#ffd9a0" opacity=".5" filter="url(#eb14)"/>`+shape(0,cx,cy,'#2a1220')+`<rect x="${x+2}" y="${y+2}" width="72" height="9" fill="#3a2430"/>`}
+    else if(i in done){h+=`<rect x="${x+2}" y="${y+2}" width="72" height="76" rx="6" fill="#3a2a22"/>`+shape(1,cx,cy,'#8a6a4a')}
+    else{h+=`<rect x="${x+2}" y="${y+2}" width="72" height="76" rx="6" fill="#22101a"/>`;for(let k=0;k<7;k++)h+=`<rect x="${x+5}" y="${y+6+k*10}" width="66" height="7" rx="2" fill="#3a2430"/><rect x="${x+5}" y="${y+6+k*10}" width="66" height="2" fill="#ffb884" opacity=".22"/>`}}
+  h+=darkHouse(r,536,3)+foot(552)+glowText(195,648,'1 of 6',`font:900 34px Doto,monospace;text-anchor:middle`,E_CREAM)+T(195,688,'PAIRS FOUND',`font:900 14px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  put('sN8',h+eEnd())})();
+
+// 9 · Hold your day: cards go down as people let go
+(function(){const r=R(113);let h=base()+stageSet('#f5c518',442)+T(24,62,'Hold your day.',eTitle(29));
+  h+=glowText(368,168,'102',`font:900 88px Doto,monospace;text-anchor:end`,YOU)+T(366,198,'64 × 1.6',`font:900 17px Doto,monospace;fill:#ffb884;text-anchor:end;letter-spacing:1px`);
+  // the lamps, laid along the stage front, lighting left to right
+  const labs=['×1.0','×1.2','×1.4','×1.6','×1.8','×2.0','×2.2','×2.4'],y=330;
+  h+=`<rect x="12" y="${y-34}" width="366" height="68" rx="34" fill="#0f050c"/><rect x="16" y="${y-30}" width="358" height="60" rx="30" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  labs.forEach((lab,i)=>{const X=44+i*43.2,on=i<=3,cur=i===3,warm=i===4;
+    h+=`<circle cx="${X}" cy="${y}" r="20" fill="#12070f" stroke="#7b3d4a" stroke-width="1.5"/>`;
+    if(on){h+=`<circle cx="${X}" cy="${y}" r="${cur?44:30}" fill="${YOU}" opacity="${cur?.6:.35}" filter="url(#eb14)"/><circle cx="${X}" cy="${y}" r="17.5" fill="url(#eyou)"/><ellipse cx="${X-6}" cy="${y-7}" rx="5.4" ry="3.2" fill="#fff" opacity=".7" transform="rotate(-30 ${X-6} ${y-7})"/>`;
+      if(cur)for(let q=0;q<10;q++){const a=q*Math.PI/5+.3;h+=`<path d="M${X+25*Math.cos(a)} ${y+25*Math.sin(a)} L${X+32*Math.cos(a)} ${y+32*Math.sin(a)}" stroke="#fff3b0" stroke-width="2.2" stroke-linecap="round"/>`}}
+    else{h+=`<circle cx="${X}" cy="${y}" r="17.5" fill="url(#eoff)"/>`;if(warm)h+=`<circle cx="${X}" cy="${y}" r="20" fill="#ff9a3c" opacity=".35" filter="url(#eb6)"/><path d="M${X-6} ${y+3} q3 -9 6 0 q3 -9 6 0" fill="none" stroke="#ffb45e" stroke-width="2" stroke-linecap="round"/>`}
+    h+=T(X,y+56,lab,`font:900 ${cur?17:13}px Doto,monospace;fill:${cur?YOU:on?'#e9c34a':warm?'#b9785a':'#b08a9a'};text-anchor:middle`)});
+  const q=R(5);h+=darkHouse(r,524,3,()=>q()<.64)+foot(566);
+  h+=eButton(612,'Let go to bank')+T(195,700,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:#e7c4b4;text-anchor:middle`);
+  put('sN9',h+eEnd())})();
+
+// 10 · the graph read: a paper roll
+(function(){const r=R(127);let h=base()+stageSet('#ffb884',470)+T(24,70,'Your line matched',eTitle(25))+T(24,104,'78 in 100.',eTitle(31));
+  const x1=30,x2=360,y1=150,y2=420;
+  h+=`<rect x="${x1-10}" y="${y1-16}" width="${x2-x1+20}" height="20" rx="10" fill="url(#ebrass)"/><rect x="${x1-10}" y="${y2-2}" width="${x2-x1+20}" height="20" rx="10" fill="url(#ebrass)"/>`;
+  h+=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="#f3e3c4"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="url(#escrim)" opacity=".28"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="26" fill="url(#etop)" opacity=".35"/>`;
+  for(let i=1;i<6;i++)h+=`<path d="M${x1} ${y1+i*45} H${x2}" stroke="#8a6a4a" stroke-width="1" opacity=".3"/>`;
+  const f=t=>y2-40-150*Math.pow(t,1.7)-18*Math.sin(t*9),g=t=>y2-56-110*t-10*Math.sin(t*5),u=t=>y2-44-168*Math.pow(t,1.45)+8*Math.sin(t*7);
+  const line=(fn,a=0)=>{let d='';for(let i=a;i<=40;i++){const t=i/40;d+=(i===a?'M':'L')+(x1+12+t*(x2-x1-24)).toFixed(1)+' '+fn(t).toFixed(1)+' '}return d};
+  const cut=x1+12+.4*(x2-x1-24);h+=`<rect x="${cut}" y="${y1}" width="${x2-cut}" height="${y2-y1}" fill="#c9a06a" opacity=".16"/><path d="M${cut} ${y1} V${y2}" stroke="#2a1220" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+  h+=`<path d="${line(g,16)}" fill="none" stroke="#1f8f9a" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9"/>`;
+  h+=`<path d="${line(u,16)}" fill="none" stroke="#2a1220" stroke-width="9" stroke-linecap="round" opacity=".25"/><path d="${line(u,16)}" fill="none" stroke="${YOU}" stroke-width="5.5" stroke-linecap="round"/>`;
+  h+=`<path d="${line(f)}" fill="none" stroke="#2a1220" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const key=(x,lab,mk)=>mk+T(x+34,452,lab,`font:800 13px Outfit;fill:${E_CREAM}`);
+  h+=key(24,'What happened',`<path d="M24 448 H52" stroke="${E_CREAM}" stroke-width="4" stroke-linecap="round"/>`)+key(160,'Everyone',`<path d="M160 448 H188" stroke="${E_CROWD}" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 8"/>`)+key(262,'You',`<path d="M262 448 H290" stroke="${YOU}" stroke-width="5" stroke-linecap="round"/>`);
+  h+=darkHouse(r,560,2)+foot(560)+eButton(612,'Next');
+  put('sN10',h+eEnd())})();
+
+// 11 · Scorecard
+(function(){const r=R(139);let h=base();
+  for(let i=5;i>0;i--)h+=`<circle cx="195" cy="150" r="${i*52}" fill="none" stroke="#ff9f6b" stroke-width="14" opacity="${.03+.01*(5-i)}"/>`;
+  h+=`<rect x="44" y="40" width="302" height="150" rx="20" fill="#12070f"/><rect x="50" y="46" width="290" height="138" rx="16" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  const per=[];for(let x=62;x<=328;x+=19)per.push([x,46],[x,184]);for(let y=66;y<=166;y+=19.6)per.push([50,y],[340,y]);per.forEach(([x,y],i)=>{h+=bulb(x,y,4.4,'on')});
+  h+=glowText(195,146,'102',`font:900 100px Doto,monospace;text-anchor:middle`,YOU)+T(195,170,'CARD 43',`font:900 12px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  h+=T(195,222,'64 points, held to ×1.6.',`font:600 16px Outfit;fill:#e7c4b4;text-anchor:middle`);
+  const dial=(cx,lab,v,col)=>{const a0=Math.PI*.8,a1=Math.PI*2.2,a=a0+(a1-a0)*v/100,R1=44,pt=t=>`${(cx+R1*Math.cos(t)).toFixed(1)} ${(292+R1*Math.sin(t)).toFixed(1)}`;
+    return `<circle cx="${cx}" cy="292" r="56" fill="#0f050c"/><circle cx="${cx}" cy="292" r="52" fill="#22101a" stroke="url(#ebrass)" stroke-width="3"/><path d="M${pt(a0)} A${R1} ${R1} 0 1 1 ${pt(a1)}" fill="none" stroke="#3a2430" stroke-width="7" stroke-linecap="round"/><path d="M${pt(a0)} A${R1} ${R1} 0 ${a-a0>Math.PI?1:0} 1 ${pt(a)}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round"/>`+glowText(cx,304,v,`font:900 36px Doto,monospace;text-anchor:middle`,col)+T(cx,326,lab,`font:900 12px Doto,monospace;fill:${E_CREAM};text-anchor:middle;letter-spacing:2px`)};
+  h+=dial(110,'HANDS',57,YOU)+dial(280,'HUNCH',82,YOU);
+  const rows=[['STOP','14',GEL.stop],['COUNT','20',GEL.count],['REPEAT','20',GEL.repeat],['PAIR','10',GEL.pair],['HELD','×1.6',YOU]];
+  rows.forEach(([n,v,c],i)=>{const y=372+i*42;h+=`<rect x="24" y="${y}" width="342" height="36" rx="7" fill="#0f050c"/><rect x="26" y="${y+2}" width="338" height="32" rx="6" fill="#22101a"/><path d="M26 ${y+18} H364" stroke="#000" stroke-width="1.5" opacity=".6"/>`;
+    h+=`<circle cx="46" cy="${y+18}" r="11" fill="${c}" opacity=".55" filter="url(#eb6)"/><circle cx="46" cy="${y+18}" r="6.5" fill="${c}"/><circle cx="44" cy="${y+16}" r="1.8" fill="#fff" opacity=".7"/>`+T(66,y+25,n,`font:900 18px Doto,monospace;fill:${E_CREAM};letter-spacing:3px`)+T(352,y+26,v,`font:900 21px Doto,monospace;fill:${i===4?YOU:E_CREAM};text-anchor:end`)});
+  h+=eButton(598,'Share')+T(195,694,'DAY 12 · NEXT CARD 7 H 12 M',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+  put('sN11',h+eEnd())})();
+
+
+/* ================= Round 8 · a real stage; machines stand on it or hang in it ================= */
+const VP=195;
+// back cloth and a boarded floor running back to the horizon line hz
+function stage2(gel,top,hz,front){let h=`<rect x="0" y="${top}" width="390" height="${hz-top}" fill="#190a13"/><rect x="0" y="${top}" width="390" height="${hz-top}" fill="${gel}" opacity=".26"/><ellipse cx="195" cy="${hz}" rx="215" ry="${(hz-top)*.8}" fill="${gel}" opacity=".42" filter="url(#eb14)"/>`;
+  h+=`<path d="M0 ${hz} H390 V${front} H0Z" fill="#2c1622"/><rect x="0" y="${hz}" width="390" height="${front-hz}" fill="${gel}" opacity=".14"/>`;
+  for(let i=-12;i<=12;i++){const xf=VP+i*38,xh=VP+i*38*.55;h+=`<path d="M${xh} ${hz} L${xf} ${front}" stroke="#0c040a" stroke-width="1.3" opacity=".55"/>`}
+  h+=`<rect x="0" y="${hz}" width="390" height="${front-hz}" fill="url(#eshade)" opacity=".45"/><ellipse cx="195" cy="${hz+4}" rx="200" ry="14" fill="${gel}" opacity=".35" filter="url(#eb6)"/><path d="M0 ${hz} H390" stroke="#0c040a" stroke-width="1.5" opacity=".7"/>`;return h}
+// curtains at the sides, the pelmet, the stage lip with footlights; drawn over the machines
+function prosc(top,front,o={}){let h='';const L=`M0 ${top-6} H${o.w||34} Q${(o.w||34)-10} ${(top+front)/2} ${(o.w||34)+8} ${front} H0Z`,Rr=`M390 ${top-6} H${390-(o.w||34)} Q${390-(o.w||34)+10} ${(top+front)/2} ${390-(o.w||34)-8} ${front} H390Z`;
+  h+=`<path d="${L}" fill="url(#ecurt)"/><path d="${Rr}" fill="url(#ecurt)"/><path d="${L}" fill="url(#eshade)" opacity=".8"/><path d="${Rr}" fill="url(#eshade)" opacity=".8"/>`;
+  h+=`<rect x="0" y="${top-8}" width="390" height="8" fill="#12070f"/>`;for(let i=0;i<6;i++)h+=`<path d="M${i*65} ${top-2} q32.5 30 65 0Z" fill="url(#ecurt)"/><path d="M${i*65} ${top-2} q32.5 30 65 0Z" fill="#000" opacity=".25"/><path d="M${i*65} ${top-2} q32.5 30 65 0" fill="none" stroke="#e6c079" stroke-width="1.6" opacity=".6"/>`;
+  h+=`<rect x="0" y="${front}" width="390" height="18" fill="#12070f"/><rect x="0" y="${front}" width="390" height="2.4" fill="url(#ebrass)"/><path d="M0 ${front+18} H390 V720 H0Z" fill="#160912"/>`;
+  for(let i=0;i<9;i++){const x=31+i*41;h+=`<ellipse cx="${x}" cy="${front-7}" rx="19" ry="11" fill="#ffd9b0" opacity=".3" filter="url(#eb6)"/><path d="M${x-9} ${front+3} A9 9.5 0 0 1 ${x+9} ${front+3}Z" fill="#0b0409"/><path d="M${x-8} ${front+2} A8 8.5 0 0 1 ${x+8} ${front+2}" fill="none" stroke="#ffcfa0" stroke-width="1.2" opacity=".7"/>`}
+  return h}
+const chain=(x,y1,y2)=>`<path d="M${x} ${y1} V${y2}" stroke="#3a2410" stroke-width="3.2"/><path d="M${x} ${y1} V${y2}" stroke="#d9b36a" stroke-width="2" stroke-dasharray="3 2.2"/>`;
+const drop=(x,y,w,hh,rx=8,o=.5)=>`<rect x="${x+9}" y="${y+11}" width="${w}" height="${hh}" rx="${rx}" fill="#000" opacity="${o}" filter="url(#eb6)"/>`;
+const pool=(x,y,rx,ry,c,o=.5)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${c}" opacity="${o}" filter="url(#eb6)"/>`;
+const bigLamp=(X,y,r,st)=>{let h=`<circle cx="${X}" cy="${y}" r="${r+3.5}" fill="#12070f" stroke="url(#ebrass)" stroke-width="1.6"/>`;
+  if(st==='on'||st==='cur'){h+=`<circle cx="${X}" cy="${y}" r="${st==='cur'?r*2.6:r*1.8}" fill="${YOU}" opacity="${st==='cur'?.6:.35}" filter="url(#eb14)"/><circle cx="${X}" cy="${y}" r="${r}" fill="url(#eyou)"/><ellipse cx="${X-r*.34}" cy="${y-r*.4}" rx="${r*.3}" ry="${r*.18}" fill="#fff" opacity=".7" transform="rotate(-30 ${X-r*.34} ${y-r*.4})"/>`;
+    if(st==='cur')for(let q=0;q<10;q++){const a=q*Math.PI/5+.3;h+=`<path d="M${X+(r+8)*Math.cos(a)} ${y+(r+8)*Math.sin(a)} L${X+(r+15)*Math.cos(a)} ${y+(r+15)*Math.sin(a)}" stroke="#fff3b0" stroke-width="2.2" stroke-linecap="round"/>`}}
+  else{h+=`<circle cx="${X}" cy="${y}" r="${r}" fill="url(#eoff)"/><ellipse cx="${X-r*.34}" cy="${y-r*.4}" rx="${r*.26}" ry="${r*.15}" fill="#fff" opacity=".16" transform="rotate(-30 ${X-r*.34} ${y-r*.4})"/>`;
+    if(st==='warm')h+=`<circle cx="${X}" cy="${y}" r="${r+3}" fill="#ff9a3c" opacity=".35" filter="url(#eb6)"/><path d="M${X-5} ${y+3} q2.5 -8 5 0 q2.5 -8 5 0" fill="none" stroke="#ffb45e" stroke-width="1.8" stroke-linecap="round"/>`}
+  return h};
+
+// 4 · Count: the troupe on a raked stage
+(function(){const r=R(52),top=112,hz=176,front=452;let h=base()+tag('COUNT',GEL.count)+T(24,88,'How many?',eTitle(31))+stage2(GEL.count,top,hz,front);
+  h+=`<path d="M120 ${top} L270 ${top} L372 ${front} L18 ${front}Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".75"/>`;
+  const pts=[];let guard=0;while(pts.length<23&&guard++<6000){const d=r(),y=hz+14+d*d*.0+ (d)*(350-hz-14),s=.5+ (y-hz)/(350-hz)*.62,x=VP+(r()-.5)*2*(120+ (y-hz)*.42);if(pts.every(p=>Math.hypot(p[0]-x,(p[1]-y)*2)>26*s+8))pts.push([x,y,s])}
+  pts.sort((a,b)=>a[1]-b[1]);const kit=['#f1dcc0','#e39aa0','#9db3e0'];
+  pts.forEach(([x,y,s],i)=>{const c=kit[i%3];h+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(2)})"><path d="M-6 1 Q12 -3 34 -4 Q38 0 32 3 Q12 5 -5 4Z" fill="#000" opacity=".45"/><path d="M-7 0 Q-9 -16 -4 -22 Q0 -25 4 -22 Q9 -16 7 0Z" fill="${c}"/><path d="M-7 0 Q-9 -16 -4 -22 Q0 -25 4 -22 Q9 -16 7 0Z" fill="url(#eshade)" opacity=".5"/><circle cx="0" cy="-29" r="5.6" fill="${c}"/><path d="M-4.4 -32 A5.6 5.6 0 0 1 3 -34" fill="none" stroke="#fff" stroke-width="1.3" opacity=".75"/><path d="M-6.5 -8 Q-8 -17 -4 -21" fill="none" stroke="#fff" stroke-width="1.1" opacity=".5"/><path d="M-5.6 -6 H5.6" stroke="#2a1220" stroke-width="1.6" opacity=".5"/></g>`});
+  // the counter: a cabinet standing at the stage front
+  const cy=368;h+=`<path d="M118 ${cy+72} Q200 ${cy+62} 300 ${cy+70} L318 ${cy+82} Q200 ${cy+90} 110 ${cy+82}Z" fill="#000" opacity=".5" filter="url(#eb3)"/>`;
+  h+=`<path d="M264 ${cy-8} l10 6 v70 l-10 6Z" fill="#5a3c18"/><rect x="126" y="${cy-8}" width="138" height="78" rx="6" fill="url(#ebrass)"/><rect x="131" y="${cy-3}" width="128" height="68" rx="4" fill="#0f050c"/><path d="M134 ${cy+70} v8 h14 v-8 M242 ${cy+70} v8 h14 v-8" fill="#5a3c18"/>`;
+  ['2','3'].forEach((d,i)=>{const x=137+i*60;h+=`<rect x="${x}" y="${cy+2}" width="56" height="58" rx="5" fill="#1c0e15"/><rect x="${x}" y="${cy+2}" width="56" height="29" rx="5" fill="#fff" opacity=".05"/>`+glowText(x+28,cy+49,d,`font:900 50px Doto,monospace;text-anchor:middle`,YOU)+`<path d="M${x} ${cy+31} H${x+56}" stroke="#000" stroke-width="2.2" opacity=".8"/><circle cx="${x+2}" cy="${cy+31}" r="2.4" fill="url(#ebrass)"/><circle cx="${x+54}" cy="${cy+31}" r="2.4" fill="url(#ebrass)"/>`});
+  h+=pool(195,cy+84,70,8,YOU,.3);
+  [[82,'−'],[308,'+']].forEach(([x,t])=>{h+=`<ellipse cx="${x+4}" cy="${cy+68}" rx="26" ry="6" fill="#000" opacity=".5" filter="url(#eb3)"/><path d="M${x-9} ${cy+40} h18 l3 28 h-24Z" fill="url(#ebrass)"/><circle cx="${x}" cy="${cy+30}" r="24" fill="#0b0409"/><circle cx="${x}" cy="${cy+26}" r="24" fill="${E_CREAM}"/><ellipse cx="${x}" cy="${cy+16}" rx="15" ry="7.5" fill="#fff" opacity=".45"/>`+T(x,cy+38,t,`font:800 34px Outfit;fill:#2a1220;text-anchor:middle`)});
+  h+=prosc(top,front)+darkHouse(r,528,3)+foot(548)+eButton(616,'Lock in 23');
+  put('sN4',h+eEnd())})();
+
+// 6 · Double or bank: two cabinets on the stage
+(function(){const r=R(71),top=112,hz=300,front=462;let h=base()+tag('COUNT',GEL.count)+T(24,88,'Sure about 23?',eTitle(29))+stage2(GEL.count,top,hz,front);
+  const cab=(x,lamps,name,win,lose,loseCol)=>{const w=150,y1=134,y2=432;let g=`<path d="M${x-6} ${y2+2} Q${x+w/2} ${y2-6} ${x+w+30} ${y2+2} L${x+w+44} ${y2+18} Q${x+w/2} ${y2+26} ${x-12} ${y2+16}Z" fill="#000" opacity=".55" filter="url(#eb3)"/>`;
+    g+=`<path d="M${x+w} ${y1} l12 8 v${y2-y1-4} l-12 4Z" fill="#4a3012"/><rect x="${x}" y="${y1}" width="${w}" height="${y2-y1}" rx="10" fill="url(#ebrass)"/><rect x="${x+5}" y="${y1+5}" width="${w-10}" height="${y2-y1-10}" rx="7" fill="#22101a"/>`+screws(x+15,y1+15,x+w-15,y2-15);
+    const lx=lamps===1?[x+w/2]:[x+w/2-30,x+w/2+30];lx.forEach(cx=>{g+=bigLamp(cx,200,24,'on')+pool(cx,y2+22,34,9,YOU,.5)});
+    g+=`<rect x="${x+5}" y="${y1+5}" width="${w-10}" height="120" rx="7" fill="${YOU}" opacity=".07"/>`;
+    g+=T(x+w/2,272,name,`font:400 22px Bungee;fill:${E_CREAM};text-anchor:middle`)+glowText(x+w/2,332,win,`font:900 46px Doto,monospace;text-anchor:middle`,YOU)+T(x+w/2,354,'IF RIGHT',`font:900 12px Doto,monospace;fill:#e9c34a;text-anchor:middle;letter-spacing:2px`);
+    g+=T(x+w/2,392,lose,`font:900 24px Doto,monospace;fill:${loseCol};text-anchor:middle`)+T(x+w/2,410,'IF WRONG',`font:900 12px Doto,monospace;fill:${loseCol};text-anchor:middle;letter-spacing:2px;opacity:.8`);return g};
+  h+=cab(34,1,'Bank','+10','0','#b9929f')+cab(206,2,'Double','+20','−10','#ff8a7a');
+  h+=prosc(top,front,{w:22})+darkHouse(r,540,3)+foot(566)+glowText(195,676,'Tap one',`font:400 24px Bungee;text-anchor:middle`,E_CREAM);
+  put('sN6',h+eEnd())})();
+
+// 7 · Repeat: five lamps on brass stands, wired across the floor
+(function(){const r=R(83),top=112,hz=296,front=452;let h=base()+tag('REPEAT',GEL.repeat)+T(24,88,'Watch. Then repeat.',eTitle(25))+stage2(GEL.repeat,top,hz,front);
+  const col=['#e8557a','#f08a3c','#49c28a','#5a7cf0','#b06ae0'],pos=[[58,432,1.2],[124,392,1.02],[195,372,.92],[266,392,1.02],[332,432,1.2]],lit=2,L=pos[lit];
+  // the lit lamp colours the back cloth and the floor
+  h+=`<circle cx="${L[0]}" cy="${L[1]-96}" r="120" fill="${col[lit]}" opacity=".5" filter="url(#eb14)"/>`+pool(L[0],L[1]+6,120,22,col[lit],.5);
+  // a row of pilot lamps hung from the pelmet: how far through the pattern
+  h+=chain(118,top,150)+chain(272,top,150)+`<rect x="104" y="148" width="182" height="20" rx="10" fill="url(#ebrass)"/><rect x="107" y="151" width="176" height="14" rx="7" fill="#12070f"/>`;
+  for(let i=0;i<6;i++){const x=130+i*26;h+=i<3?`<circle cx="${x}" cy="158" r="12" fill="${E_CREAM}" opacity=".4" filter="url(#eb6)"/><circle cx="${x}" cy="158" r="5" fill="url(#ebulb)"/>`:`<circle cx="${x}" cy="158" r="5" fill="url(#eoff)"/>`}
+  // cables to a junction box at the front
+  pos.forEach(([x,y])=>{h+=`<path d="M${x} ${y+2} Q${(x+195)/2} ${y+26+Math.abs(x-195)*.02} 195 446" fill="none" stroke="#0a0308" stroke-width="2.6" opacity=".85"/>`});
+  h+=`<rect x="181" y="438" width="28" height="12" rx="2" fill="url(#ebrass)"/>`;
+  pos.map((p,i)=>[p,i]).sort((a,b)=>a[0][1]-b[0][1]).forEach(([[x,y,s],i])=>{const on=i===lit,c=col[i],side=x<L[0]?1:-1;
+    let g=`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-12 2 Q${on?0:side*-30} -4 ${on?26:side*-52} -2 Q${on?28:side*-54} 4 ${on?22:side*-46} 6 Q0 8 -12 6Z" fill="#000" opacity="${on?.35:.55}" filter="url(#eb3)"/>`;
+    g+=`<ellipse cx="0" cy="2" rx="17" ry="5" fill="#5a3c18"/><ellipse cx="0" cy="0" rx="17" ry="5" fill="url(#ebrass)"/><path d="M-5 0 L-3.4 -50 H3.4 L5 0Z" fill="url(#ebrass)"/><path d="M-5 0 L-3.4 -50 H-1 L-2 0Z" fill="#fff" opacity=".25"/><path d="M5 0 L3.4 -50 H1.6 L2.6 0Z" fill="#000" opacity=".35"/><ellipse cx="0" cy="-51" rx="24" ry="5.5" fill="#5a3c18"/><ellipse cx="0" cy="-53" rx="24" ry="5.5" fill="url(#ebrass)"/>`;
+    if(on)g+=`<circle cx="0" cy="-74" r="46" fill="${c}" opacity=".6" filter="url(#eb14)"/>`;
+    g+=`<path d="M-21 -54 A21 30 0 0 1 21 -54Z" fill="${on?c:'#1c1018'}"/>`+(on?`<path d="M-12 -56 A12 18 0 0 1 12 -56Z" fill="#fff" opacity=".7" filter="url(#eb3)"/>`:`<path d="M-21 -54 A21 30 0 0 1 21 -54Z" fill="${c}" opacity=".3"/><path d="M${side*18} -58 Q${side*17} -72 ${side*9} -80" fill="none" stroke="${col[lit]}" stroke-width="3" stroke-linecap="round" opacity=".75" filter="url(#eb3)"/><path d="M-21 -54 H21" stroke="${col[lit]}" stroke-width="1" opacity=".5"/>`);
+    g+=`<path d="M-15 -62 Q-13 -74 -6 -80" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity="${on?.9:.35}"/>`;
+    if(!on)g+=`<path d="M${side*5} 0 L${side*3.4} -50" stroke="${col[lit]}" stroke-width="1.4" opacity=".6"/>`;
+    h+=g+'</g>'});
+  h+=`<path d="M160 ${top} L230 ${top} L262 380 L128 380Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".35"/>`;
+  h+=prosc(top,front)+darkHouse(r,528,3)+foot(548)+glowText(195,646,'3 of 6',`font:900 34px Doto,monospace;text-anchor:middle`,E_CREAM)+T(195,688,'ROUND 4',`font:900 14px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  put('sN7',h+eEnd())})();
+
+// 8 · Pair: a cabinet of shutters standing on the stage
+(function(){const r=R(97),top=112,hz=318,front=462;let h=base()+tag('PAIR',GEL.pair)+T(24,88,'Find the pair.',eTitle(29))+stage2(GEL.pair,top,hz,front);
+  const x1=54,x2=336,y1=140,y2=420,cw=(x2-x1)/4,ch=(y2-y1)/3;
+  const shape=(k,x,y,c,sc=1)=>`<g transform="translate(${x} ${y}) scale(${sc})">`+[`<path d="M9 -20 A21 21 0 1 0 9 20 A16 16 0 1 1 9 -20Z" fill="${c}"/>`,`<path d="M0 -22 L6 -7 L22 -7 L9 3 L14 19 L0 9 L-14 19 L-9 3 L-22 -7 L-6 -7Z" fill="${c}"/>`][k]+'</g>';
+  const open={1:0,6:0},done={3:1,8:1};
+  // light spilling from the open shutters onto the floor
+  Object.keys(open).forEach(i=>{const cx=x1+(i%4+.5)*cw;h+=`<path d="M${cx-cw/2} ${y2+8} L${cx+cw/2} ${y2+8} L${cx+cw*.9+(cx-195)*.3} ${front} L${cx-cw*.9+(cx-195)*.3} ${front}Z" fill="#ffd9a0" opacity=".3" filter="url(#eb6)"/>`});
+  h+=`<path d="M${x1-8} ${y2+10} Q195 ${y2+2} ${x2+40} ${y2+10} L${x2+58} ${y2+28} Q195 ${y2+36} ${x1-18} ${y2+26}Z" fill="#000" opacity=".55" filter="url(#eb3)"/>`;
+  h+=`<path d="M${x2} ${y1-10} l14 9 v${y2-y1+14} l-14 5Z" fill="#4a3012"/><rect x="${x1-6}" y="${y1-12}" width="${x2-x1+12}" height="12" rx="3" fill="url(#ebrass)"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="#3a2410"/><rect x="${x1-4}" y="${y2}" width="${x2-x1+8}" height="10" fill="url(#ebrass)"/><path d="M${x1+8} ${y2+10} v8 h16 v-8 M${x2-24} ${y2+10} v8 h16 v-8" fill="#4a3012"/>`;
+  for(let i=0;i<12;i++){const x=x1+(i%4)*cw+4,y=y1+Math.floor(i/4)*ch+4,w=cw-8,hh=ch-8,cx=x+w/2,cy=y+hh/2;
+    h+=`<rect x="${x-2}" y="${y-2}" width="${w+4}" height="${hh+4}" rx="5" fill="url(#ebrass)"/>`;
+    if(i in open){h+=`<rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="3" fill="#ffe6b8"/><rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="3" fill="url(#escrim)" opacity=".5"/><path d="M${x} ${y} h${w} v${hh} h-8 v-${hh-20} h-${w-8}Z" fill="#000" opacity=".28"/>`+shape(0,cx+3,cy+9,'#000',.92).replace('fill="#000"','fill="#000" opacity=".3"')+shape(0,cx,cy+6,'#2a1220',.92)+`<rect x="${x}" y="${y}" width="${w}" height="13" fill="#2a1822"/><path d="M${x} ${y+4} h${w} M${x} ${y+8} h${w}" stroke="#ffb884" stroke-width="1" opacity=".35"/><circle cx="${cx}" cy="${cy}" r="${w*.8}" fill="#ffd9a0" opacity=".4" filter="url(#eb14)"/>`}
+    else if(i in done){h+=`<rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="3" fill="#2a1c18"/><path d="M${x} ${y} h${w} v${hh} h-8 v-${hh-20} h-${w-8}Z" fill="#000" opacity=".4"/>`+shape(1,cx,cy+6,'#7a5c40',.92)+`<rect x="${x}" y="${y}" width="${w}" height="13" fill="#2a1822"/>`}
+    else{h+=`<rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="3" fill="#1c0e15"/>`;const n=8,lh=(hh-6)/n;for(let k=0;k<n;k++)h+=`<rect x="${x+3}" y="${y+4+k*lh}" width="${w-6}" height="${lh-2.6}" rx="1.5" fill="#3a2430"/><rect x="${x+3}" y="${y+4+k*lh}" width="${w-6}" height="1.8" fill="#ffb884" opacity="${(.12+.02*k).toFixed(2)}"/>`;h+=`<circle cx="${cx}" cy="${y+hh-7}" r="2.6" fill="url(#ebrass)"/>`}}
+  h+=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="110" fill="url(#etop)" opacity=".4"/>`;
+  h+=prosc(top,front,{w:24})+darkHouse(r,540,3)+foot(560)+glowText(195,654,'1 of 6',`font:900 34px Doto,monospace;text-anchor:middle`,E_CREAM)+T(195,692,'PAIRS FOUND',`font:900 14px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  put('sN8',h+eEnd())})();
+
+// 9 · Hold your day: a lamp post on stage, a sign on chains, cards going down
+(function(){const r=R(113),top=92,hz=330,front=452;let h=base()+T(24,62,'Hold your day.',eTitle(29))+stage2('#c9902a',top,hz,front);
+  const X=78,labs=['×1.0','×1.2','×1.4','×1.6','×1.8','×2.0','×2.2','×2.4'],ly=i=>408-i*37;
+  // what the lit lamps do to the room
+  h+=`<ellipse cx="${X+20}" cy="${ly(1.5)}" rx="120" ry="110" fill="${YOU}" opacity=".3" filter="url(#eb14)"/>`+pool(X+40,440,110,14,YOU,.4);
+  // the sign, hung
+  h+=chain(196,top,170)+chain(346,top,170)+drop(170,168,202,104,14)+`<rect x="170" y="168" width="202" height="104" rx="14" fill="#12070f"/><rect x="175" y="173" width="192" height="94" rx="10" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  const per=[];for(let x=186;x<=356;x+=17)per.push([x,173],[x,267]);for(let y=190;y<=252;y+=20.6)per.push([175,y],[367,y]);per.forEach(([x,y])=>{h+=bulb(x,y,3.8,'on')});
+  h+=glowText(271,250,'102',`font:900 78px Doto,monospace;text-anchor:middle`,YOU);
+  h+=chain(226,272,292)+chain(316,272,292)+drop(206,290,130,30,5,.4)+`<rect x="206" y="290" width="130" height="30" rx="5" fill="url(#ebrass)"/><rect x="209" y="293" width="124" height="24" rx="3" fill="#1c0e15"/>`+T(271,311,'64 × 1.6',`font:900 16px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:1px`);
+  h+=pool(271,442,90,10,YOU,.3);
+  // the post
+  h+=`<path d="M${X-22} 436 Q${X+30} 428 ${X+110} 434 Q${X+116} 442 ${X+100} 446 Q${X+20} 450 ${X-24} 444Z" fill="#000" opacity=".5" filter="url(#eb3)"/>`;
+  h+=`<path d="M${X-30} 440 L${X-20} 424 H${X+20} L${X+30} 440Z" fill="url(#ebrass)"/><rect x="${X-34}" y="438" width="68" height="7" rx="2" fill="#4a3012"/><rect x="${X-21}" y="118" width="42" height="308" rx="6" fill="#0f050c"/><rect x="${X-18}" y="121" width="36" height="302" rx="4" fill="#2a1220" stroke="url(#ebrass)" stroke-width="1.6"/><path d="M${X-17} 118 A17 20 0 0 1 ${X+17} 118Z" fill="url(#ebrass)"/><circle cx="${X}" cy="97" r="4" fill="url(#ebrass)"/>`;
+  labs.forEach((lab,i)=>{const y=ly(i),st=i<3?'on':i===3?'cur':i===4?'warm':'off';h+=bigLamp(X,y,13.5,st);
+    h+=`<path d="M${X+19} ${y} h8" stroke="#6b4a22" stroke-width="2"/><rect x="${X+26}" y="${y-10}" width="${i===3?52:44}" height="20" rx="4" fill="${i===3?'url(#eyou)':'#1c0e15'}" stroke="url(#ebrass)" stroke-width="1.2"/>`+T(X+31,y+5,lab,`font:900 ${i===3?15:13}px Doto,monospace;fill:${i===3?'#2a1220':i<3?'#e9c34a':i===4?'#c98a6a':'#a88696'}`)});
+  const q=R(5);h+=prosc(top,front,{w:20})+darkHouse(r,528,3,()=>q()<.64)+foot(570);
+  h+=eButton(614,'Let go to bank')+T(195,700,'Snaps where half let go. Then you keep 32.',`font:600 13.5px Outfit;fill:#e7c4b4;text-anchor:middle`);
+  put('sN9',h+eEnd())})();
+
+// 10 · the graph read: a paper roll hung from a bar, with a pen drawing your line
+(function(){const r=R(127),top=126,hz=372,front=466;let h=base()+T(24,70,'Your line matched',eTitle(25))+T(24,104,'78 in 100.',eTitle(31))+stage2('#e8a070',top,hz,front);
+  const x1=44,x2=346,y1=160,y2=412;
+  h+=`<rect x="${x1+12}" y="${y1+14}" width="${x2-x1}" height="${y2-y1+8}" fill="#000" opacity=".5" filter="url(#eb6)"/>`+pool(195,front-10,150,12,'#ffe2b0',.35);
+  h+=chain(x1+30,top,y1-8)+chain(x2-30,top,y1-8)+`<rect x="${x1-14}" y="${y1-14}" width="${x2-x1+28}" height="18" rx="9" fill="url(#ebrass)"/><circle cx="${x1-14}" cy="${y1-5}" r="7" fill="#5a3c18"/><circle cx="${x2+14}" cy="${y1-5}" r="7" fill="#5a3c18"/>`;
+  h+=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="#f3e3c4"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="url(#escrim)" opacity=".25"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="30" fill="url(#etop)" opacity=".4"/><rect x="${x1}" y="${y1}" width="14" height="${y2-y1}" fill="#000" opacity=".12"/><rect x="${x2-14}" y="${y1}" width="14" height="${y2-y1}" fill="#000" opacity=".16"/>`;
+  for(let i=1;i<6;i++)h+=`<path d="M${x1} ${y1+i*42} H${x2}" stroke="#8a6a4a" stroke-width="1" opacity=".3"/>`;
+  const W=x2-x1-28,f=t=>y2-40-150*Math.pow(t,1.7)-16*Math.sin(t*9),g=t=>y2-56-104*t-10*Math.sin(t*5),u=t=>y2-44-160*Math.pow(t,1.45)+8*Math.sin(t*7),px=t=>x1+14+t*W;
+  const line=(fn,a,bb)=>{let d='';for(let i=a;i<=bb;i++){const t=i/40;d+=(i===a?'M':'L')+px(t).toFixed(1)+' '+fn(t).toFixed(1)+' '}return d};
+  const cut=px(.4);h+=`<rect x="${cut}" y="${y1}" width="${x2-cut}" height="${y2-y1}" fill="#c9a06a" opacity=".16"/><path d="M${cut} ${y1} V${y2}" stroke="#2a1220" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+  h+=`<path d="${line(g,16,40)}" fill="none" stroke="#1f8f9a" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9"/><path d="${line(f,0,40)}" fill="none" stroke="#2a1220" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  h+=`<path d="${line(u,16,36)}" fill="none" stroke="#2a1220" stroke-width="9" stroke-linecap="round" opacity=".22"/><path d="${line(u,16,36)}" fill="none" stroke="${YOU}" stroke-width="5.5" stroke-linecap="round"/>`;
+  // the pen: a rod down from the top roller, a carriage, wet ink
+  const tx=px(.9),ty=u(.9);h+=`<path d="M${tx+5} ${y1-6} V${ty-10}" stroke="#000" stroke-width="5" opacity=".25"/><path d="M${tx} ${y1-6} V${ty-12}" stroke="url(#ebrass)" stroke-width="4"/><rect x="${tx-9}" y="${y1-12}" width="18" height="14" rx="3" fill="#5a3c18"/><rect x="${tx-10}" y="${ty-24}" width="20" height="16" rx="3" fill="url(#ebrass)"/><path d="M${tx-4} ${ty-8} L${tx} ${ty} L${tx+4} ${ty-8}Z" fill="#2a1220"/><circle cx="${tx}" cy="${ty}" r="10" fill="${YOU}" opacity=".6" filter="url(#eb6)"/><circle cx="${tx}" cy="${ty}" r="3.4" fill="${YOU}"/>`;
+  h+=`<rect x="${x1-10}" y="${y2-2}" width="${x2-x1+20}" height="16" rx="8" fill="url(#ebrass)"/><rect x="${x1-10}" y="${y2+6}" width="${x2-x1+20}" height="8" rx="4" fill="#000" opacity=".3"/>`;
+  h+=prosc(top,front,{w:22});
+  const key=(x,w,lab,mk)=>`<rect x="${x}" y="494" width="${w}" height="26" rx="5" fill="url(#ebrass)"/><rect x="${x+2}" y="496" width="${w-4}" height="22" rx="3.5" fill="#1c0e15"/>`+mk+T(x+40,512,lab,`font:800 12.5px Outfit;fill:${E_CREAM}`);
+  h+=key(14,144,'What happened',`<path d="M22 507 H46" stroke="${E_CREAM}" stroke-width="4" stroke-linecap="round"/>`)+key(166,112,'Everyone',`<path d="M174 507 H198" stroke="${E_CROWD}" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 7.5"/>`)+key(286,90,'You',`<path d="M294 507 H318" stroke="${YOU}" stroke-width="5" stroke-linecap="round"/>`);
+  h+=darkHouse(r,572,2)+foot(566)+eButton(614,'Next');
+  put('sN10',h+eEnd())})();
+
+// 11 · Scorecard: the curtain is down; everything hangs in front of it
+(function(){const r=R(139),front=594;let h=base();
+  h+=`<rect width="390" height="${front}" fill="url(#ecurt)"/><rect width="390" height="${front}" fill="url(#eshade)" opacity=".75"/><rect y="${front-190}" width="390" height="190" fill="url(#efoot)"/><ellipse cx="195" cy="${front}" rx="230" ry="90" fill="#ffb884" opacity=".28" filter="url(#eb14)"/>`;
+  for(let i=0;i<11;i++)h+=`<path d="M${i*39+8} ${front} q10 -8 20 0" fill="none" stroke="#000" stroke-width="3" opacity=".35"/>`;
+  // sign
+  h+=chain(92,0,40)+chain(298,0,40)+drop(44,40,302,150,20,.6)+`<rect x="44" y="40" width="302" height="150" rx="20" fill="#12070f"/><rect x="50" y="46" width="290" height="138" rx="16" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  const per=[];for(let x=62;x<=328;x+=19)per.push([x,46],[x,184]);for(let y=66;y<=166;y+=19.6)per.push([50,y],[340,y]);per.forEach(([x,y])=>{h+=bulb(x,y,4.4,'on')});
+  h+=glowText(195,146,'102',`font:900 100px Doto,monospace;text-anchor:middle`,YOU)+T(195,170,'CARD 43',`font:900 12px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:3px`);
+  h+=`<rect x="60" y="202" width="270" height="28" rx="14" fill="#000" opacity=".4"/>`+T(195,221,'64 points, held to ×1.6.',`font:600 16px Outfit;fill:${E_CREAM};text-anchor:middle`);
+  const dial=(cx,lab,v)=>{const cy=296,a0=Math.PI*.8,a1=Math.PI*2.2,a=a0+(a1-a0)*v/100,R1=42,pt=(t,rr=R1)=>`${(cx+rr*Math.cos(t)).toFixed(1)} ${(cy+rr*Math.sin(t)).toFixed(1)}`;let g=chain(cx,190,cy-54)+`<circle cx="${cx+9}" cy="${cy+11}" r="56" fill="#000" opacity=".55" filter="url(#eb6)"/><circle cx="${cx}" cy="${cy}" r="57" fill="url(#ebrass)"/><circle cx="${cx}" cy="${cy}" r="51" fill="#1c0e15"/>`;
+    for(let k=0;k<=10;k++){const t=a0+(a1-a0)*k/10;g+=`<path d="M${pt(t,49)} L${pt(t,k%5?45:42)}" stroke="#b08a4a" stroke-width="${k%5?1:2}"/>`}
+    g+=`<path d="M${pt(a0,36)} A36 36 0 ${a-a0>Math.PI?1:0} 1 ${pt(a,36)}" fill="none" stroke="${YOU}" stroke-width="5" stroke-linecap="round" opacity=".9"/><path d="M${cx} ${cy} L${pt(a,40)}" stroke="#000" stroke-width="5" opacity=".4" transform="translate(2 3)"/><path d="M${cx} ${cy} L${pt(a,40)}" stroke="${E_CREAM}" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="5" fill="url(#ebrass)"/>`;
+    g+=glowText(cx,cy+30,v,`font:900 26px Doto,monospace;text-anchor:middle`,YOU)+T(cx,cy+45,lab,`font:900 11px Doto,monospace;fill:${E_CREAM};text-anchor:middle;letter-spacing:2px`)+`<path d="M${cx-36} ${cy-30} A46 46 0 0 1 ${cx+10} ${cy-45}" fill="none" stroke="#fff" stroke-width="2" opacity=".18"/>`;return g};
+  h+=dial(108,'HANDS',57)+dial(282,'HUNCH',82);
+  // flap board
+  const by=368;h+=drop(18,by,354,214,8,.6)+`<rect x="18" y="${by}" width="354" height="214" rx="8" fill="url(#ebrass)"/><rect x="22" y="${by+4}" width="346" height="206" rx="5" fill="#0f050c"/>`;
+  [['STOP','14',GEL.stop],['COUNT','20',GEL.count],['REPEAT','20',GEL.repeat],['PAIR','10',GEL.pair],['HELD','×1.6',YOU]].forEach(([n,v,c],i)=>{const y=by+8+i*40;
+    h+=`<rect x="28" y="${y}" width="334" height="36" rx="5" fill="#22101a"/><rect x="28" y="${y}" width="334" height="18" rx="5" fill="#fff" opacity=".04"/><path d="M28 ${y+18} H362" stroke="#000" stroke-width="1.6" opacity=".7"/>`;
+    h+=`<circle cx="48" cy="${y+18}" r="12" fill="${c}" opacity=".55" filter="url(#eb6)"/><circle cx="48" cy="${y+18}" r="8.5" fill="#12070f" stroke="url(#ebrass)" stroke-width="1.2"/><circle cx="48" cy="${y+18}" r="6" fill="${c}"/><circle cx="46" cy="${y+16}" r="1.8" fill="#fff" opacity=".7"/>`+T(70,y+25,n,`font:900 18px Doto,monospace;fill:${E_CREAM};letter-spacing:3px`)+T(350,y+26,v,`font:900 21px Doto,monospace;fill:${i===4?YOU:E_CREAM};text-anchor:end`)});
+  h+=prosc(0,front,{w:14})+eButton(630,'Share')+T(195,706,'DAY 12 · NEXT CARD 7 H 12 M',`font:900 13px Doto,monospace;fill:#ffb884;text-anchor:middle;letter-spacing:2px`);
+  put('sN11',h+eEnd())})();
+
+
+/* ================= Round 9 · the aim, not the parts: dark first, light is the picture, one big thing you touch ================= */
+const d9=`<defs><linearGradient id="ncurt" x1="0" y1="0" x2="46" y2="0" gradientUnits="userSpaceOnUse" spreadMethod="repeat"><stop offset="0" stop-color="#150c14"/><stop offset=".3" stop-color="#4a3a48"/><stop offset=".5" stop-color="#6a586a"/><stop offset=".75" stop-color="#2e2230"/><stop offset="1" stop-color="#150c14"/></linearGradient>
+ <linearGradient id="apron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d0d18"/><stop offset="1" stop-color="#0c040a"/></linearGradient>
+ <linearGradient id="wheel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05020a" stop-opacity=".8"/><stop offset=".2" stop-color="#05020a" stop-opacity="0"/><stop offset=".8" stop-color="#05020a" stop-opacity="0"/><stop offset="1" stop-color="#05020a" stop-opacity=".8"/></linearGradient></defs>`;
+const curt9=(w,y2)=>{const L=`M0 0 H${w} Q${w-14} ${y2*.5} ${w+6} ${y2} H0Z`,Rr=`M390 0 H${390-w} Q${390-w+14} ${y2*.5} ${390-w-6} ${y2} H390Z`;
+  return `<path d="${L}" fill="url(#ecurt)"/><path d="${Rr}" fill="url(#ecurt)"/><path d="${L}" fill="url(#eshade)"/><path d="${Rr}" fill="url(#eshade)"/>`};
+const head9=(x,y,s,rim,o=.6)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-9 12 Q-9 1 0 0 Q9 1 9 12Z" fill="#1c0e18"/><circle cx="0" cy="-5" r="5.4" fill="#211020"/><path d="M-4.6 -8 A5.4 5.4 0 0 1 4.6 -8" fill="none" stroke="${rim}" stroke-width="1.2" opacity="${o}"/><path d="M-8 4 Q-6 1.2 -1 .6" fill="none" stroke="${rim}" stroke-width=".9" opacity="${o*.6}"/></g>`;
+const house9=(r,rows,rim)=>{let h='';rows.forEach(([y,s,n,o],k)=>{for(let i=0;i<n;i++){const x=(i+.5+(k&1?.25:-.1))*(390/n)+(r()-.5)*6;h+=head9(x.toFixed(1),(y+r()*5).toFixed(1),s,typeof rim==='function'?rim(x):rim,o||.6)}});return h};
+// one split-flap card
+function flap9(x,y,w,hh,d,col=YOU){const fs=hh*.86;
+  return `<rect x="${x}" y="${y}" width="${w}" height="${hh}" rx="${w*.07}" fill="#1c0e15"/><rect x="${x}" y="${y}" width="${w}" height="${hh/2}" rx="${w*.07}" fill="#fff" opacity=".06"/>`
+   +glowText(x+w/2,y+hh/2+fs*.36,d,`font:900 ${fs}px Doto,monospace;text-anchor:middle`,col)
+   +`<path d="M${x} ${y+hh/2} H${x+w}" stroke="#000" stroke-width="${Math.max(2,hh*.028)}" opacity=".85"/><circle cx="${x+3}" cy="${y+hh/2}" r="${hh*.035}" fill="url(#ebrass)"/><circle cx="${x+w-3}" cy="${y+hh/2}" r="${hh*.035}" fill="url(#ebrass)"/>`}
+// the Count stage: the phone is the theatre. tapped = how many figures are lit as yours (4c)
+function countStage(r,title,tapped){const hz=170,front=412;let h=base()+d9+stage2(GEL.count,0,hz,front)+`<rect width="390" height="150" fill="url(#etop)"/>`;
+  h+=`<path d="M135 -10 L255 -10 L372 ${front} L18 ${front}Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".8"/>`;
+  const pts=[];let guard=0;while(pts.length<23&&guard++<8000){const y=hz+18+r()*(388-hz-18),s=.62+(y-hz)/(388-hz)*.74,x=VP+(r()-.5)*2*(84+(y-hz)*.24);if(pts.every(p=>Math.hypot(p[0]-x,(p[1]-y)*2)>24*s+6))pts.push([x,y,s])}if(pts.length<23)console.error('troupe short',pts.length);
+  const order=pts.slice().sort((a,b)=>a[0]-b[0]),mine=new Set(order.slice(0,tapped||0)),last=order[(tapped||1)-1];
+  pts.sort((a,b)=>a[1]-b[1]);const kit=['#dfe4f5','#b9c4ee','#93a4e0'];
+  pts.forEach((p,i)=>{const [x,y,s]=p,me=mine.has(p),c=me?YOU:kit[i%3],body='M-7 0 Q-9 -16 -4 -22 Q0 -25 4 -22 Q9 -16 7 0Z';
+    let g=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(2)})"><path d="M-6 1 Q12 -3 34 -4 Q38 0 32 3 Q12 5 -5 4Z" fill="#000" opacity=".45"/>`;
+    if(me)g+=`<ellipse cx="0" cy="1" rx="20" ry="6" fill="${YOU}" opacity=".55" filter="url(#eb3)"/><circle cx="0" cy="-16" r="22" fill="${YOU}" opacity=".5" filter="url(#eb6)"/>`;
+    g+=`<path d="${body}" fill="${c}"/><path d="${body}" fill="url(#eshade)" opacity="${me?.22:.5}"/><circle cx="0" cy="-29" r="5.6" fill="${me?'#fff3b0':c}"/><path d="M-4.4 -32 A5.6 5.6 0 0 1 3 -34" fill="none" stroke="#fff" stroke-width="1.3" opacity=".75"/><path d="M-6.5 -8 Q-8 -17 -4 -21" fill="none" stroke="#fff" stroke-width="1.1" opacity=".5"/>`;
+    if(me&&p===last)for(let q=0;q<10;q++){const a=q*Math.PI/5+.3;g+=`<path d="M${(22*Math.cos(a)).toFixed(1)} ${(-17+26*Math.sin(a)).toFixed(1)} L${(29*Math.cos(a)).toFixed(1)} ${(-17+34*Math.sin(a)).toFixed(1)}" stroke="#fff3b0" stroke-width="2" stroke-linecap="round"/>`}
+    h+=g+'</g>'});
+  h+=curt9(40,front)+tag('COUNT',GEL.count)+T(24,88,title,eTitle(31));
+  // the stage front: a dark wall the machine is set into
+  h+=`<rect x="0" y="${front}" width="390" height="${720-front}" fill="url(#apron)"/><rect x="0" y="${front}" width="390" height="9" fill="#12070f"/><rect x="0" y="${front}" width="390" height="2.4" fill="url(#ebrass)"/>`;
+  return h}
+const lockIn=(r,n)=>house9(r,[[672,2,11],[708,2.7,8]],YOU)+foot(600)+eButton(630,'Lock in '+n);
+
+// 4a · flick the flaps: each digit is a wheel
+(function(){const r=R(52);let h=countStage(r,'How many?');
+  const y0=424,nh=36,ch=104,w=118;h+=`<rect x="56" y="${y0-6}" width="278" height="${nh*2+ch+22}" rx="16" fill="#07020a" stroke="#5a2a3c" stroke-width="1.5"/>`;
+  h+=`<rect x="70" y="${y0+nh}" width="250" height="${ch+10}" fill="${YOU}" opacity=".3" filter="url(#eb14)"/>`;
+  [[70,'3','2','1'],[202,'4','3','2']].forEach(([x,up,d,dn])=>{const cx=x+w/2;
+    h+=`<g transform="translate(${cx} ${y0}) scale(.93 ${(nh/ch).toFixed(3)}) translate(${-cx} 0)" opacity=".75">${flap9(x,0,w,ch,up,'#e0b01a')}</g>`;
+    h+=`<g transform="translate(${cx} ${y0+nh+ch+10}) scale(.93 ${(nh/ch).toFixed(3)}) translate(${-cx} 0)" opacity=".75">${flap9(x,0,w,ch,dn,'#e0b01a')}</g>`;
+    h+=flap9(x,y0+nh+5,w,ch,d);
+    // ridges on the wheel's rim, to catch a thumb
+    for(let k=0;k<7;k++){const yy=y0+nh+14+k*14.5;h+=`<path d="M${x+w+3} ${yy} h5" stroke="url(#ebrass)" stroke-width="2.2" stroke-linecap="round"/>`}});
+  h+=`<rect x="56" y="${y0-6}" width="278" height="${nh*2+ch+22}" rx="16" fill="url(#wheel)"/>`;
+  h+=pool(195,618,150,16,YOU,.3);
+  put('s9a',h+lockIn(r,23)+eEnd())})();
+
+// 4b · the dimmer: slide the lamp along a rail of bulbs
+(function(){const r=R(52);let h=countStage(r,'How many?');
+  const cx=195,cy=700,Rr=236,A=46,N=40,n=23,pt=k=>{const a=(-A+2*A*k/N)*Math.PI/180;return[cx+Rr*Math.sin(a),cy-Rr*Math.cos(a)]},[x1,y1]=pt(-1.2),[x2,y2]=pt(N+1.2);
+  const arc=`M${x1.toFixed(1)} ${y1.toFixed(1)} A${Rr} ${Rr} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+  h+=`<path d="${arc}" fill="none" stroke="#5a2a3c" stroke-width="27" stroke-linecap="round"/><path d="${arc}" fill="none" stroke="#0f050c" stroke-width="24" stroke-linecap="round"/>`;
+  for(let k=0;k<=N;k++){const [x,y]=pt(k);h+=bulb(x.toFixed(1),y.toFixed(1),3.4,k<=n?'you':'off')}
+  [0,10,20,30,40].forEach(k=>{const a=(-A+2*A*k/N)*Math.PI/180,x=cx+(Rr-27)*Math.sin(a),y=cy-(Rr-27)*Math.cos(a)+5;h+=T(x.toFixed(1),y.toFixed(1),k,`font:900 13px Doto,monospace;fill:${k<=n?'#e9c34a':'#7b5060'};text-anchor:middle`)});
+  // the lamp you slide
+  const [kx,ky]=pt(n);h+=`<ellipse cx="${kx+5}" cy="${ky+9}" rx="26" ry="24" fill="#000" opacity=".6" filter="url(#eb3)"/><circle cx="${kx}" cy="${ky}" r="54" fill="${YOU}" opacity=".55" filter="url(#eb14)"/><circle cx="${kx}" cy="${ky}" r="26" fill="url(#ebrass)"/><circle cx="${kx}" cy="${ky}" r="21" fill="#12070f"/><circle cx="${kx}" cy="${ky}" r="19" fill="url(#eyou)"/><ellipse cx="${kx-7}" cy="${ky-8}" rx="6.5" ry="3.8" fill="#fff" opacity=".75" transform="rotate(-30 ${kx-7} ${ky-8})"/>`;
+  h+=`<rect x="106" y="522" width="178" height="84" fill="${YOU}" opacity=".22" filter="url(#eb14)"/>`+flap9(112,524,80,80,'2')+flap9(198,524,80,80,'3');
+  put('s9b',h+lockIn(r,23)+eEnd())})();
+
+// 4c · tap each one: the troupe is the counter
+(function(){const r=R(52);let h=countStage(r,'Tap each one.',9);
+  h+=`<rect x="56" y="446" width="278" height="132" rx="16" fill="#07020a" stroke="#5a2a3c" stroke-width="1.5"/><rect x="70" y="460" width="250" height="104" fill="${YOU}" opacity=".26" filter="url(#eb14)"/>`+flap9(70,460,118,104,'0','#6b5210')+flap9(202,460,118,104,'9');
+  put('s9c',h+lockIn(r,9)+eEnd())})();
+
+// 7 · Repeat: five footlights in the stage front, and a closed curtain. mode: watch | play
+function repeat9(id,mode){const r=R(83),col=['#e8557a','#f08a3c','#49c28a','#5a7cf0','#b06ae0'],xs=[51,123,195,267,339],lit=mode==='play'?3:2,C=col[lit],X=xs[lit],hem=530,by=566,face=574;
+  let h=base()+d9+`<rect x="0" y="0" width="390" height="${hem}" fill="url(#ncurt)"/><rect x="0" y="0" width="390" height="${hem}" fill="url(#eshade)" opacity=".9"/>`;
+  // the lit lamp washes the curtain
+  h+=`<g style="mix-blend-mode:screen"><path d="M${X-30} ${by} L${X-190} 20 H${X+190} L${X+30} ${by}Z" fill="${C}" opacity=".5" filter="url(#eb14)"/><ellipse cx="${X}" cy="${hem-120}" rx="84" ry="170" fill="${C}" opacity=".6" filter="url(#eb14)"/><ellipse cx="${X}" cy="${hem-30}" rx="52" ry="70" fill="#fff" opacity=".22" filter="url(#eb14)"/></g>`;
+  h+=`<rect width="390" height="170" fill="url(#etop)"/>`;
+  // hem, and the strip of floor in front of it
+  for(let x=0;x<390;x+=46)h+=`<path d="M${x} ${hem-3} q23 9 46 0 v6 h-46Z" fill="#0c040a" opacity=".8"/>`;
+  h+=`<rect x="0" y="${hem}" width="390" height="${face-hem}" fill="#241320"/><rect x="0" y="${hem}" width="390" height="${face-hem}" fill="url(#eshade)" opacity=".5"/><rect x="0" y="${hem}" width="390" height="10" fill="#000" opacity=".5" filter="url(#eb3)"/>`;
+  h+=`<ellipse cx="${X}" cy="${by-4}" rx="120" ry="20" fill="${C}" opacity=".55" filter="url(#eb6)" style="mix-blend-mode:screen"/>`;
+  xs.forEach((x,i)=>{const on=i===lit,c=col[i],side=x<X?1:-1,dome=`M${x-30} ${by} A30 ${on&&mode==='play'?31:35} 0 0 1 ${x+30} ${by}Z`;
+    h+=`<ellipse cx="${x}" cy="${by+1}" rx="36" ry="7.5" fill="#07020a"/><ellipse cx="${x}" cy="${by}" rx="34" ry="6.5" fill="none" stroke="url(#ebrass)" stroke-width="2.4"/>`;
+    if(on)h+=`<circle cx="${x}" cy="${by-22}" r="62" fill="${c}" opacity=".7" filter="url(#eb14)"/><path d="${dome}" fill="${c}"/><path d="M${x-17} ${by-2} A17 21 0 0 1 ${x+17} ${by-2}Z" fill="#fff" opacity=".75" filter="url(#eb3)"/>`;
+    else h+=`<path d="${dome}" fill="#1c1018"/><path d="${dome}" fill="${c}" opacity=".34"/><path d="M${x+side*26} ${by-6} Q${x+side*25} ${by-24} ${x+side*13} ${by-32}" fill="none" stroke="${C}" stroke-width="3.4" stroke-linecap="round" opacity=".75" filter="url(#eb3)"/>`;
+    h+=`<path d="M${x-21} ${by-11} Q${x-19} ${by-25} ${x-9} ${by-31}" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity="${on?.9:.3}"/>`;
+    if(on&&mode==='play')for(let q=0;q<7;q++){const a=Math.PI+(q+.5)*Math.PI/7;h+=`<path d="M${(x+39*Math.cos(a)).toFixed(1)} ${(by-4+44*Math.sin(a)).toFixed(1)} L${(x+48*Math.cos(a)).toFixed(1)} ${(by-4+54*Math.sin(a)).toFixed(1)}" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`}});
+  // the stage front, with the small bulbs that keep count
+  h+=`<rect x="0" y="${face}" width="390" height="${720-face}" fill="url(#apron)"/><rect x="0" y="${face}" width="390" height="2.4" fill="url(#ebrass)"/>`;
+  h+=`<rect x="108" y="${face+13}" width="174" height="22" rx="11" fill="#0f050c" stroke="#5a2a3c" stroke-width="1.3"/>`;
+  for(let i=0;i<6;i++)h+=bulb(130+i*26,face+24,5,mode==='play'?(i<2?'you':'off'):(i<3?'on':'off'));
+  h+=`<ellipse cx="${X}" cy="640" rx="170" ry="60" fill="${C}" opacity=".16" filter="url(#eb14)"/>`;
+  h+=house9(r,[[634,1.6,14],[668,2.1,10],[706,2.8,8]],x=>Math.abs(x-X)<150?C:'#ff9f86');
+  h+=tag('REPEAT',GEL.repeat)+T(24,88,mode==='play'?'Your turn.':'Watch.',eTitle(31));
+  put(id,h+eEnd())}
+repeat9('s9r1','watch');repeat9('s9r2','play');
+
+
+/* ================= Round 10 · the full run in the aim ================= */
+const G10=Object.assign({},GEL,{sort:'#b06ae0',jump:'#e04a3a',hide:'#7a6af0'});
+if(new URLSearchParams(location.search).get('bare')){const i=document.querySelector('.intro');if(i)i.style.display='none'}
+const wash10=(gel,h=252)=>`<rect width="390" height="${h}" fill="#0d050c" opacity=".8"/><ellipse cx="195" cy="30" rx="320" ry="${h*.8}" fill="${gel}" opacity=".34" filter="url(#eb14)"/>`;
+// a number with one decimal: Doto's own full stop reads as a plus
+const dec10=(x,y,a,b,sz)=>glowText(x,y,a,`font:900 ${sz}px Doto,monospace`,YOU)+`<circle cx="${x+sz*.62}" cy="${y-sz*.06}" r="${sz*.07}" fill="${YOU}"/>`+glowText(x+sz*.74,y,b,`font:900 ${sz}px Doto,monospace`,YOU);
+const sub10=(y,s)=>T(24,y,s,`font:600 16px Outfit;fill:#e7c4b4`);
+const doto=(x,y,s,sz,col,anchor='middle',ls=2)=>T(x,y,s,`font:900 ${sz}px Doto,monospace;fill:${col};text-anchor:${anchor};letter-spacing:${ls}px`);
+const next10=(y,label='Next')=>`<rect x="206" y="${y+7}" width="160" height="58" rx="29" fill="#0b0409"/><rect x="206" y="${y}" width="160" height="58" rx="29" fill="${E_CREAM}"/><rect x="212" y="${y+5}" width="148" height="20" rx="10" fill="#fff" opacity=".45"/>`+T(286,y+38,label,`font:400 19px Bungee;fill:#2a1220;text-anchor:middle`);
+const two10=(y,a,b,fa=18,fb=18)=>`<rect x="24" y="${y+7}" width="164" height="58" rx="29" fill="#0b0409"/><rect x="24" y="${y}" width="164" height="58" rx="29" fill="url(#eyou)"/><rect x="30" y="${y+5}" width="152" height="20" rx="10" fill="#fff" opacity=".4"/>`+T(106,y+37,a,`font:400 ${fa}px Bungee;fill:#2a1220;text-anchor:middle`)
+  +`<rect x="202" y="${y+7}" width="164" height="58" rx="29" fill="#0b0409"/><rect x="202" y="${y}" width="164" height="58" rx="29" fill="${E_CREAM}"/><rect x="208" y="${y+5}" width="152" height="20" rx="10" fill="#fff" opacity=".45"/>`+T(284,y+37,b,`font:400 ${fb}px Bungee;fill:#2a1220;text-anchor:middle`);
+// the house from your seat (the picked crowd, C5). counts[c] cards up in column c; o.you=[columns] puts your yellow card on top of that column
+function house10(r,counts,o={}){const rows=o.rows||9,y0=o.y0||300,dy=o.dy||37,xs=o.xs||CX,yous=o.you||[];let h=`<path d="M0 ${y0-50} H390 V720 H0Z" fill="#160912"/>`;
+  for(let i=0;i<rows;i++){const y=y0+i*dy;h+=`<rect x="0" y="${y+5}" width="390" height="12" fill="#0e050b"/>`;const tops=[];
+    for(let c=-1;c<=xs.length;c++){const x=c<0?xs[0]-27:c>=xs.length?xs[xs.length-1]+27:xs[c],n=c<0||c>=xs.length?0:counts[c],you=yous.includes(c)&&i===n,on=i<n||you;
+      h+=backSeat(x-8,y,1.04,hWho(r),on?'card':'dark');if(on)tops.push(KIT.C5.card(x,y,you))}
+    h+=`<rect x="0" y="${y-46}" width="390" height="54" fill="#0c040a" opacity="${Math.min(.62,i*.085).toFixed(2)}"/>`+tops.join('')}
+  return h}
+// the bar of bulbs across the stage front. st[c]: 'you' | 'on' | 'off' | 'dim'
+function bar10(y,st,r6=8){let b=`<rect x="${CX[0]-20}" y="${y-r6-8}" width="${CX[12]-CX[0]+40}" height="${2*r6+16}" rx="${r6+8}" fill="#12070f" stroke="#5a2a3c" stroke-width="1.5"/>`;
+  CX.forEach((x,c)=>{b+=bulb(x,y,r6,st[c]==='trail'?'off':st[c]);if(st[c]==='trail')b+=`<circle cx="${x}" cy="${y}" r="${r6}" fill="${YOU}" opacity=".4"/>`;if(st[c]==='you')b+=`<circle cx="${x}" cy="${y}" r="${r6*3.2}" fill="${YOU}" opacity=".45" filter="url(#eb6)"/>`});return b}
+
+// 2 · Stop, the open track: play
+(function(){const r=R(141);let h=base()+tag('STOP',G10.stop)+T(24,70+14,'Stop where',eTitle(28))+T(24,114,'nobody does.',eTitle(28))+sub10(138,'Empty spots pay more.')+topStage();
+  const c=4,st=CX.map((_,i)=>i===c?'you':i===c-1||i===c-2?'trail':'off');
+  h+=bar10(204,st)+house10(r,CX.map(()=>0));
+  // the beam: the lit bulb searches the seats under it
+  h+=`<path d="M${CX[c]-9} 214 L${CX[c]-30} 600 H${CX[c]+30} L${CX[c]+9} 214Z" fill="${YOU}" opacity=".3" filter="url(#eb6)"/><path d="M${CX[c]-5} 214 L${CX[c]-15} 600 H${CX[c]+15} L${CX[c]+5} 214Z" fill="#fff6c8" opacity=".16" filter="url(#eb3)"/>`;
+  // where your first go stopped
+  h+=`<path d="M${CX[10]} 226 v10" stroke="${YOU}" stroke-width="4" stroke-linecap="round"/><circle cx="${CX[10]}" cy="231" r="9" fill="${YOU}" opacity=".4" filter="url(#eb3)"/>`;
+  h+=`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+glowText(195,640,'Tap to stop',`font:400 30px Bungee;text-anchor:middle`,E_CREAM)+doto(195,684,'GO 2 OF 3',14,'#ffb884');
+  put('t2',h+eEnd())})();
+
+// 3 · Stop, the open track: the reveal
+(function(){const r=R(142);let h=base()+tag('STOP',G10.stop)+T(24,84,'The middle',eTitle(28))+T(24,114,'was crowded.',eTitle(28))+sub10(138,"Yesterday's empty spot was today's crowd.")+topStage();
+  const cnt=[5,3,1,1,2,4,7,6,3,1,0,3,5],mine=[3,6,10],pay=['5','1','5'];
+  mine.forEach((c,i)=>{h+=doto(CX[c],178,pay[i],22,YOU,'middle',0)});
+  h+=bar10(204,CX.map((_,i)=>mine.includes(i)?'you':'off'))+house10(r,cnt,{you:mine});
+  h+=`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+dec10(28,652,'3','7',60)+doto(30,682,'OF 5 · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(604);
+  put('t3',h+eEnd())})();
+
+// 13 · Long jump: a light runs down the stage towards you. mode: play | reveal
+function jump10(id,mode){const r=R(151),hz=168,front=500,gel=G10.jump;let h=base()+d9+stage2(gel,0,hz,front)+`<rect width="390" height="150" fill="url(#etop)"/>`;
+  const N=16,P=k=>{const t=Math.pow(k/(N-1),1.35);return{t,y:hz+10+(front-hz-14)*t,w:18+94*t,s:.3+.7*t}};
+  // the runway
+  const a=P(0),b=P(N-1);h+=`<path d="M${VP-a.w} ${a.y} L${VP-b.w-6} ${front} H${VP+b.w+6} L${VP+a.w} ${a.y}Z" fill="#0c040a" opacity=".6"/>`;
+  const cnt=[0,0,0,0,0,0,1,1,2,3,4,6,7,5,2,0],mark=mode==='reveal'?13:11;
+  for(let k=0;k<N;k++){const p=P(k);[-1,1].forEach(sd=>{const x=VP+sd*p.w;h+=bulb(x.toFixed(1),p.y.toFixed(1),(2+5*p.t).toFixed(1),k<=mark?'on':'off');
+      const n=Math.ceil(cnt[k]/2)-(sd>0&&cnt[k]%2?1:0);for(let j=0;j<n;j++){const cw=10*p.s+3,ch=13*p.s+3,cx=x+sd*(13*p.s+7+j*(cw+3));
+        h+=`<ellipse cx="${cx.toFixed(1)}" cy="${(p.y+1).toFixed(1)}" rx="${cw}" ry="${cw*.3}" fill="${E_CROWD}" opacity=".35" filter="url(#eb3)"/><rect x="${(cx-cw/2).toFixed(1)}" y="${(p.y-ch).toFixed(1)}" width="${cw.toFixed(1)}" height="${ch.toFixed(1)}" rx="1.6" fill="${E_CROWD}" opacity=".8" filter="url(#eb3)"/><rect x="${(cx-cw/2+.5).toFixed(1)}" y="${(p.y-ch+.5).toFixed(1)}" width="${(cw-1).toFixed(1)}" height="${(ch-1).toFixed(1)}" rx="1.6" fill="#c9f7f8"/>`}})}
+  // you: the running light, or your planted card
+  const m=P(mark);m.s*=1.7;
+  if(mode==='play'){const t0=P(mark-4);h+=`<path d="M${VP-5} ${t0.y} L${VP-11*m.s} ${m.y} H${VP+11*m.s} L${VP+5} ${t0.y}Z" fill="${YOU}" opacity=".5" filter="url(#eb6)"/>`;
+    h+=`<ellipse cx="${VP}" cy="${m.y+3}" rx="${50*m.s}" ry="${12*m.s}" fill="${YOU}" opacity=".4" filter="url(#eb6)"/><circle cx="${VP}" cy="${m.y-10*m.s}" r="${34*m.s}" fill="${YOU}" opacity=".4" filter="url(#eb14)"/><ellipse cx="${VP}" cy="${m.y+1}" rx="${25*m.s}" ry="${5*m.s}" fill="#07020a"/><path d="M${VP-21*m.s} ${m.y} A${21*m.s} ${24*m.s} 0 0 1 ${VP+21*m.s} ${m.y}Z" fill="url(#eyou)"/><ellipse cx="${VP-7*m.s}" cy="${m.y-14*m.s}" rx="${6*m.s}" ry="${3.4*m.s}" fill="#fff" opacity=".75"/>`}
+  else{const cw=20,ch=25;h+=`<ellipse cx="${VP}" cy="${m.y+2}" rx="40" ry="10" fill="${YOU}" opacity=".5" filter="url(#eb6)"/><rect x="${VP-cw/2}" y="${m.y-ch}" width="${cw}" height="${ch}" rx="3" fill="${YOU}" opacity=".8" filter="url(#eb6)"/><rect x="${VP-cw/2}" y="${m.y-ch}" width="${cw}" height="${ch}" rx="3" fill="#fff3b0"/>`}
+  // the edge of the stage, hot; then the pit and the house
+  h+=curt9(34,front)+`<rect x="0" y="${front}" width="390" height="${720-front}" fill="url(#apron)"/><rect x="0" y="${front-3}" width="390" height="10" fill="${gel}" opacity=".9" filter="url(#eb6)"/><rect x="0" y="${front}" width="390" height="3" fill="#ffd9c9"/>`;
+  h+=house9(r,[[612,1.7,13],[652,2.2,10],[700,2.8,8]],gel);
+  h+=tag('LONG JUMP',gel);
+  if(mode==='play')h+=T(24,88,'Jump late.',eTitle(31))+sub10(116,'Past the edge scores nothing.')+`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+glowText(195,654,'Tap to jump',`font:400 30px Bungee;text-anchor:middle`,E_CREAM);
+  else h+=T(24,88,'Later than most.',eTitle(29))+sub10(116,'You took off later than 77 in 100.')+`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+glowText(28,652,'77',`font:900 60px Doto,monospace`,YOU)+doto(30,682,'OF 100 · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(604);
+  put(id,h+eEnd())}
+jump10('t13a','play');jump10('t13b','reveal');
+
+// ---- Hide and Seek: painted scenery on a dark stage ----
+const FLATS={ // [path, height, paint when lit, extra strokes]
+ shed:['M-26 0 V-38 L0 -56 L26 -38 V0Z',56,'#b5654a','M-6 0 V-24 H8 V0 M-26 -38 H26'],
+ tree:['M-5 0 V-30 Q-26 -30 -24 -50 Q-22 -70 0 -70 Q22 -70 24 -50 Q26 -30 5 -30 V0Z',70,'#4f9a68','M0 -30 V-48 M0 -40 L-10 -52 M0 -44 L9 -56'],
+ bench:['M-30 0 V-30 H30 V0 H24 V-12 H-24 V0Z',30,'#a8794a','M-30 -21 H30'],
+ bin:['M-12 0 L-15 -30 H-17 V-35 H17 V-30 H15 L12 0Z',35,'#7d8a96','M-6 -6 L-7 -26 M0 -6 V-26 M6 -6 L7 -26'],
+ hedge:['M-36 0 V-22 Q-36 -34 -24 -32 Q-12 -42 0 -34 Q12 -42 24 -32 Q36 -34 36 -22 V0Z',38,'#3f8a58',''],
+ goal:['M-32 0 V-46 H32 V0 H27 V-41 H-27 V0Z',46,'#e9e2d6','M-27 -30 H27 M-27 -18 H27 M-14 -41 V0 M0 -41 V0 M14 -41 V0'],
+ slide:['M-30 0 V-50 H-16 L28 -6 L32 0 H22 L-16 -38 V0Z',50,'#c9584a','M-30 -12 H-16 M-30 -24 H-16 M-30 -36 H-16'],
+ wall:['M-34 0 V-32 H34 V0Z',32,'#b07a5a','M-34 -11 H34 M-34 -22 H34 M-12 -32 V-22 M12 -32 V-22 M0 -22 V-11 M-22 -22 V-11 M22 -22 V-11 M-12 -11 V0 M12 -11 V0'],
+ bush:['M-22 0 Q-32 -22 -13 -25 Q-6 -38 9 -27 Q28 -27 22 0Z',34,'#5aa06a',''],
+ cones:['M-28 0 L-20 -24 L-12 0Z M-8 0 L0 -24 L8 0Z M12 0 L20 -24 L28 0Z',24,'#e88a3c','M-23 -9 H-17 M-3 -9 H3 M17 -9 H23'],
+ van:['M-38 0 V-24 Q-38 -36 -26 -36 H12 L28 -22 H38 V0Z',36,'#d9c9a8','M10 -32 L24 -20 H-2 V-32Z M-30 -32 H-8 V-20 H-30Z'],
+ steps:['M-30 0 V-14 H-11 V-28 H8 V-42 H30 V0Z',42,'#9a8aa6','']};
+const SPOTS10=[['wall',84,268,.8],['tree',160,262,.84],['goal',236,266,.8],['bin',306,272,.84],
+ ['slide',76,364,1.1],['hedge',162,372,1.08],['shed',250,358,1.16],['cones',326,374,1.04],
+ ['bench',84,478,1.36],['bush',178,486,1.36],['van',264,476,1.36],['steps',338,492,1.2]];
+function flat10(kind,x,y,s,o={}){const [d,hh,paint,ex]=FLATS[kind];let g='';
+  if(o.you)g+=`<circle cx="${x}" cy="${y-hh*s*.6}" r="${46*s}" fill="${YOU}" opacity=".75" filter="url(#eb14)"/><circle cx="${x}" cy="${y-hh*s*.7}" r="${22*s}" fill="#fff6c8" opacity=".5" filter="url(#eb6)"/>`;
+  // cards come up from behind
+  const n=o.cards||0;for(let j=0;j<n;j++){const cw=8.5*s+2,ch=10*s+3,cx=x+(j-(n-1)/2)*(cw+1.5)*(n>6?.62:1),cy=y-hh*s-ch*.55-(j%2)*4*s-(n>6&&j%3===0?ch*.8:0);
+    g+=`<rect x="${(cx-cw/2).toFixed(1)}" y="${cy.toFixed(1)}" width="${cw.toFixed(1)}" height="${ch.toFixed(1)}" rx="1.6" fill="${E_CROWD}" opacity=".8" filter="url(#eb3)"/><rect x="${(cx-cw/2+.5).toFixed(1)}" y="${(cy+.5).toFixed(1)}" width="${(cw-1).toFixed(1)}" height="${(ch-1).toFixed(1)}" rx="1.6" fill="#c9f7f8"/>`}
+  if(o.youCard){const cw=11*s+3,ch=13*s+4,cx=x+hh*s*.1,cy=y-hh*s-ch*.6;g+=`<rect x="${cx-cw/2}" y="${cy}" width="${cw}" height="${ch}" rx="2" fill="${YOU}" opacity=".9" filter="url(#eb6)"/><rect x="${cx-cw/2}" y="${cy}" width="${cw}" height="${ch}" rx="2" fill="#fff3b0"/>`}
+  g+=`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-30 1 Q10 -5 58 -6 Q62 0 54 4 Q10 8 -28 6Z" fill="#000" opacity=".5"/>`;
+  if(!o.lit)g+=`<path d="${d}" fill="${o.you?YOU:'#8f8ae0'}" opacity="${o.you?.95:.7}" fill-rule="evenodd" transform="translate(-1.6 -1.8)"/>`;
+  g+=`<path d="${d}" fill="${o.lit?paint:'#1c1436'}" fill-rule="evenodd"/>`+(o.lit?'':`<path d="${d}" fill="url(#eshade)" opacity=".55" fill-rule="evenodd"/>`);
+  if(o.lit)g+=`<path d="${d}" fill="url(#eshade)" opacity=".35" fill-rule="evenodd"/>`+(ex?`<path d="${ex}" fill="none" stroke="#2a1220" stroke-width="1.6" opacity=".55"/>`:'');
+  else g+=(ex?`<path d="${ex}" fill="none" stroke="#a9a4ff" stroke-width="1" opacity=".2"/>`:'');
+  return g+'</g>'}
+function hide10(id,mode){const r=R(161),hz=196,front=536,gel=G10.hide;let h=base()+d9+stage2(gel,0,hz,front)+`<rect width="390" height="${front}" fill="#07030f" opacity="${mode==='hide'?.5:.58}"/><rect width="390" height="150" fill="url(#etop)"/>`;
+  const sp={x:214,y:318,r:86},mine='bin',cards={shed:9,hedge:5,tree:4,van:4,wall:2,slide:2,bench:2,bush:1,goal:1,cones:0,steps:1,bin:0};
+  const inSpot=(x,y,s,k)=>Math.hypot(x-sp.x,y-FLATS[k][1]*s*.5-sp.y)<sp.r;
+  if(mode!=='hide'){ // the follow spot: its pool on the floor, drawn under the scenery
+    h+=`<path d="M300 -20 L360 -20 L${sp.x+sp.r} ${sp.y} L${sp.x-sp.r} ${sp.y}Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".9"/><circle cx="${sp.x}" cy="${sp.y}" r="${sp.r}" fill="#fff2dc" opacity=".3"/><circle cx="${sp.x}" cy="${sp.y}" r="${sp.r}" fill="#fff2dc" opacity=".25" filter="url(#eb6)"/>`}
+  SPOTS10.forEach(([k,x,y,s])=>{const lit=mode!=='hide'&&inSpot(x,y,s,k);h+=flat10(k,x,y,s,{lit,you:mode==='hide'&&k===mine,cards:mode==='reveal'?cards[k]:0,youCard:mode==='reveal'&&k===mine})});
+  if(mode!=='hide')h+=`<circle cx="${sp.x}" cy="${sp.y}" r="${sp.r}" fill="none" stroke="${YOU}" stroke-width="3" opacity=".9"/><circle cx="${sp.x}" cy="${sp.y}" r="${sp.r}" fill="none" stroke="${YOU}" stroke-width="8" opacity=".5" filter="url(#eb6)"/>`;
+  h+=curt9(30,front)+`<rect x="0" y="${front}" width="390" height="${720-front}" fill="url(#apron)"/><rect x="0" y="${front}" width="390" height="9" fill="#12070f"/><rect x="0" y="${front}" width="390" height="2.4" fill="url(#ebrass)"/>`;
+  h+=house9(r,[[606,1.7,13],[650,2.2,10],[704,2.8,8]],'#a9a4ff');
+  if(mode==='hide')h+=tag('HIDE',gel)+T(24,88,'Hide.',eTitle(31))+sub10(116,'Where will nobody look?')+foot(590)+eButton(632,'Hide here');
+  else if(mode==='seek')h+=tag('SEEK',gel)+T(24,88,'Seek.',eTitle(31))+sub10(116,'Where did most people hide?')+foot(590)+eButton(632,'Look here');
+  else h+=tag('HIDE AND SEEK',gel)+T(24,88,'The shed drew',eTitle(27))+T(24,118,'the biggest crowd.',eTitle(27))+foot(560)
+    +glowText(28,628,'88',`font:900 44px Doto,monospace`,YOU)+doto(30,648,'IN 100 MISSED YOU',10.5,'#ffb884','start',1)+glowText(28,686,'48',`font:900 32px Doto,monospace`,YOU)+doto(80,684,'IN 100 YOU FOUND',10.5,'#ffb884','start',1)+doto(30,706,'SIMULATED CROWD',10,'#b9929f','start',1.5)+next10(604);
+  put(id,h+eEnd())}
+hide10('t14','hide');hide10('t15a','seek');hide10('t15b','reveal');
+
+// ---- Repeat: a wall of nine stage lamps pointing at you ----
+// a lamp. st: off | on (the pattern, in the game's light) | you (your press)
+function lens10(x,y,rr,st,gel){const c=st==='you'?YOU:gel;let g=`<circle cx="${x+4}" cy="${y+6}" r="${rr+6}" fill="#000" opacity=".6" filter="url(#eb6)"/><circle cx="${x}" cy="${y}" r="${rr+6}" fill="#0b0409"/><circle cx="${x}" cy="${y}" r="${rr+6}" fill="none" stroke="url(#ebrass)" stroke-width="2"/><circle cx="${x}" cy="${y}" r="${rr}" fill="#120a14"/>`;
+  if(st==='off'){g+=`<circle cx="${x}" cy="${y}" r="${rr}" fill="${gel}" opacity=".13"/>`;[.78,.56,.34].forEach(k=>{g+=`<circle cx="${x}" cy="${y}" r="${rr*k}" fill="none" stroke="#fff" stroke-width="1" opacity=".07"/>`});
+    g+=`<path d="M${x-rr*.62} ${y-rr*.42} A${rr*.75} ${rr*.75} 0 0 1 ${x-rr*.1} ${y-rr*.74}" fill="none" stroke="#fff" stroke-width="${rr*.07}" stroke-linecap="round" opacity=".22"/><circle cx="${x}" cy="${y}" r="${rr*.12}" fill="${gel}" opacity=".35"/>`}
+  else{g+=`<circle cx="${x}" cy="${y}" r="${rr*2.5}" fill="${c}" opacity=".55" filter="url(#eb14)" style="mix-blend-mode:screen"/><circle cx="${x}" cy="${y}" r="${rr}" fill="${c}"/><circle cx="${x}" cy="${y}" r="${rr*.72}" fill="#fff" opacity=".85" filter="url(#eb6)"/>`;[.78,.56].forEach(k=>{g+=`<circle cx="${x}" cy="${y}" r="${rr*k}" fill="none" stroke="#fff" stroke-width="1.2" opacity=".35"/>`});
+    for(let q=0;q<12;q++){const a=q*Math.PI/6+.26,l=q%2?rr*1.5:rr*1.9;g+=`<path d="M${(x+(rr+10)*Math.cos(a)).toFixed(1)} ${(y+(rr+10)*Math.sin(a)).toFixed(1)} L${(x+l*Math.cos(a)).toFixed(1)} ${(y+l*Math.sin(a)).toFixed(1)}" stroke="${st==='you'?'#fff3b0':'#eafff4'}" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>`}}
+  return g}
+function wall10(xs,ys,rr,lit,st,gel,dim){let h='';ys.forEach(y=>{h+=`<rect x="0" y="${y-5}" width="390" height="10" fill="#0b0409"/><rect x="0" y="${y-5}" width="390" height="2" fill="#fff" opacity=".06"/>`});
+  const cells=[];ys.forEach((y,j)=>xs.forEach((x,i)=>cells.push([x,y,j*3+i])));
+  cells.filter(c=>c[2]!==lit).forEach(([x,y])=>{h+=lens10(x,y,rr,'off',gel)});if(dim)h+=`<rect width="390" height="${ys[2]+rr+20}" fill="#0c040a" opacity="${dim}"/>`;
+  cells.filter(c=>c[2]===lit).forEach(([x,y])=>{h+=lens10(x,y,rr,st,gel)});return h}
+function repeat10(id,mode){const r=R(171),gel=G10.repeat,lit=mode==='turn'?5:1,xs=[78,195,312],ys=[196,312,428],c=mode==='turn'?YOU:gel,lx=xs[lit%3],ly=ys[Math.floor(lit/3)];
+  let h=base()+d9+`<rect width="390" height="720" fill="#0d050c"/><rect width="390" height="720" fill="${gel}" opacity=".05"/>`+wall10(xs,ys,48,lit,mode==='turn'?'you':'on',gel);
+  // the lamp lights the house
+  h+=`<rect x="0" y="498" width="390" height="222" fill="url(#apron)"/><rect x="0" y="498" width="390" height="2.4" fill="url(#ebrass)"/>`;
+  h+=`<rect x="108" y="514" width="174" height="22" rx="11" fill="#0f050c" stroke="#5a2a3c" stroke-width="1.3"/>`;for(let i=0;i<6;i++)h+=bulb(130+i*26,525,5,mode==='turn'?(i<3?'you':'off'):(i<2?'on':'off'));
+  h+=`<ellipse cx="${lx}" cy="640" rx="190" ry="80" fill="${c}" opacity=".2" filter="url(#eb14)"/>`;
+  h+=house9(r,[[584,1.6,14],[626,2.1,10],[676,2.7,8],[722,3.2,6]],x=>Math.abs(x-lx)<170?c:'#6a4a58');
+  h+=`<rect width="390" height="130" fill="url(#etop)"/>`+tag('REPEAT',gel)+T(24,88,mode==='turn'?'Your turn.':'Watch.',eTitle(31));
+  put(id,h+eEnd())}
+repeat10('t8a','watch');repeat10('t8b','turn');
+// 9 · bank or go on
+(function(){const r=R(172),gel=G10.repeat;let h=base()+d9+`<rect width="390" height="720" fill="#0d050c"/><ellipse cx="195" cy="250" rx="240" ry="190" fill="${gel}" opacity=".12" filter="url(#eb14)"/>`;
+  h+=`<rect width="390" height="130" fill="url(#etop)"/>`+tag('REPEAT',gel)+T(24,88,'Bank or go on?',eTitle(29));
+  // what you hold
+  h+=`<rect x="46" y="134" width="298" height="176" rx="18" fill="#07020a" stroke="#5a2a3c" stroke-width="1.5"/><rect x="62" y="150" width="266" height="144" fill="${YOU}" opacity=".3" filter="url(#eb14)"/>`+flap9(60,148,122,148,'6')+flap9(208,148,122,148,'4')+`<circle cx="195" cy="276" r="18" fill="${YOU}" opacity=".6" filter="url(#eb6)"/><circle cx="195" cy="276" r="9" fill="url(#eyou)"/>`+pool(195,330,150,16,YOU,.3);
+  h+=T(195,372,'Round 6 pays 3.3 more.',`font:800 19px Outfit;fill:${E_CREAM};text-anchor:middle`)+T(195,398,'3 in 10 cleared it.',`font:800 17px Outfit;fill:${E_CROWD};text-anchor:middle`);
+  const xs=[];for(let i=0;i<10;i++)xs.push(33+i*36);
+  h+=house10(r,[1,0,0,1,0,0,0,1,0,0],{xs,rows:4,y0:466,dy:40})+foot(560)+T(195,618,'Miss a round and the 6.4 is gone.',`font:600 14px Outfit;fill:#e7c4b4;text-anchor:middle`)+two10(636,'Bank 6.4','Go on');
+  put('t9',h+eEnd())})();
+
+// ---- Count, carried through with 4b's rail and lamp ----
+const knob10=(kx,ky,rr=19)=>`<ellipse cx="${kx+4}" cy="${ky+8}" rx="${rr+7}" ry="${rr+5}" fill="#000" opacity=".6" filter="url(#eb3)"/><circle cx="${kx}" cy="${ky}" r="${rr*2.8}" fill="${YOU}" opacity=".55" filter="url(#eb14)"/><circle cx="${kx}" cy="${ky}" r="${rr+7}" fill="url(#ebrass)"/><circle cx="${kx}" cy="${ky}" r="${rr+2}" fill="#12070f"/><circle cx="${kx}" cy="${ky}" r="${rr}" fill="url(#eyou)"/><ellipse cx="${kx-rr*.37}" cy="${ky-rr*.42}" rx="${rr*.34}" ry="${rr*.2}" fill="#fff" opacity=".75" transform="rotate(-30 ${kx-rr*.37} ${ky-rr*.42})"/>`;
+// 4 · play (round 9's 4b)
+(function(){const r=R(52);let h=countStage(r,'How many?');
+  const cx=195,cy=700,Rr=236,A=46,N=40,n=23,pt=k=>{const a=(-A+2*A*k/N)*Math.PI/180;return[cx+Rr*Math.sin(a),cy-Rr*Math.cos(a)]},[x1,y1]=pt(-1.2),[x2,y2]=pt(N+1.2);
+  const arc=`M${x1.toFixed(1)} ${y1.toFixed(1)} A${Rr} ${Rr} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+  h+=`<path d="${arc}" fill="none" stroke="#5a2a3c" stroke-width="27" stroke-linecap="round"/><path d="${arc}" fill="none" stroke="#0f050c" stroke-width="24" stroke-linecap="round"/>`;
+  for(let k=0;k<=N;k++){const [x,y]=pt(k);h+=bulb(x.toFixed(1),y.toFixed(1),3.4,k<=n?'you':'off')}
+  [0,10,20,30,40].forEach(k=>{const a=(-A+2*A*k/N)*Math.PI/180,x=cx+(Rr-27)*Math.sin(a),y=cy-(Rr-27)*Math.cos(a)+5;h+=T(x.toFixed(1),y.toFixed(1),k,`font:900 13px Doto,monospace;fill:${k<=n?'#e9c34a':'#7b5060'};text-anchor:middle`)});
+  const [kx,ky]=pt(n);h+=knob10(kx,ky)+`<rect x="106" y="522" width="178" height="84" fill="${YOU}" opacity=".22" filter="url(#eb14)"/>`+flap9(112,524,80,80,'2')+flap9(198,524,80,80,'3');
+  put('t4',h+lockIn(r,23)+eEnd())})();
+// the rail laid straight along the stage: numbers 20 to 32. you at 23; crowd peak 27; truth (reveal) 24
+function rail10(y,truth){let b=`<rect x="${CX[0]-20}" y="${y-14}" width="${CX[12]-CX[0]+40}" height="28" rx="14" fill="#0f050c" stroke="#5a2a3c" stroke-width="1.5"/>`;
+  CX.forEach((x,c)=>{b+=bulb(x,y,5,c<=3?'you':'off');const n=20+c;b+=T(x,y+34,n,`font:900 ${c===3||c===7||n===truth?16:13}px Doto,monospace;fill:${c===3?YOU:n===truth?'#fff':c===7?E_CROWD:'#8a6272'};text-anchor:middle`)});
+  b+=`<circle cx="${CX[7]}" cy="${y}" r="13" fill="none" stroke="${E_CROWD}" stroke-width="2.5"/><circle cx="${CX[7]}" cy="${y}" r="13" fill="none" stroke="${E_CROWD}" stroke-width="5" opacity=".5" filter="url(#eb3)"/>`;
+  b+=knob10(CX[3],y,12);if(truth){const x=CX[truth-20];b+=`<circle cx="${x}" cy="${y}" r="24" fill="none" stroke="#fff" stroke-width="3"/><circle cx="${x}" cy="${y}" r="24" fill="none" stroke="#fff" stroke-width="8" opacity=".6" filter="url(#eb6)"/>`}
+  return b}
+const hill10=[0,1,1,2,3,5,7,8,6,4,2,1,0];
+// 5 · keep or switch
+(function(){const r=R(181);let h=base()+wash10(G10.count)+tag('COUNT',G10.count)+T(24,88,'The crowd says 27.',eTitle(27))+T(24,118,'You said 23.',`font:800 20px Outfit;fill:${YOU}`)+topStage()+rail10(192)+house10(r,hill10);
+  h+=`<rect y="540" width="390" height="180" fill="url(#eshade)"/>`+two10(606,'Keep 23','Switch to 27',18,16);
+  put('t5',h+eEnd())})();
+// 7 · the reveal
+(function(){const r=R(181);let h=base()+wash10(G10.count)+tag('COUNT',G10.count)+T(24,88,'It was 23.',eTitle(31))+sub10(116,'You kept 23. The crowd was 4 over.')+topStage()+rail10(192,23)+house10(r,hill10,{you:[3]});
+  h+=`<path d="M${CX[3]-8} 204 L${CX[3]-26} 600 H${CX[3]+26} L${CX[3]+8} 204Z" fill="#fff" opacity=".2" filter="url(#eb6)"/>`;
+  h+=`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+glowText(28,652,'+20',`font:900 60px Doto,monospace`,YOU)+doto(30,682,'DOUBLED · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(604);
+  put('t7',h+eEnd())})();
+// 6 · double or bank: one lever, and the lamps it would light
+(function(){const r=R(182),gel=G10.count;let h=base()+d9+`<rect width="390" height="720" fill="#0d050c"/><ellipse cx="195" cy="250" rx="260" ry="230" fill="${gel}" opacity=".22" filter="url(#eb14)"/>`;
+  for(let i=5;i>0;i--)h+=`<circle cx="195" cy="250" r="${i*56}" fill="none" stroke="${gel}" stroke-width="14" opacity="${.04+.014*(5-i)}"/>`;
+  h+=tag('COUNT',gel)+T(24,88,'Sure about 23?',eTitle(29));
+  const grp=(cx,xs,win,lose,loseCol)=>{let g='';xs.forEach(x=>{g+=`<circle cx="${x+6}" cy="242" r="44" fill="#000" opacity=".6" filter="url(#eb6)"/><circle cx="${x}" cy="232" r="78" fill="${YOU}" opacity=".3" filter="url(#eb14)"/><circle cx="${x}" cy="232" r="41" fill="#12070f" stroke="url(#ebrass)" stroke-width="2"/><g opacity=".62">${bigLamp(x,232,36,'on')}</g>`});
+    return g+glowText(cx,338,win,`font:900 50px Doto,monospace;text-anchor:middle`,YOU)+doto(cx,362,'IF RIGHT',12,'#e9c34a')+doto(cx,392,'WRONG '+lose,15,loseCol,'middle',1)};
+  h+=grp(98,[98],'+10','0','#b9929f')+grp(286,[244,328],'+20','−10','#ff8a7a');
+  // the lever, set in the stage front
+  const py=566,pr=92;h+=`<rect x="0" y="446" width="390" height="274" fill="url(#apron)"/><rect x="0" y="446" width="390" height="2.4" fill="url(#ebrass)"/>`;
+  const slot=`M${195-pr} ${py} A${pr} ${pr} 0 0 1 ${195+pr} ${py}`;h+=`<path d="${slot}" fill="none" stroke="#5a2a3c" stroke-width="27" stroke-linecap="round"/><path d="${slot}" fill="none" stroke="#07020a" stroke-width="24" stroke-linecap="round"/>`;
+  [[-1,'on'],[1,'on']].forEach(([sd])=>{h+=bulb(195+sd*pr,py,6,'off')});
+  h+=`<path d="M190 ${py+4} L191.5 ${py-pr+8} H198.5 L200 ${py+4}Z" fill="url(#ebrass)"/><path d="M190 ${py+4} L191.5 ${py-pr+8} H194 L193 ${py+4}Z" fill="#fff" opacity=".3"/><circle cx="195" cy="${py+2}" r="15" fill="url(#ebrass)"/><circle cx="195" cy="${py+2}" r="6" fill="#3a2410"/>`+knob10(195,py-pr,22);
+  h+=T(195-pr,py+42,'Bank',`font:400 21px Bungee;fill:${E_CREAM};text-anchor:middle`)+T(195+pr,py+42,'Double',`font:400 21px Bungee;fill:${E_CREAM};text-anchor:middle`);
+  h+=`<path d="M${195-34} ${py-pr+6} q-18 4 -30 20 m0 0 l2 -11 m-2 11 l11 -1 M${195+34} ${py-pr+6} q18 4 30 20 m0 0 l-2 -11 m2 11 l-11 -1" fill="none" stroke="${E_CREAM}" stroke-width="2.4" stroke-linecap="round" opacity=".6"/>`;
+  h+=house9(r,[[672,2,11],[712,2.8,8]],gel)+foot(640);
+  put('t6',h+eEnd())})();
+
+// ---- Pair: a shadow screen ----
+function shape10(form,style,x,y,sz,col,rot=0){const P={circle:`M${-sz} 0 A${sz} ${sz} 0 1 0 ${sz} 0 A${sz} ${sz} 0 1 0 ${-sz} 0Z`,square:`M${-sz*.86} ${-sz*.86} H${sz*.86} V${sz*.86} H${-sz*.86}Z`,triangle:`M0 ${-sz} L${sz*.98} ${sz*.78} H${-sz*.98}Z`,diamond:`M0 ${-sz*1.08} L${sz*.82} 0 L0 ${sz*1.08} L${-sz*.82} 0Z`}[form];
+  const hole=`M${-sz*.3} ${sz*.08} a${sz*.3} ${sz*.3} 0 1 0 ${sz*.6} 0 a${sz*.3} ${sz*.3} 0 1 0 ${-sz*.6} 0Z`;
+  const body=style==='outline'?`<path d="${P}" fill="none" stroke="${col}" stroke-width="${sz*.26}" stroke-linejoin="round"/>`:`<path d="${P}${style==='hole'?hole:''}" fill="${col}" fill-rule="evenodd"/>`;
+  return `<g transform="translate(${x} ${y}) rotate(${rot})">${body}</g>`}
+function pair10(id,mode){const r=R(191),gel=G10.pair,x1=38,x2=352,y1=128,y2=478;let h=base()+d9+`<rect width="390" height="720" fill="#0d050c"/>`;
+  h+=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="url(#escrim)"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="${gel}" opacity=".18"/>`;
+  for(let x=x1+18;x<x2;x+=20+r()*16)h+=`<path d="M${x} ${y1} Q${x+3} ${(y1+y2)/2} ${x-2} ${y2}" fill="none" stroke="#5a1a1a" stroke-width="${1+r()*2}" opacity=".1"/>`;
+  const set=[['circle','solid'],['square','outline'],['triangle','hole'],['diamond','solid'],['triangle','solid'],['circle','hole'],['diamond','outline'],['square','hole'],['square','solid'],['diamond','hole'],['circle','hole'],['triangle','outline']];
+  const pos=i=>[72+(i%4)*70+(Math.floor(i/4)===1?35:0),200+Math.floor(i/4)*96],mine=5,theirs=9,other=6,ink='#1a0810';
+  // your pick lights up behind the screen
+  const [mx,my]=pos(mine);h+=`<circle cx="${mx}" cy="${my}" r="42" fill="${YOU}" opacity=".95" filter="url(#eb14)"/><circle cx="${mx}" cy="${my}" r="26" fill="#fff6c8" opacity=".7" filter="url(#eb6)"/>`;
+  set.forEach(([f,st],i)=>{const [x,y]=pos(i),rot=(r()-.5)*10;h+=`<g filter="url(#esoft)" opacity=".93"><path d="M${x} ${i<4?y-20:y+20} V${i<4?y1:y2}" stroke="${ink}" stroke-width="2.4"/>${shape10(f,st,x,y,23,ink,rot)}</g>`});
+  if(mode==='four'){ // the four's picks, in the crowd's colour
+    const ring=(i,k)=>{const [x,y]=pos(i);let g='';for(let j=0;j<k;j++){const cx=x+26-j*13,cy=y-40;g+=`<rect x="${cx-6}" y="${cy-7}" width="12" height="14.5" rx="1.8" fill="${E_CROWD}" opacity=".85" filter="url(#eb3)"/><rect x="${cx-5.5}" y="${cy-6.5}" width="11" height="13.5" rx="1.8" fill="#c9f7f8"/>`}
+      return g+`<circle cx="${x}" cy="${y}" r="36" fill="none" stroke="${E_CROWD}" stroke-width="2.6"/><circle cx="${x}" cy="${y}" r="36" fill="none" stroke="${E_CROWD}" stroke-width="6" opacity=".45" filter="url(#eb3)"/>`};
+    h+=ring(theirs,3)+ring(other,1)}
+  h+=`<rect x="${x1}" y="${y1}" width="${x2-x1}" height="70" fill="url(#etop)" opacity=".5"/><rect x="${x1}" y="${y2-8}" width="${x2-x1}" height="8" fill="#1a0810"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="none" stroke="#0b0409" stroke-width="5"/>`;
+  h+=curt9(38,y2+6)+`<rect x="0" y="${y2}" width="390" height="${720-y2}" fill="url(#apron)"/><rect x="0" y="${y2}" width="390" height="2.4" fill="url(#ebrass)"/><ellipse cx="195" cy="${y2+26}" rx="170" ry="24" fill="${gel}" opacity=".28" filter="url(#eb14)"/>`;
+  h+=tag('PAIR',gel);
+  if(mode==='play')h+=T(24,88,'Find the pair.',eTitle(29))+sub10(114,'Two are the same. Tap one of them.')+house9(r,[[560,1.7,13],[610,2.2,10],[676,2.8,8]],'#ffb070')+foot(590)+eButton(630,'Lock in');
+  else{const xs=[];for(let i=0;i<10;i++)xs.push(33+i*36);
+    h+=T(24,88,'3 of 4 chose',eTitle(29))+T(24,118,'another one.',eTitle(29))+house10(r,[0,0,0,1,1,1,1,0,0,0],{xs,rows:3,y0:568,dy:40})+foot(590)+two10(630,'Keep mine','Switch',17,18)}
+  put(id,h+eEnd())}
+pair10('t10','play');pair10('t11','four');
+
+// ---- Sort: five pools of light on a closed curtain ----
+(function(){const r=R(201),gel=G10.sort,hem=470;let h=base()+d9+`<rect x="0" y="0" width="390" height="${hem}" fill="url(#ncurt)"/><rect x="0" y="0" width="390" height="${hem}" fill="url(#eshade)" opacity=".85"/><rect width="390" height="${hem}" fill="${gel}" opacity=".1"/>`;
+  const blob=(rad,lobes,ph)=>{let d='';for(let i=0;i<=48;i++){const a=i/48*Math.PI*2,rr=rad*(1+.11*Math.sin(a*lobes+ph)+.05*Math.sin(a*(lobes+2)+ph*2));d+=(i?'L':'M')+(rr*Math.cos(a)).toFixed(1)+' '+(rr*Math.sin(a)).toFixed(1)}return d+'Z'};
+  const rad=[25,31,36,28,33],lob=[4,3,5,6,4],xs=[52,123,195,267,338],held=3,y0=318;
+  rad.forEach((rd,i)=>{const hold=i===held,x=hold?xs[i]-30:xs[i],y=hold?y0-78:y0;
+    h+=`<g style="mix-blend-mode:screen"><path d="M${x-8} -10 L${x-rd*.9} ${y} H${x+rd*.9} L${x+8} -10Z" fill="${gel}" opacity=".34" filter="url(#eb6)"/><g transform="translate(${x} ${y})"><path d="${blob(rd*1.25,lob[i],i)}" fill="${gel}" opacity=".55" filter="url(#eb6)"/><path d="${blob(rd,lob[i],i)}" fill="#efe2ff" opacity=".86"/></g></g>`;
+    if(hold)h+=`<g transform="translate(${x} ${y})"><path d="${blob(rd+3,lob[i],i)}" fill="none" stroke="${YOU}" stroke-width="3.5"/><path d="${blob(rd+3,lob[i],i)}" fill="none" stroke="${YOU}" stroke-width="9" opacity=".5" filter="url(#eb6)"/></g>`;
+    if(!hold)h+=`<ellipse cx="${x}" cy="${hem+12}" rx="${rd*1.1}" ry="6" fill="${gel}" opacity=".5" filter="url(#eb6)" style="mix-blend-mode:screen"/>`});
+  h+=doto(xs[0],y0+86,'SMALL',12,'#cdb8e6','middle',2)+doto(xs[4],y0+86,'LARGE',12,'#cdb8e6','middle',2);
+  h+=`<rect width="390" height="150" fill="url(#etop)"/>`;for(let x=0;x<390;x+=46)h+=`<path d="M${x} ${hem-3} q23 9 46 0 v6 h-46Z" fill="#0c040a" opacity=".8"/>`;
+  h+=`<rect x="0" y="${hem}" width="390" height="${720-hem}" fill="url(#apron)"/><rect x="0" y="${hem}" width="390" height="10" fill="#000" opacity=".5" filter="url(#eb3)"/><rect x="0" y="${hem+22}" width="390" height="2.4" fill="url(#ebrass)"/>`;
+  h+=tag('SORT',gel)+T(24,88,'Smallest to largest.',eTitle(25))+house9(r,[[560,1.7,13],[610,2.2,10],[676,2.8,8]],'#cdb8e6')+foot(590)+eButton(630,'Done');
+  put('t12',h+eEnd())})();
+
+// ---- The graph read: the house is the graph ----
+const notch10=(y,r6=8)=>`<rect x="${CX[6]-r6-8}" y="${y-r6-12}" width="${CX[8]-CX[6]+2*r6+16}" height="${2*r6+24}" rx="${r6+12}" fill="none" stroke="${E_CREAM}" stroke-width="2.5"/>`;
+const line10=(hs,y0,dy)=>{const p=CX.map((x,c)=>[x,y0-40+hs[c]*dy]);let d=`M${CX[0]-22} ${p[0][1]} L${p[0][0]} ${p[0][1]}`;for(let i=0;i<p.length-1;i++){const mx=(p[i][0]+p[i+1][0])/2,my=(p[i][1]+p[i+1][1])/2;d+=` Q${p[i][0]} ${p[i][1]} ${mx} ${my.toFixed(1)}`}return d+` L${CX[12]+22} ${p[12][1]}`};
+const real10=[0,0,0,0,1,2,3,6,7,6,3,2,1],mine10=[0,0,0,.4,1.2,2.6,4.6,6.4,6.2,4.4,2.4,1,.3],all10=[0,0,.4,1.4,3,5,6.6,6.6,5,3,1.4,.4,0];
+function draw10(id,mode){const r=R(211);let h=base()+tag('STOP',G10.stop);
+  if(mode==='draw')h+=T(24,88,'Draw the crowd.',eTitle(29))+sub10(116,'Where did everyone stop?');else h+=T(24,88,'61% stopped late.',eTitle(29))+sub10(116,'People wait to see the marker arrive.');
+  h+=topStage()+bar10(204,CX.map(()=>'off'))+notch10(204)+house10(r,mode==='draw'?CX.map(()=>0):real10);
+  if(mode==='reveal')h+=`<path d="${line10(all10,300,37)}" fill="none" stroke="${E_CROWD}" stroke-width="2.5" opacity=".55"/>`;
+  const d=line10(mine10,300,37);h+=`<path d="${d}" fill="none" stroke="${YOU}" stroke-width="10" opacity=".5" filter="url(#eb6)"/><path d="${d}" fill="none" stroke="${YOU}" stroke-width="${mode==='draw'?5:3.5}" stroke-linecap="round" ${mode==='reveal'?'stroke-dasharray="9 7"':''}/>`;
+  if(mode==='draw'){h+=`<circle cx="${CX[12]+22}" cy="260" r="16" fill="${YOU}" opacity=".6" filter="url(#eb6)"/><circle cx="${CX[12]+22}" cy="260" r="7" fill="#fff6c8"/><rect y="560" width="390" height="160" fill="url(#eshade)"/>`+eButton(620,'Done')}
+  else h+=`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+glowText(28,652,'78',`font:900 60px Doto,monospace`,YOU)+doto(30,682,'IN 100 MATCHED · SIMULATED CROWD',11,'#ffb884','start',1)+next10(604);
+  put(id,h+eEnd())}
+draw10('t16a','draw');draw10('t16b','reveal');
+// 17 · Select: upstairs and downstairs
+(function(){const r=R(221);let h=base()+tag('STOP',G10.stop)+T(24,84,'Which crowd is real?',eTitle(25));
+  h+=`<path d="M0 112 H390 V190 H0Z" fill="url(#efloor)"/>`+bar10(150,CX.map(()=>'off'),7)+notch10(150,7);
+  h+=house10(r,[0,0,1,2,3,4,4,4,2,1,1,0,0],{y0:238,dy:34,rows:4});
+  // the balcony front
+  h+=`<path d="M0 372 H390 V720 H0Z" fill="#160912"/><rect x="0" y="372" width="390" height="46" fill="#241320"/><rect x="0" y="372" width="390" height="46" fill="url(#eshade)" opacity=".6"/><rect x="0" y="372" width="390" height="3" fill="url(#ebrass)"/><rect x="0" y="415" width="390" height="2" fill="url(#ebrass)" opacity=".6"/>`;
+  for(let x=20;x<390;x+=35)h+=bulb(x,395,3.6,'dim');
+  h+=house10(r,[0,0,1,1,1,2,2,3,4,4,3,1,0],{y0:472,dy:36,rows:4});
+  h+=`<rect y="600" width="390" height="120" fill="url(#eshade)"/>`+doto(195,668,'ONE IS MADE UP',15,'#ffb884','middle',3);
+  put('t17',h+eEnd())})();
+// 18 · Adjust
+(function(){const r=R(231);let h=base()+tag('STOP',G10.stop)+T(24,88,'Slide the crowd',eTitle(29))+T(24,120,'into place.',eTitle(29))+topStage()+bar10(204,CX.map(()=>'off'))+notch10(204);
+  h+=house10(r,[0,1,2,3,6,7,6,3,2,1,0,0,0],{rows:7});
+  const y=582;h+=`<rect y="520" width="390" height="200" fill="url(#eshade)"/><rect x="40" y="${y-13}" width="310" height="26" rx="13" fill="#0f050c" stroke="#5a2a3c" stroke-width="1.5"/>`;for(let x=58;x<=332;x+=19.6)h+=bulb(x.toFixed(1),y,3,'off');
+  h+=knob10(195,y,17)+`<path d="M236 ${y-9} l10 9 l-10 9 M154 ${y-9} l-10 9 l10 9" fill="none" stroke="${E_CREAM}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>`+eButton(628,'Done');
+  put('t18',h+eEnd())})();
+
+// ---- Find yourself: the field sits in order, best at the front ----
+function find10(id,mode){const r=R(241),rows=9,y0=300,dy=37,guess=2,truth=3,thought=[8,9,8,6,4,3,2,1,1];let h=base()+wash10('#9fb0c8')+tag('FIND YOURSELF','#9fb0c8')+T(24,84,mode==='find'?'Where did':'71% thought they',eTitle(mode==='find'?28:25))+T(24,114,mode==='find'?'you finish?':'beat most.',eTitle(mode==='find'?28:25));
+  h+=sub10(138,mode==='find'?'Best at the front. Tap your row.':'You said 70 in 100. You beat 57.')+topStage()+doto(195,208,'BEST',15,E_CREAM,'middle',6);
+  h+=`<path d="M0 250 H390 V720 H0Z" fill="#160912"/>`;
+  for(let i=0;i<rows;i++){const y=y0+i*dy;h+=`<rect x="0" y="${y+5}" width="390" height="12" fill="#0e050b"/>`;const tops=[],seats=[...Array(i===guess||i===truth?11:13).keys()].sort(()=>r()-.5).slice(0,mode==='reveal'?thought[i]:0);
+    for(let c=-1;c<=13;c++){const x=c<0?CX[0]-27:c>12?CX[12]+27:CX[c],you=i===guess&&c===6,on=seats.includes(c)&&!you;h+=backSeat(x-8,y,1.04,hWho(r),on||you?'card':'dark');if(on||you)tops.push(KIT.C5.card(x,y,you))}
+    h+=`<rect x="0" y="${y-46}" width="390" height="54" fill="#0c040a" opacity="${Math.min(.62,i*.085).toFixed(2)}"/>`;
+    if(i===guess)h+=`<rect x="-20" y="${y-40}" width="430" height="42" fill="${YOU}" opacity=".34" filter="url(#eb6)"/><path d="M-20 ${y-70} L-20 ${y+20} L410 ${y+2} V${y-38}Z" fill="${YOU}" opacity=".1" filter="url(#eb6)"/>`;
+    if(mode==='reveal'&&i===truth)h+=`<rect x="-20" y="${y-40}" width="430" height="42" fill="#fff" opacity=".3" filter="url(#eb6)"/><path d="M410 ${y-70} L410 ${y+20} L-20 ${y+2} V${y-38}Z" fill="#fff" opacity=".1" filter="url(#eb6)"/>`+doto(380,y-22,'57',17,'#fff','end',0);
+    if(i===guess)h+=doto(380,y-22,'70',17,YOU,'end',0);
+    h+=tops.join('')}
+  h+=`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`;
+  if(mode==='find')h+=eButton(620,'Ahead of 70 in 100');else h+=glowText(28,652,'−13',`font:900 60px Doto,monospace`,YOU)+doto(30,682,'TOO PROUD · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(604);
+  put(id,h+eEnd())}
+find10('t19a','find');find10('t19b','reveal');
+
+// ---- Scorecard: the curtain is down ----
+(function(){const r=R(251),hem=500;let h=base()+d9+`<rect x="0" y="0" width="390" height="${hem}" fill="url(#ecurt)"/><rect x="0" y="0" width="390" height="${hem}" fill="url(#eshade)" opacity=".8"/>`;
+  h+=`<path d="M120 -10 L270 -10 L330 ${hem} L60 ${hem}Z" fill="url(#ebeam)" filter="url(#eb14)" opacity=".7"/>`;
+  // the sign, as on Home
+  h+=`<rect x="44" y="92" width="302" height="150" rx="20" fill="#12070f"/><rect x="50" y="98" width="290" height="138" rx="16" fill="#2a1220" stroke="#7b3d4a" stroke-width="2"/>`;
+  const per=[];for(let x=62;x<=328;x+=19)per.push([x,98],[x,236]);for(let y=118;y<=218;y+=20)per.push([50,y],[340,y]);per.forEach(([x,y],i)=>{h+=bulb(x,y,4.6,'on')});
+  h+=`<rect x="80" y="120" width="230" height="96" fill="${YOU}" opacity=".22" filter="url(#eb14)"/>`+glowText(195,206,'86',`font:900 104px Doto,monospace;text-anchor:middle`,YOU);
+  h+=T(195,282,'Better than 64 in 100 today.',`font:800 19px Outfit;fill:${E_CREAM};text-anchor:middle`)+doto(195,308,'HANDS 52 · HUNCH 34',13,'#ffb884');
+  h+=T(195,372,'Bold',`font:400 34px Bungee;fill:${E_CREAM};text-anchor:middle`)+T(195,398,'You took 3 dares of 3. Most take 1.',`font:600 15px Outfit;fill:#e7c4b4;text-anchor:middle`);
+  for(let x=0;x<390;x+=34)h+=`<path d="M${x} ${hem-3} q17 8 34 0 v6 h-34Z" fill="#0c040a" opacity=".8"/>`;
+  h+=`<rect x="0" y="${hem}" width="390" height="40" fill="#241320"/><rect x="0" y="${hem}" width="390" height="40" fill="url(#eshade)" opacity=".5"/><rect x="0" y="${hem}" width="390" height="10" fill="#000" opacity=".5" filter="url(#eb3)"/>`;
+  // one footlight a game, in its colour, with what it paid
+  const by=538;[['STOP',G10.stop,'19'],['COUNT',G10.count,'20'],['REPEAT',G10.repeat,'16'],['JUMP',G10.jump,'31']].forEach(([n,c,p],i)=>{const x=60+i*90;
+    h+=`<g style="mix-blend-mode:screen"><path d="M${x-22} ${by} L${x-60} 330 H${x+60} L${x+22} ${by}Z" fill="${c}" opacity=".3" filter="url(#eb14)"/></g><ellipse cx="${x}" cy="${by+1}" rx="31" ry="6.5" fill="#07020a"/><ellipse cx="${x}" cy="${by}" rx="29" ry="5.5" fill="none" stroke="url(#ebrass)" stroke-width="2.2"/><circle cx="${x}" cy="${by-18}" r="46" fill="${c}" opacity=".6" filter="url(#eb14)"/><path d="M${x-25} ${by} A25 29 0 0 1 ${x+25} ${by}Z" fill="${c}"/><path d="M${x-14} ${by-2} A14 17 0 0 1 ${x+14} ${by-2}Z" fill="#fff" opacity=".7" filter="url(#eb3)"/>`;
+    h+=`<rect x="${x-25}" y="${by+22}" width="50" height="46" rx="6" fill="#07020a" stroke="#5a2a3c" stroke-width="1.2"/>`+glowText(x,by+56,p,`font:900 30px Doto,monospace;text-anchor:middle`,YOU)+doto(x,by+86,n,11,E_CREAM,'middle',2)});
+  h+=`<rect x="0" y="${by+8}" width="390" height="${720-by-8}" fill="url(#apron)" opacity="0"/>`;
+  h+=eButton(646,'Share');
+  put('t21',h+eEnd())})();
+
+/* ================= Round 11 · Find yourself with a follow spot; the peek ================= */
+function spot10(id,mode){const r=R(301),N=9,gel='#9fb0c8';let h=base()+`<rect width="390" height="720" fill="#0d050c"/><ellipse cx="195" cy="120" rx="300" ry="170" fill="${gel}" opacity=".16" filter="url(#eb14)"/>`;
+  const row=i=>{const t=i/(N-1);return{y:196+Math.pow(t,1.1)*352,s:.72+.9*t}};
+  const guess={i:6,x:286,c:YOU,n:'70'},truth={i:5,x:96,c:'#ffffff',n:'57'},spots=mode==='find'?[guess]:[truth,guess];
+  const inSpot=(x,i,sp)=>{const p=row(sp.i);return Math.abs(i-sp.i)<=1&&Math.pow((x-sp.x)/(66*p.s),2)+Math.pow((i-sp.i)/1.45,2)<1};
+  // the beams, from your lamp at the front of the stage
+  const beam=sp=>{const p=row(sp.i);return `<path d="M${195-14} 740 L${sp.x-60*p.s} ${p.y-14*p.s} H${sp.x+60*p.s} L${195+14} 740Z" fill="${sp.c}" opacity=".24" filter="url(#eb6)"/>`};
+  const share=[.04,.06,.08,.12,.18,.3,.42,.5,.5];
+  for(let i=0;i<N;i++){const p=row(i),dx=27*p.s,n=Math.ceil(390/dx)+2,lit=[];let g=`<rect x="0" y="${p.y+3*p.s}" width="390" height="${7*p.s}" fill="#170911"/>`;
+    for(let c=0;c<n;c++){const x=195+(c-(n-1)/2)*dx+(i%2?dx/2:0),w=hWho(r),sp=spots.find(q=>inSpot(x,i,q)),me=sp&&Math.abs(x-sp.x)<dx/2&&i===sp.i,card=mode==='reveal'&&!sp&&r()<share[i];
+      const seat=frontSeat(x,p.y,p.s,false)+bust(x,p.y+1,p.s*.98,w,sp?'warm':card?'card':'dark');
+      if(sp)lit.push([seat,x,me,sp]);else g+=seat}
+    h+=g+`<rect x="0" y="${p.y-26*p.s}" width="390" height="${34*p.s}" fill="#0a0409" opacity="${(.62-i*.03).toFixed(2)}"/>`;
+    // cards stay bright in the dark
+    if(mode==='reveal'){/* drawn inside bust; lift them back out of the dark */}
+    lit.forEach(([seat,x,me,sp])=>{h+=seat;if(me)h+=`<circle cx="${x}" cy="${p.y-14*p.s}" r="${20*p.s}" fill="${sp.c}" opacity=".5" filter="url(#eb6)"/><rect x="${x-6*p.s}" y="${p.y-9*p.s}" width="${12*p.s}" height="${9*p.s}" rx="2" fill="${sp.c}" opacity=".9" filter="url(#eb3)"/><rect x="${x-5.5*p.s}" y="${p.y-8.5*p.s}" width="${11*p.s}" height="${8*p.s}" rx="2" fill="${sp.c===YOU?'#fff3b0':'#ffffff'}"/>`})}
+  spots.forEach(sp=>{const p=row(sp.i);h+=beam(sp)+`<ellipse cx="${sp.x}" cy="${p.y-12*p.s}" rx="${68*p.s}" ry="${40*p.s}" fill="${sp.c}" opacity=".16" filter="url(#eb6)"/><ellipse cx="${sp.x}" cy="${p.y-12*p.s}" rx="${66*p.s}" ry="${38*p.s}" fill="none" stroke="${sp.c}" stroke-width="2.5" opacity=".85"/><ellipse cx="${sp.x}" cy="${p.y-12*p.s}" rx="${66*p.s}" ry="${38*p.s}" fill="none" stroke="${sp.c}" stroke-width="8" opacity=".4" filter="url(#eb6)"/>`
+    +glowText(sp.x,p.y-58*p.s,sp.n,`font:900 34px Doto,monospace;text-anchor:middle`,sp.c)});
+  h+=`<rect width="390" height="190" fill="url(#etop)"/><rect y="548" width="390" height="172" fill="url(#eshade)"/>`+tag('FIND YOURSELF',gel);
+  if(mode==='find')h+=T(24,84,'Where did',eTitle(28))+T(24,114,'you finish?',eTitle(28))+sub10(138,'Best at the front. Swing the spot.')+T(195,622,'70 in 100 finished behind you.',`font:800 17px Outfit;fill:${E_CREAM};text-anchor:middle`)+eButton(640,'Lock in');
+  else h+=T(24,84,'71% thought they',eTitle(25))+T(24,114,'beat most.',eTitle(25))+sub10(138,'You said 70 in 100. You beat 57.')+glowText(28,652,'−13',`font:900 60px Doto,monospace`,YOU)+doto(30,682,'TOO PROUD · SIMULATED CROWD',11,'#ffb884','start',1.5)+next10(604);
+  put(id,h+eEnd())}
+spot10('u19a','find');spot10('u19b','reveal');
+
+// the peek, on Stop's open track. mode: offer | play
+function peek10(id,mode){const r=R(141);let h=base()+tag('STOP',G10.stop);
+  if(mode==='offer')h+=T(24,84,'Peek at',eTitle(28))+T(24,114,'yesterday?',eTitle(28))+sub10(138,'It might help. It might not.');else h+=T(24,84,'Stop where',eTitle(28))+T(24,114,'nobody does.',eTitle(28))+sub10(138,'Empty spots pay more.');
+  const c=4,st=CX.map((_,i)=>mode==='play'&&i===c?'you':mode==='play'&&(i===c-1||i===c-2)?'trail':'off'),yest=[3,5,6,4,2,1,0,1,3,5,6,4,2];
+  h+=topStage()+bar10(204,st)+house10(r,yest)+`<rect x="0" y="252" width="390" height="468" fill="#0c040a" opacity="${mode==='offer'?.84:.5}"/>`;
+  if(mode==='play'){h+=`<path d="M${CX[c]-9} 214 L${CX[c]-30} 600 H${CX[c]+30} L${CX[c]+9} 214Z" fill="${YOU}" opacity=".3" filter="url(#eb6)"/><path d="M${CX[c]-5} 214 L${CX[c]-15} 600 H${CX[c]+15} L${CX[c]+5} 214Z" fill="#fff6c8" opacity=".16" filter="url(#eb3)"/>`
+    +doto(195,244,'YESTERDAY',12,E_CROWD,'middle',5)+`<rect y="560" width="390" height="160" fill="url(#eshade)"/>`+glowText(195,640,'Tap to stop',`font:400 30px Bungee;text-anchor:middle`,E_CREAM)+doto(195,684,'GO 1 OF 3',14,'#ffb884')}
+  else h+=`<rect y="540" width="390" height="180" fill="url(#eshade)"/>`+two10(606,'Play blind','Peek');
+  put(id,h+eEnd())}
+peek10('u2p','offer');peek10('u2q','play');
+// ?only=2 shows one row (used for screenshots)
+const only=new URLSearchParams(location.search).get('only');
+if(only)document.querySelectorAll('section[data-s]').forEach(s=>{if(s.dataset.s!==only)s.style.display='none'});
+</script>
+</body>
+</html>

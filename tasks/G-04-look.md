@@ -2,11 +2,13 @@
 
 ## Summary (read this first)
 
-### Restart point for a fresh chat (27 Nov, after round 10)
+### Restart point for a fresh chat (27 Nov, after round 11)
 
-**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd, 4b (the dimmer rail) for Count's number. Latest page: `design/directions/look-g04-r10.html`, the full run: 24 screens in 8 rows, drawn while he was away for an hour. Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged.
+**Where it stands.** Picked so far, in his words: the studio look (E), "the slight old mechanical theatre vibe is nice", 1E as home, C5 ("Cards up") for the crowd, 4b (the dimmer rail) for Count's number, and round 10's full run: "All looks good". The full run is `design/directions/look-g04-r10.html` (24 screens). Branch `g04-look`. `tokens.css`, `DESIGN.md` and `PICK.md` are unchanged.
 
-**Open now, waiting for his line:** `design/directions/look-g04-r10.html`. He types `go`, or ids and what to change, or `none` and what is wrong.
+**Open now, waiting for his line:** `design/directions/look-g04-r11.html`, four screens: Find yourself redrawn with a follow spot (19a, 19b), and his peek idea on Stop's open track (2p, 2q). He types `go`, or ids and what to change, or `none` and what is wrong.
+
+**Round 10, his words, 27 Nov:** "All looks good, but the19 and 19b are only ones that are a bit underwhelming. Also perhaps for one of the games would be interesting to ask if they want to see yesterdays answer distribution? Like a dare, as it could mess up their game or it coudl help them but mostly will just make them overthink it"
 
 **Round 10, what he asked, 27 Nov:** "I need to leave laptop for na hour so do as many as you cna, being through, taking as much time as you need for designs that authentically represent the design language and ethos".
 
@@ -279,6 +281,10 @@ Counted: 22 rows. 3 are drawn and usable (1, 4, 5). 1 is drawn and needs rework 
     - 10, 26, 27, 35, 43, 57, 62, 63, 72, 76, 78, 84, 85, 89 to 92, 94 to 96: minor or within budget.
     - Not on the page: Home (unchanged), the flag, the Sunday week, the twin and the badge on the scorecard, reveals for Sort, Pair, Repeat, Select and Adjust.
   - **One round only.** No second round was run on the fix; he was due back.
+- 27 Nov, round 11. His words on round 10 are in the Summary. Size: small. Drew `design/directions/look-g04-r11.html`, four screens.
+  - **Find yourself (19a, 19b), redrawn.** My reading of "underwhelming": rows of seats with a flat band, nothing big to touch, and the same picture as seven other screens. Now you stand on the stage with a follow spot and swing it over the house, best at the front; the people in the spot light up with faces. The reveal's white spot finds where you really are. The searching spotlight is his own idea from round 3.
+  - **The peek (2p, 2q).** Put on Stop's open track, because probe E in G-02b already says copying yesterday's empty spot does worst, so the peek is true and still a trap. 2p offers it with yesterday's cards barely there in the dark; 2q plays with yesterday's crowd up, dim.
+  - Rendered both rows in headless Chrome and read them; Find yourself's house and spots were enlarged after the first read. `ci-checks: all passed`, `design-check: pass`. **Not run:** no K05 review of these four screens; he is at the keyboard.
 
 ## Rulings
 
@@ -321,3 +327,5 @@ Mine, under K03, because he was away. All reversible; his to overrule.
 35. **The house is the graph.** The crowd's cards under the bulbs are the pile on every graph screen (Draw, Select, Adjust, the Stop and Count reveals), which replaces round 8's paper roll. Select's two piles are upstairs and downstairs.
 36. **Pictures chosen for the new games,** all stand-ins for the look and none a rule: Long jump is a light running down the stage towards the edge; Hide and Seek's playground is painted scenery on a dark stage, and Seek is a follow spot; Pair is twelve shadow cut-outs, drawn as a single pick (not coded in the rules yet); Sort is five pools of light; Find yourself is the field seated best at the front, and you tap a row; Double or bank is one lever and the lamps it would light.
 37. **Every number on round 10's screens is for the look only,** except the rules they follow (1 to 5 on the open track, averaged; +2 for keeping when closer; a wrong double costs the base). Reveals say "simulated crowd".
+38. **The peek is a new rule, not only a screen,** and it is not in G-02b. As drawn: offered once before Stop's first go, free, and yesterday's field stays up dim for all three goes. Whether it costs anything, whether peeking shows on the reveal ("6 in 10 peeked; they scored less"), and which game carries it are his to rule, then for the rules task.
+39. **Find yourself turns the house round:** it is seen from the stage, with faces, where every other crowd screen is seen from your seat. That is deliberate, so it is not the eighth copy of the same picture.
